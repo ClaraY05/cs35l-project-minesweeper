@@ -1,0 +1,132 @@
+#!/bin/bash
+
+IMAGE=ghcr.io/ucla-cs-35l/assign3
+
+# Function to print usage
+usage() {
+    echo "Usage: $0 [command]"
+    echo "Commands:"
+    echo "  wsl          Pre-initialize your system if running WSL."
+    echo "  init         Initialize your system to work with Assignment 3."
+    echo "  dev          Run a dev server to view your solution."
+    echo "  test         Run Selenium integration tests on your solution."
+    echo "  test-docker  Same as test, but in Docker."
+    echo "  clean        Debug issues with testing."
+    echo "  zip          Prepare a ZIP file for submission."
+    exit 1
+}
+
+# Ensure at least one argument is provided
+if [ "$#" -eq 0 ]; then
+    echo "Error: No command provided."
+    usage
+fi
+
+init_command() {
+    if [ "$#" -ne 0 ]; then
+        echo "Error: Incorrect usage of 'init' command."
+        usage
+    fi
+
+    if [ ! -e "package-lock.json" ]; then
+        if ! npm i; then
+            echo "Your system does not have npm installed. Please make sure you've installed Node.js on your system."
+            exit 1
+        fi
+    fi
+
+    if [ ! -e "venv" ]; then
+        if ! python3 -m venv venv; then
+            echo "Your system does not have Python 3 installed. Please make sure to install it before running this script."
+            exit 1
+        fi
+
+        ./venv/bin/python -m pip install -r requirements.txt
+    fi
+ 
+    echo "Success: Initialized your system to work on Assignment 3."
+}
+
+# Function to handle the 'zip' command
+zip_command() {
+    if [ "$#" -ne 0 ]; then
+        echo "Error: Incorrect usage of 'zip' command."
+        usage
+    fi
+
+    if [ ! -s "tic-tac-toe.txt" ]; then
+        echo "Make sure to have a complete log of your tutorial run through in tic-tac-toe.txt."
+    fi
+
+    if [ ! -s "chorus-lapilli.txt" ]; then
+        echo "Make sure to have a complete log of how you built your solution in chorus-lapilli.txt."
+    fi
+
+    if ! npm run zip >/dev/null 2>&1; then
+        echo "Error: Could not create assign.zip."
+        exit 1
+    fi
+    mv chorus-lapilli.zip assign.zip
+    echo "Success: Created assign.zip."
+}
+
+wsl() {
+    apt update
+    apt install -y python3 python3-pip python3-venv wget bzip2 libxtst6 libgtk-3-0 libx11-xcb-dev libdbus-glib-1-2 libxt6 libpci-dev libasound2
+
+    FIREFOX_VERSION=latest
+    FIREFOX_DOWNLOAD_URL="https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=en-US"
+    apt-get update -qqy
+    apt-get -qqy --no-install-recommends install libavcodec-extra libgtk-3-dev libdbus-glib-1-dev
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+    wget --no-verbose -O /tmp/firefox.tar.bz2 $FIREFOX_DOWNLOAD_URL
+    rm -rf /opt/firefox
+    tar -C /opt -xjf /tmp/firefox.tar.bz2
+    rm /tmp/firefox.tar.bz2
+    mv /opt/firefox /opt/firefox-$FIREFOX_VERSION
+    ln -fs /opt/firefox-$FIREFOX_VERSION/firefox /usr/bin/firefox
+
+    # install Geckodriver
+    GECKODRIVER_URL="https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz"
+    cd /tmp
+    wget $GECKODRIVER_URL
+    tar -xvzf geckodriver-v0.34.0-linux64.tar.gz
+    mv geckodriver /usr/local/bin
+
+    # install node v22
+    curl -sL https://deb.nodesource.com/setup_22.x | bash
+    apt install nodejs
+}
+
+# Handle commands using case statement
+case "$1" in
+    zip)
+        shift
+        zip_command "$@"
+        ;;
+    wsl)
+        wsl
+        ;;
+    init)
+        shift
+        init_command "$@"
+        ;;
+    dev)
+        npm run dev
+        ;;
+    test)
+        shift
+        ./venv/bin/python test_chorus_lapilli.py "$@"
+        ;;
+    test-docker)
+        shift
+        docker run --rm -v .:/test -w /test ${IMAGE} python3 test_chorus_lapilli.py headless 
+        ;;
+    clean)
+        rm -rf package-lock.json node_modules
+        ;;
+    *)
+        echo "Error: Unknown command '$1'"
+        usage
+        ;;
+esac
