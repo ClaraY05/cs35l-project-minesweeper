@@ -1,10 +1,10 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "allowJs": true,             
-    "types": ["vite/client"],
-    "checkJs": false
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "dist",
+    "noEmit": false
   },
   "references": [{ "path": "../utils/types" }],
   "include": ["src"]
