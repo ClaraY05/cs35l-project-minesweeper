@@ -1,10 +1,19 @@
 import { useState } from 'react';
 import './minesweeper-board.css'
 
-const Tile = ({ value, onLeftClick, onRightClick }) => {
+// F, M, numbers are temporary sentinels for tile states. will use contracts / typescript later
+
+const testBoard = [
+    1,1,1,
+    1,"M",1,
+    1,1,1
+];
+
+const Tile = ({ className, value, onLeftClick, onRightClick }) => {
     return (
-    <button 
-      className="minesweeper-tile"
+    <div 
+      className={className}
+      onClick={onLeftClick}
       onContextMenu={
         (e) => {
             e.preventDefault();
@@ -12,7 +21,7 @@ const Tile = ({ value, onLeftClick, onRightClick }) => {
         }
       }>
         {value}
-    </button>
+    </div>
   )
 }
 
@@ -20,8 +29,16 @@ const MinesweeperBoard = () => {
     const [Tiles, setTiles] = useState(Array(9).fill(null));
 
     const handleTileRightClick = (i) => {
+        if (Tiles[i] && Tiles[i] !== "F") return; // revealed tiles cannot be flagged
         const newTiles = [...Tiles];
         Tiles[i] === "F" ? newTiles[i] = null : newTiles[i] = "F";
+        setTiles(newTiles);
+    }
+
+    const handleTileLeftClick = (i) => {
+        if (Tiles[i] === "F") return; // flagged tiles cannot be clicked until cleared
+        const newTiles = [...Tiles];
+        newTiles[i] = testBoard[i];
         setTiles(newTiles);
     }
 
@@ -29,10 +46,12 @@ const MinesweeperBoard = () => {
         <div className="minesweeper-board-container">
             <div className="minesweeper-board">
                 {
-                    Tiles.map((value, index) => (
+                    Tiles.map((value, i) => (
                         <Tile 
+                        className={`minesweeper-tile ${Tiles[i] && Tiles[i] !== "F" ? "revealed" : ""}`}
                         value={value} 
-                        onRightClick={() => handleTileRightClick(index)}/>
+                        onLeftClick={() => handleTileLeftClick(i)}
+                        onRightClick={() => handleTileRightClick(i)}/>
                     ))
                 }
             </div>

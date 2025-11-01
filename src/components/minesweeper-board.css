@@ -19,6 +19,15 @@
 
 .minesweeper-tile {
     aspect-ratio: 1;
-    align-items: center;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
     cursor: pointer;
+    background-color: bisque;
+    border: 1px solid black;
+}
+
+.minesweeper-tile.revealed {
+    background-color: beige;
+    cursor: default;
 }
