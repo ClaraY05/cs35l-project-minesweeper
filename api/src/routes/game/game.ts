@@ -14,13 +14,14 @@ const gameRoutes = Router();
 // --------
 
 // currently sends a hardcoded 5x5 board to the frontend.
+// for now 0 represents a blank space. null represents unrevealed space on frontend, but this can be fixed later
 // TODO (Marissa): make board randomly generated on each /create call. optionally switch to 2d array
 const testBoard = [
-    1,1,1,null,null,
-    1,"M",1,null,null,
-    1,1,1,null,null,
-    null,null,null,1,1,
-    null,null,null,1,"M"
+    1,1,1,0,0,
+    1,"M",1,0,0,
+    1,1,1,0,0,
+    0,0,0,1,1,
+    0,0,0,1,"M"
 ]
 
 // create a game

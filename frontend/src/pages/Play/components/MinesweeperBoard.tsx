@@ -44,7 +44,7 @@ const MinesweeperBoard = ({ BoardData } : any) => {
                 {
                     Tiles.map((value, i) => (
                         <Tile 
-                        className={`minesweeper-tile ${Tiles[i] && Tiles[i] !== "F" ? "revealed" : ""}`}
+                        className={`minesweeper-tile ${Tiles[i] !== null && Tiles[i] !== "F" ? "revealed" : ""}`}
                         value={value} 
                         onLeftClick={() => handleTileLeftClick(i)}
                         onRightClick={() => handleTileRightClick(i)}/>
