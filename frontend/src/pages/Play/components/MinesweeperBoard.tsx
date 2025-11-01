@@ -3,12 +3,8 @@ import './minesweeper-board.css'
 
 // F, M, numbers are temporary sentinels for tile states. will use contracts / typescript later
 
-const testBoard = [
-    1,1,1,
-    1,"M",1,
-    1,1,1
-];
 
+// "any" is not good practice because it blocks typechecking, but is okay for prototyping
 const Tile = ({ className, value, onLeftClick, onRightClick } : any) => {
     return (
     <div 
@@ -25,8 +21,8 @@ const Tile = ({ className, value, onLeftClick, onRightClick } : any) => {
   )
 }
 
-const MinesweeperBoard = () => {
-    const [Tiles, setTiles] = useState(Array(9).fill(null));
+const MinesweeperBoard = ({ BoardData } : any) => {
+    const [Tiles, setTiles] = useState(Array(5*5).fill(null));
 
     const handleTileRightClick = (i : number) => {
         if (Tiles[i] && Tiles[i] !== "F") return; // revealed tiles cannot be flagged
@@ -38,7 +34,7 @@ const MinesweeperBoard = () => {
     const handleTileLeftClick = (i : number) => {
         if (Tiles[i] === "F") return; // flagged tiles cannot be clicked until cleared
         const newTiles = [...Tiles];
-        newTiles[i] = testBoard[i];
+        newTiles[i] = BoardData[i];
         setTiles(newTiles);
     }
 

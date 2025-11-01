@@ -1,11 +1,16 @@
 // runs the server
 import express from "express";
 import cors from "cors";
-import routes from "./routes";
+import routes from "./routes/routes";
 
 const app = express();
-app.use(cors());
 app.use(express.json());
+
+// enable CORS before routes
+app.use(cors({
+  origin: "http://localhost:5173", // React dev server URL
+  credentials: true                // if you use cookies/sessions
+}));
 
 app.use("/api", routes); // declares /api as the base url 
 
