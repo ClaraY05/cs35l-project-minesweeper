@@ -1,0 +1,24 @@
+.minesweeper-board-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    height: 100vh;
+}
+
+.minesweeper-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0px;
+    justify-self: center;
+    vertical-align: auto;
+    height: 50vh;
+    aspect-ratio: 1;
+}
+
+.minesweeper-tile {
+    aspect-ratio: 1;
+    align-items: center;
+    cursor: pointer;
+}
