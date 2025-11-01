@@ -1,25 +1,29 @@
 {
-  "name": "chorus-lapilli",
+  "name": "cs35l-project",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "zip": "npm-pack-zip"
+  "version": "1.0.0",
+  "description": "// todo",
+  "homepage": "https://github.com/marissazli/cs35l-project#readme",
+  "bugs": {
+    "url": "https://github.com/marissazli/cs35l-project/issues"
   },
-  "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marissazli/cs35l-project.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "workspaces": ["frontend", "api"],
+  "scripts": {
+    "dev": "concurrently -r \"npm:dev:web\" \"npm:dev:api\"",
+    "dev:web": "npm --workspace frontend run dev",
+    "dev:api": "npm --workspace api run dev",
+    "build": "npm run -ws build",
+    "typecheck": "tsc -b",
+    "lint": "eslint ."
   },
   "devDependencies": {
-    "@eslint/js": "^9.22.0",
-    "@types/react": "^19.0.10",
-    "@types/react-dom": "^19.0.4",
-    "@vitejs/plugin-react": "^4.3.4",
-    "globals": "^16.0.0",
-    "npm-pack-zip": "^1.3.0",
-    "vite": "^6.3.1"
+    "concurrently": "^9.0.0",
+    "typescript": "^5.9.3"
   }
 }
