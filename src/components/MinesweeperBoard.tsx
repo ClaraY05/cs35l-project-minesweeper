@@ -9,7 +9,7 @@ const testBoard = [
     1,1,1
 ];
 
-const Tile = ({ className, value, onLeftClick, onRightClick }) => {
+const Tile = ({ className, value, onLeftClick, onRightClick } : any) => {
     return (
     <div 
       className={className}
@@ -28,14 +28,14 @@ const Tile = ({ className, value, onLeftClick, onRightClick }) => {
 const MinesweeperBoard = () => {
     const [Tiles, setTiles] = useState(Array(9).fill(null));
 
-    const handleTileRightClick = (i) => {
+    const handleTileRightClick = (i : number) => {
         if (Tiles[i] && Tiles[i] !== "F") return; // revealed tiles cannot be flagged
         const newTiles = [...Tiles];
         Tiles[i] === "F" ? newTiles[i] = null : newTiles[i] = "F";
         setTiles(newTiles);
     }
 
-    const handleTileLeftClick = (i) => {
+    const handleTileLeftClick = (i : number) => {
         if (Tiles[i] === "F") return; // flagged tiles cannot be clicked until cleared
         const newTiles = [...Tiles];
         newTiles[i] = testBoard[i];
