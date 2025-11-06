@@ -7,4 +7,7 @@ router.get("/", (req, res) => {
     res.send("hello world");
 })
 
+console.log("Environment loaded. PORT:", process.env.PORT);
+
+
 export default router;
