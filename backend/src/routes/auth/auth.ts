@@ -4,20 +4,40 @@ import jwt from "jsonwebtoken"
 import { pool } from "../../db/db"
 
 // routes for our api.
-const router = Router();
+const authRoutes = Router();
 
 console.log("Environment loaded. PORT:", process.env.PORT);
 
-// JWT authentication
-const JWT_SECRET = "";
+const JWT_SECRET = process.env.JWT_SECRET || "christinawang";
 const JWT_EXPIRES_IN = "1h";
 
-router.post(
-    "/api/auth/register",
-    async(req:Request, res:Response): Promise<void> =>{
+function signJwt(payload: object){
+    const jwtobj = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN});
+    return jwtobj;
+}
+
+authRoutes.post(
+    "/register", async(req:Request, res:Response) => {
         const { username, password } = req.body;
+
+        try {
+            const hash = await bcrypt.hash(password, 10);
+            
+            const result = await pool.query(
+                "INSERT INTO users (username, password_hash) VALUES ($1, $2) RETURNING id",
+                [username, hash]
+            );
+
+            const userID = result.rows[0].id;
+            const token = signJwt({ userID, username});
+
+            return res.status(201).json({token});
+        }
+        catch(err) {
+            console.error(err)
+        }
     }
 )
 
 
-export default router;
+export default authRoutes;

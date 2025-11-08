@@ -1,5 +1,6 @@
 import { Router } from "express";
 import gameRoutes from "./game/game";
+import authRoutes from "./auth/auth"
 
 // routes for our api.
 const router = Router();
