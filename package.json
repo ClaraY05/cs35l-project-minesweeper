@@ -13,11 +13,11 @@
   },
   "license": "ISC",
   "author": "",
-  "workspaces": ["frontend", "api"],
+  "workspaces": ["frontend", "backend"],
   "scripts": {
-    "dev": "concurrently -r \"npm:dev:web\" \"npm:dev:api\"",
+    "dev": "concurrently -r \"npm:dev:web\" \"npm:dev:backend\"",
     "dev:web": "npm --workspace frontend run dev",
-    "dev:api": "npm --workspace api run dev",
+    "dev:backend": "npm --workspace backend run dev",
     "build": "npm run -ws build",
     "typecheck": "tsc -b",
     "lint": "eslint ."
