@@ -1,5 +1,19 @@
+import Checkbox from "./components/CommonCheckbox";
+import Selector from "./components/CommonSelector";
+
 const VideoInterface = () => {
-    return <h2>Video & Interface</h2>
+    let graphics: string[] = ["Low","Medium","Tobias"];
+
+    return (
+        <div>
+            <h2>Video & Interface</h2>
+            <Selector label="Graphics" options={graphics}/>
+            <Checkbox label="Display Tag"/>
+            <Checkbox label="Display Username"/>
+            <Checkbox label="Change Text Size"/>
+            <Checkbox label="Use Custom Background"/>
+        </div>
+    );
 }
 
 export default VideoInterface;
