@@ -16,7 +16,8 @@ const Settings = () => {
             <main> 
                 <Outlet />
             </main>
-            <p><Link to="/">Home</Link></p>
+            <button><Link to="/">Home</Link></button>
+            <button>Save</button>
         </div>
     )
 }
