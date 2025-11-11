@@ -6,7 +6,7 @@ const Play = () => {
     const [boardData, setBoardData] = useState<any[] | null>(null);
 
     useEffect(() => {
-        fetch("http://localhost:8000/api/game/create")
+        fetch("/api/game/create")
         .then((res) => res.json())
         .then((data) => setBoardData(data.board))
         .catch((err) => console.error(err));
