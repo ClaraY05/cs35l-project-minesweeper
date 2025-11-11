@@ -5,6 +5,12 @@ import Keybinds from "./pages/Settings/Keybinds"
 import Sound from "./pages/Settings/Sound"
 import VideoInterface from "./pages/Settings/VideoInterface"
 import Notifications from "./pages/Settings/Notifications"
+import Tutorial from "./pages/Tutorial/Tutorial"
+import Basics from "./pages/Tutorial/Basics"
+import Debuffs from "./pages/Tutorial/Debuffs"
+import Multiplayer from "./pages/Tutorial/Multiplayer"
+import Powerups from "./pages/Tutorial/Powerups"
+import Tesselation from "./pages/Tutorial/Tesselation"
 
 import { Routes, Route, Navigate } from 'react-router-dom';
 
@@ -15,6 +21,14 @@ const App = () => {
         <Routes>
             <Route path="/" element={<Home/>}/>
             <Route path="/play" element={<Play/>}/>
+            <Route path="/tutorial" element={<Tutorial/>}>
+                <Route index element={<Navigate to="basics" replace />} /> 
+                <Route path="basics" element={< Basics/>} />
+                <Route path="multiplayer" element={<Multiplayer />} />
+                <Route path="powerups" element={<Powerups />} />
+                <Route path="debuffs" element={<Debuffs />} />
+                <Route path="tesselation" element={<Tesselation />} />
+            </Route>
             <Route path="/settings" element={<Settings/>}>
                 <Route index element={<Navigate to="keybinds" replace />} /> 
                 <Route path="keybinds" element={< Keybinds/>} />
