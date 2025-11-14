@@ -5,6 +5,7 @@ const Home = () => {
     <>
         <li>
             <ul><Link to="/play">Play</Link></ul>
+            <ul><Link to="/tutorial">Tutorial</Link></ul>
             <ul><Link to="/settings">Settings</Link></ul>
         </li>
     </>
