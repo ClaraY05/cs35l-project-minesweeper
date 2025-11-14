@@ -11,6 +11,7 @@ router.get("/", (req, res) => {
 })
 
 router.use("/game", gameRoutes);
+router.use("/auth", authRoutes);
 
 router.use((req, res) => {
     res.status(404).send("page not found");
