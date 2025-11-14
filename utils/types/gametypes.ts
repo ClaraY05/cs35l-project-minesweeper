@@ -1,11 +1,14 @@
-// global types for board data
+/** global types for board data */
+
 // possible states of cell
 export type CellState = 'hidden' | 'revealed' | 'flagged';
 // possible numbers contained in cell
 export type CellNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-/** The underlying content of a cell */
+// cell contents
+export type CellContent = { readonly Type: 'mine' } | { readonly Type: 'number'; readonly Number: CellNumber };
+// full data representation of cell
 export type CellData =
 {
-  readonly Data: { readonly Content: 'mine' } | { readonly Content: 'number'; readonly Number: CellNumber }, 
+  readonly Content: CellContent, 
   readonly State: CellState
 }

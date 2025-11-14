@@ -1,4 +1,5 @@
 import { Router } from "express";
+import * as GameTypes from "@localtypes/gametypes"
 
 // routes relating to game
 const gameRoutes = Router();
@@ -8,7 +9,6 @@ const gameRoutes = Router();
 // TODO: add endpoints for game actions
 // TODO: using those endpoints, have the server store game state and game data rather than passing the whole board to frontend
 // TODO: have server compute neighor numbers and handle floodfill logic
-// TODO: use type contracts for tile states
 // TODO: first click safety
 // TODO: dynamic board sizes
 // --------
@@ -16,7 +16,7 @@ const gameRoutes = Router();
 // currently sends a hardcoded 5x5 board to the frontend.
 // for now 0 represents a blank space. null represents unrevealed space on frontend, but this can be fixed later
 // TODO (Marissa): make board randomly generated on each /create call. optionally switch to 2d array
-const testBoard = [
+const testBoardSample = [
     1,1,1,0,0,
     1,"M",1,0,0,
     1,1,1,0,0,
@@ -24,18 +24,43 @@ const testBoard = [
     0,0,0,1,"M"
 ]
 
+const testBoardData: GameTypes.CellData[] = [];
+
 // create a game and return its id to the frontend.
 gameRoutes.get("/create", (req, res) => {
+    // initialize a board using sample data. 
+    // TODO: should be changed later to generated board
+    for (let i = 0; i < testBoardSample.length; i++) {
+        let curCell: GameTypes.CellData | null = null;
+        if (testBoardSample[i] === "M") {
+            curCell = {
+                Content: { Type: 'mine' },
+                State: 'hidden'
+            };
+        } else {
+            curCell = {
+                Content: { Type: 'number', Number: Number(testBoardSample[i]) as GameTypes.CellNumber }, // TODO: change with safer logic rather than number assert
+                State: 'hidden'
+            };
+        }
+        testBoardData.push(curCell);
+    }
     res.json({game_id:1});
 })
 
 // --- routes requiring a game be active
-// get a cell
-gameRoutes.post(":gameid/cell/:cellid", (req, res) => {
+// reveal a cell
+gameRoutes.post("/:gameid/cell/:cellid/reveal", (req, res) => {
     const game_id = Number(req.params.gameid);
     const cell_id = Number(req.params.cellid);
-    if (game_id === 1) { // placeholder
-        
+     // TODO: remove placeholder with actual game ids that generate
+    if (game_id === 1) {
+        let revealCell: GameTypes.CellData = {
+            Content: testBoardData[cell_id].Content,
+            State: 'revealed'
+        }
+        testBoardData[cell_id] = revealCell;
+        res.json(revealCell.Content);
     }   
 })
 

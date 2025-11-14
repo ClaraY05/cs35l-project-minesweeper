@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import type { CellData } from "@localtypes/gametypes"
 import MinesweeperBoard from "./components/MinesweeperBoard"
 
 
 const Play = () => {
-    const [activeGameID, setActiveGameID] = useState<Number | null>(null);
-    const [boardData, setBoardData] = useState<CellData[] | null>(null);
+    const [activeGameID, setActiveGameID] = useState<number | null>(null);
 
+    // start a new game when page loads
     useEffect(() => {
         fetch("/api/game/create")
         .then((res) => res.json())
@@ -15,7 +14,7 @@ const Play = () => {
     }, []);
   
     return (
-        <MinesweeperBoard BoardData={boardData} />
+        <MinesweeperBoard GameID={activeGameID ?? 0} />
     )
 }
 

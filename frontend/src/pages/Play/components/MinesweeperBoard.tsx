@@ -1,8 +1,6 @@
 import { useState } from 'react';
+import * as GameTypes from "@localtypes/gametypes"
 import './minesweeper-board.css'
-
-// F, M, numbers are temporary sentinels for tile states. will use contracts / typescript later
-
 
 // "any" is not good practice because it blocks typechecking, but is okay for prototyping
 const Tile = ({ className, value, onLeftClick, onRightClick } : any) => {
@@ -21,31 +19,42 @@ const Tile = ({ className, value, onLeftClick, onRightClick } : any) => {
   )
 }
 
-const MinesweeperBoard = ({ BoardData } : any) => {
-    const [Tiles, setTiles] = useState(Array(5*5).fill(null));
+const MinesweeperBoard = ({ GameID } : { GameID : number }) => {
+    const [Tiles, setTiles] = useState<(GameTypes.CellContent | null)[]>(Array(5*5).fill(null));
 
+    // TODO: have API handle flagging and board state checks
     const handleTileRightClick = (i : number) => {
-        if (Tiles[i] && Tiles[i] !== "F") return; // revealed tiles cannot be flagged
+/*         if (Tiles[i] && Tiles[i] !== "F") return; // revealed tiles cannot be flagged
         const newTiles = [...Tiles];
         Tiles[i] === "F" ? newTiles[i] = null : newTiles[i] = "F";
-        setTiles(newTiles);
+        setTiles(newTiles); */
     }
 
     const handleTileLeftClick = (i : number) => {
-        if (Tiles[i] === "F") return; // flagged tiles cannot be clicked until cleared
-        const newTiles = [...Tiles];
-        newTiles[i] = BoardData[i];
-        setTiles(newTiles);
+        // TODO: API should handle flagged cell clickblocking
+        // if (Tiles[i] === "F") return; // flagged tiles cannot be clicked until cleared
+        fetch(`/api/game/${GameID}/cell/${i}/reveal`, {
+            method: "POST",
+        })
+        .then(res => res.json())
+        .then(data => {
+            setTiles(oldTiles => {
+                const newTiles = [...oldTiles];
+                newTiles[i] = data as GameTypes.CellContent;
+                return newTiles;
+            })
+        })
+        .catch((err) => console.error(err));
     }
 
     return (
         <div className="minesweeper-board-container">
             <div className="minesweeper-board">
                 {
-                    Tiles.map((value, i) => (
+                    Tiles.map((cell, i) => (
                         <Tile 
-                        className={`minesweeper-tile ${Tiles[i] !== null && Tiles[i] !== "F" ? "revealed" : ""}`}
-                        value={value} 
+                        className={`minesweeper-tile ${Tiles[i] !== null ? "revealed" : ""}`} /*handle flagging somehow*/
+                        value={cell?.Type === 'mine' ? "M" : cell?.Number}  // up to UI to modify display value.
                         onLeftClick={() => handleTileLeftClick(i)}
                         onRightClick={() => handleTileRightClick(i)}/>
                     ))
