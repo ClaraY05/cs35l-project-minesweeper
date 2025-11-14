@@ -5,9 +5,6 @@ import * as GameTypes from "@localtypes/gametypes"
 const gameRoutes = Router();
 
 // -------- unassigned
-// TODO: ids so that each game can be kept track of 
-// TODO: add endpoints for game actions
-// TODO: using those endpoints, have the server store game state and game data rather than passing the whole board to frontend
 // TODO: have server compute neighor numbers and handle floodfill logic
 // TODO: first click safety
 // TODO: dynamic board sizes
@@ -45,7 +42,7 @@ gameRoutes.get("/create", (req, res) => {
         }
         testBoardData.push(curCell);
     }
-    res.json({game_id:1});
+    return res.json({game_id:1});
 })
 
 // --- routes requiring a game be active
@@ -60,8 +57,10 @@ gameRoutes.post("/:gameid/cell/:cellid/reveal", (req, res) => {
             State: 'revealed'
         }
         testBoardData[cell_id] = revealCell;
-        res.json(revealCell.Content);
-    }   
+        return res.json(revealCell.Content);
+    } else {    
+        return res.status(404).send("Unknown game id");
+    } 
 })
 
 
