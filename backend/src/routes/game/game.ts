@@ -24,9 +24,20 @@ const testBoard = [
     0,0,0,1,"M"
 ]
 
-// create a game
+// create a game and return its id to the frontend.
 gameRoutes.get("/create", (req, res) => {
-    res.json({board:testBoard});
+    res.json({game_id:1});
 })
+
+// --- routes requiring a game be active
+// get a cell
+gameRoutes.post(":gameid/cell/:cellid", (req, res) => {
+    const game_id = Number(req.params.gameid);
+    const cell_id = Number(req.params.cellid);
+    if (game_id === 1) { // placeholder
+        
+    }   
+})
+
 
 export default gameRoutes;
