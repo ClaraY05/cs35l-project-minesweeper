@@ -34,10 +34,34 @@ authRoutes.post(
             return res.status(201).json({token});
         }
         catch(err) {
-            console.error(err)
+            console.error(err);
         }
     }
 )
+
+authRoutes.post("/login", async(req:Request, res:Response)=>{
+    const { username, password } = req.body;
+
+    try {
+        const result = await pool.query("SELECT id, username, password_hash FROM users WHERE username = $1", [username]);
+
+        const user = result.rows[0];
+        const isValid = await bcrypt.compare(password, user.password_hash);
+        
+        if(!isValid){
+            return res.status(401).json({error: "Invalid username or password"});
+        }
+
+        const userID = user.id;
+        const token = signJwt({ userID, username});
+
+        return res.status(200).json({token});
+    }
+    catch(err) {
+        console.error(err);
+    }
+    
+})
 
 
 export default authRoutes;
