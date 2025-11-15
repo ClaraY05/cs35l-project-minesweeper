@@ -24,7 +24,7 @@ const MinesweeperBoard = ({ GameID } : { GameID : number }) => {
     const handleTileRightClick = (i : number) => {
         if (Tiles[i]?.State.Visibility === 'revealed') return;
         const newTiles = [...Tiles];
-        newTiles[i] = { State: { Visibility: 'hidden', Flagged: !Tiles[i]?.State.Flagged }, Content: Tiles[i]?.Content || null };
+        newTiles[i] = { State: { Visibility: 'hidden', Flagged: !( Tiles[i]?.State.Flagged ?? false ) }, Content: Tiles[i]?.Content ?? null };
         setTiles(newTiles);
     }
 
