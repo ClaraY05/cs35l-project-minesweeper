@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
-import AccountDisplay from "./AccountDisplay";
-import Friends from "./Friends/Friends"; 
-import Notifications from "./Notifications/Notifications";
+import AccountDisplay from "./components/header/AccountDisplay";
+import Friends from "./components/header/Friends/Friends"; 
+import Notifications from "./components/header/Notifications/Notifications";
 
 const dummyRemove = (id: string) => {
     console.log("Remove called for", id);
