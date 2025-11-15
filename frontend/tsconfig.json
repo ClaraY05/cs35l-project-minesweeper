@@ -6,5 +6,6 @@
     "types": ["vite/client"],
     "checkJs": false
   },
-  "include": ["src"]
+  "include": ["src",
+    "../utils/types"]
 }
