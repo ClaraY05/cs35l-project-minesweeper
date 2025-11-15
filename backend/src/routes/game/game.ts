@@ -1,5 +1,4 @@
 import { Router } from "express";
-import * as GameTypes from "@localtypes/gametypes"
 
 // routes relating to game
 const gameRoutes = Router();
@@ -21,24 +20,22 @@ const testBoardSample = [
     0,0,0,1,"M"
 ]
 
-const testBoardData: GameTypes.CellData[] = [];
+const testBoardData: GameTypes.CellContent[] = [];
 
 // create a game and return its id to the frontend.
-gameRoutes.get("/create", (req, res) => {
+gameRoutes.post("/create", (req, res) => {
     // initialize a board using sample data. 
     // TODO: should be changed later to generated board
     // TODO: precompute all floodfill regions serverside
     for (let i = 0; i < testBoardSample.length; i++) {
-        let curCell: GameTypes.CellData | null = null;
+        let curCell: GameTypes.CellContent | null = null;
         if (testBoardSample[i] === "M") {
             curCell = {
-                Content: { Type: 'mine' },
-                State: 'hidden'
+                Type: 'mine' 
             };
         } else {
             curCell = {
-                Content: { Type: 'number', Number: Number(testBoardSample[i]) as GameTypes.CellNumber }, // TODO: change with safer logic rather than number assert
-                State: 'hidden'
+                Type: 'number', Number: Number(testBoardSample[i]) as GameTypes.CellNumber  // TODO: change with safer logic rather than number assert
             };
         }
         testBoardData.push(curCell);
@@ -47,18 +44,14 @@ gameRoutes.get("/create", (req, res) => {
 })
 
 // --- routes requiring a game be active
-// reveal a cell
-gameRoutes.post("/:gameid/cell/:cellid/reveal", (req, res) => {
+// reveal a cell. 
+// gets a cell's content. TODO: add cell index to set of revealed cells for win condition tracking
+gameRoutes.get("/:gameid/cell/:cellid/reveal", (req, res) => {
     const game_id = Number(req.params.gameid);
     const cell_id = Number(req.params.cellid);
      // TODO: remove placeholder with actual game ids that generate
     if (game_id === 1) {
-        let revealCell: GameTypes.CellData = {
-            Content: testBoardData[cell_id].Content,
-            State: 'revealed'
-        }
-        testBoardData[cell_id] = revealCell;
-        return res.json(revealCell.Content);
+        return res.json(testBoardData[cell_id]);
     } else {    
         return res.status(404).send("Unknown game id");
     } 
