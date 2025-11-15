@@ -4,7 +4,8 @@ const Home = () => {
     return (
     <>
         <li>
-            <ul><Link to="/play">Play</Link></ul>
+            <ul><Link to="/play">Single Player</Link></ul>
+            <ul>Multiplayer</ul>
             <ul><Link to="/tutorial">Tutorial</Link></ul>
             <ul><Link to="/settings">Settings</Link></ul>
         </li>
