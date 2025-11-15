@@ -10,7 +10,7 @@ interface FriendProps extends Friend {
     onRemove: (id: string) => void; // add callback to remove Friend
   }
 
-function Friends ({ id, name, avatar, onRemove}:FriendProps){
+const Friends = ({ id, name, avatar, onRemove}:FriendProps) =>{
     return (
         <div>
             <strong>{name}</strong>

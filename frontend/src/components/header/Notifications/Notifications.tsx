@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Notification from "./Notification";
 
-function Notifications (){
+const Notifications = () =>{
   const [showOverlay, setShowOverlay] = useState(false);
   const [messages, setMessages] = useState([
     "You have a new friend request!",

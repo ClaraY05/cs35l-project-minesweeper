@@ -9,13 +9,13 @@ interface UserFriends{
 
 type RemoveCallback = (id: string) => void; // type from Friend Display
 
-function renderFriendDisplay(friendID:string, dummyRemove:RemoveCallback){
+const renderFriendDisplay = (friendID:string, dummyRemove:RemoveCallback) => {
     return(
         <FriendDisplay id={friendID} name="Friend Name" avatar="https://i.redd.it/help-me-find-the-cat-or-og-picture-from-the-cat-owl-meowl-v0-dghbx7likhgf1.jpg?width=1200&format=pjpg&auto=webp&s=45a83cd201b14934ad2000bf7834a4b92296f4a0" onRemove={dummyRemove}/>
     );
 };
 
-function Friends ({ friendIDList = [], dummyRemove}: UserFriends){
+const Friends = ({ friendIDList = [], dummyRemove}: UserFriends) => {
   const [showOverlay, setShowOverlay] = useState(false);
   const [text, setText] = useState("");
 

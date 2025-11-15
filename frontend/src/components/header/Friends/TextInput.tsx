@@ -7,7 +7,7 @@ interface TextInputProps {
   onSubmit: (value: string) => void;
 }
 
-function TextInput ({placeholder = "Enter text...", value="", onChange, onSubmit,}: TextInputProps){
+const TextInput = ({placeholder = "Enter text...", value="", onChange, onSubmit,}: TextInputProps) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); 
     onSubmit(value);  

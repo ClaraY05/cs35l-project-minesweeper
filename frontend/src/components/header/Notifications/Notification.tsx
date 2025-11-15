@@ -5,7 +5,7 @@ interface NotificationProps{
     onDelete: () => void; // parent callback
 };
 
-function Notification({message,onDelete}:NotificationProps){
+const Notification = ({message,onDelete}:NotificationProps) =>{
     return(
         <div>
             <p>{message}</p>
