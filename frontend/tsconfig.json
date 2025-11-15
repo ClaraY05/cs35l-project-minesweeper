@@ -6,6 +6,6 @@
     "types": ["vite/client"],
     "checkJs": false
   },
-  "references": [{ "path": "../utils/types" }],
-  "include": ["src"]
+  "include": ["src",
+    "../utils/types"]
 }

@@ -6,6 +6,6 @@
     "outDir": "dist",
     "noEmit": false
   },
-  "references": [{ "path": "../utils/types" }],
-  "include": ["src"]
+  "include": ["src",
+    "../utils/types"]
 }

@@ -3,17 +3,20 @@ import MinesweeperBoard from "./components/MinesweeperBoard"
 
 
 const Play = () => {
-    const [boardData, setBoardData] = useState<any[] | null>(null);
+    const [activeGameID, setActiveGameID] = useState<number | null>(null);
 
+    // start a new game when page loads
     useEffect(() => {
-        fetch("http://localhost:8000/api/game/create")
+        fetch("/api/game/create", {
+            method: "POST",
+        })
         .then((res) => res.json())
-        .then((data) => setBoardData(data.board))
+        .then((data) => setActiveGameID(data.game_id))
         .catch((err) => console.error(err));
     }, []);
   
     return (
-        <MinesweeperBoard BoardData={boardData} />
+        <MinesweeperBoard GameID={activeGameID ?? 0} />
     )
 }
 
