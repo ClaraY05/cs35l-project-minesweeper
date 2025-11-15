@@ -11,7 +11,7 @@ import Debuffs from "./pages/Tutorial/Debuffs"
 import Multiplayer from "./pages/Tutorial/Multiplayer"
 import Powerups from "./pages/Tutorial/Powerups"
 import Tesselation from "./pages/Tutorial/Tesselation"
-import MainLayout from "./pages/components/Layout"
+import MainLayout from "./components/header/Layout"
 
 import { Routes, Route, Navigate } from 'react-router-dom';
 
