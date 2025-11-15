@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    proxy: {
+    proxy: { // for dev convenience. not using this improves performance locally
       '/api': {
         target: 'http://localhost:8000', // wherever your backend runs
         changeOrigin: true,
