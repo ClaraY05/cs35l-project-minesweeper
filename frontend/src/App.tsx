@@ -5,6 +5,7 @@ import Keybinds from "./pages/Settings/Keybinds"
 import Sound from "./pages/Settings/Sound"
 import VideoInterface from "./pages/Settings/VideoInterface"
 import Notifications from "./pages/Settings/Notifications"
+import Login from "./pages/Login/Login"
 
 import { Routes, Route, Navigate } from 'react-router-dom';
 
@@ -14,6 +15,7 @@ const App = () => {
     return (
         <Routes>
             <Route path="/" element={<Home/>}/>
+            <Route path="/login" element={<Login/>}/>
             <Route path="/play" element={<Play/>}/>
             <Route path="/settings" element={<Settings/>}>
                 <Route index element={<Navigate to="keybinds" replace />} /> 
