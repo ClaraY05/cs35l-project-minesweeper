@@ -5,11 +5,6 @@ import authRoutes from "./auth/auth"
 // routes for our api.
 const router = Router();
 
-// test endpoint /api
-router.get("/", (req, res) => {
-    res.send("hello world");
-})
-
 router.use("/game", gameRoutes);
 
 router.use((req, res) => {

@@ -27,6 +27,7 @@ const testBoardData: GameTypes.CellData[] = [];
 gameRoutes.get("/create", (req, res) => {
     // initialize a board using sample data. 
     // TODO: should be changed later to generated board
+    // TODO: precompute all floodfill regions serverside
     for (let i = 0; i < testBoardSample.length; i++) {
         let curCell: GameTypes.CellData | null = null;
         if (testBoardSample[i] === "M") {
