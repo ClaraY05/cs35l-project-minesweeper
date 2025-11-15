@@ -14,7 +14,7 @@ const MainLayout = () => {
 
   return (
     <div className="Layout">
-      <header className="header">
+      <header className="flex flex-direction:flex-row">
         <h1>Sweeper.io</h1>
         {user&&(
           <>
