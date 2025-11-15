@@ -11,7 +11,7 @@ const dummyFriendList = ["696969","420420","100000"];
 const MainLayout = () => {
   return (
     <div className="Layout">
-      <header className="header">
+      <header className="flex flex-direction:flex-row">
         <h1>Sweeper.io</h1>
         <AccountDisplay userName="User" gamerTag="676767" imgUrl="https://preview.redd.it/do-you-have-goofy-pics-of-your-pretty-cats-v0-51t4e3gnyvib1.jpg?auto=webp&s=27b628d946d585f415de91edb250544ccff0d02c"/>
         <Friends friendIDList={dummyFriendList} dummyRemove={dummyRemove}/>
