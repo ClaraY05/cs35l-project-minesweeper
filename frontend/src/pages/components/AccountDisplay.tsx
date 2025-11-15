@@ -4,7 +4,7 @@ interface AccountDisplayProps {
     imgUrl: string;
 }
 
-const AccountDisplay:React.FC<AccountDisplayProps> = ({ userName, gamerTag, imgUrl })=>{
+const AccountDisplay:React.FC<AccountDisplayProps> = ({ userName, gamerTag, imgUrl }:AccountDisplayProps)=>{
     return (
         <div>
         <strong>{userName}</strong>
