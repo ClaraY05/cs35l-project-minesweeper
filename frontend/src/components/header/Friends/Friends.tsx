@@ -1,6 +1,7 @@
 import { useState } from "react";
 import TextInput from "./TextInput"
 import FriendDisplay from "./FriendDisplay"
+import icon from "./person-group-svgrepo-com.svg"
 
 interface UserFriends{
     friendIDList:string[]; // fetch actual friend info from DB holding account info of every player
@@ -27,9 +28,9 @@ const Friends = ({ friendIDList = [], dummyRemove}: UserFriends) => {
     <div>
       <button
         onClick={() => setShowOverlay(true)}
-        className="showOverlay"
+        className="showOverlay rounded-sm bg-main p-2.5"
       >
-        Friends
+        <img src={icon} alt="People Icon"/>
       </button>
 
       {showOverlay && (

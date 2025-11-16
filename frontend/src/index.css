@@ -34,3 +34,7 @@ h1{
     /*@apply font-pixel text-4xl font-bold;*/
     font-size: 3rem;
 }
+
+.contentDiv{
+    @apply rounded-sm bg-gray-100;
+}
