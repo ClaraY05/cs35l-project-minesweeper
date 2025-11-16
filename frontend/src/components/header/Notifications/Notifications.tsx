@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Notification from "./Notification";
+import icon from "./mail-svgrepo-com.svg"
 
 const Notifications = () =>{
   const [showOverlay, setShowOverlay] = useState(false);
@@ -21,9 +22,9 @@ const Notifications = () =>{
     <div>
       <button
         onClick={() => setShowOverlay(true)}
-        className="showOverlay"
+        className="showOverlay rounded-sm bg-main p-2.5"
       >
-        Notifications
+        <img src={icon} alt="Letter Icon"/>
       </button>
 
       {showOverlay && (
