@@ -1,2 +1,36 @@
 /* CSS for tailwind */
+/*@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');*/
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap');
 @import "tailwindcss";
+
+:root {
+    --light-green: #E6F0CD;
+    --green: #545751;
+    --off-black: #080808;
+  }
+@theme {
+--color-primary-text: var(--light-green);
+--color-secondary-text: var(--green);
+--color-main: var(--off-black);
+}
+
+html{
+    font-size: 20px;
+    color: white;
+    height: 100%;
+    overflow: hidden;
+}
+
+strong.account, h1{
+    font-family: "Pixelify Sans", sans-serif;
+}
+
+em, h2, h3, h4, p, ul, button{
+    font-family:"IBM Plex Sans", sans-serif;;
+}
+
+h1{
+    /*@apply font-pixel text-4xl font-bold;*/
+    font-size: 3rem;
+}
