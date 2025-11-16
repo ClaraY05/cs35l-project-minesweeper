@@ -3,7 +3,7 @@ import { Outlet, Link } from "react-router-dom";
 
 const Tutorial = () => {
     return (
-        <div>
+        <div className="contentDiv">
             <h1>Tutorial</h1>
             <nav>
                 <ul>

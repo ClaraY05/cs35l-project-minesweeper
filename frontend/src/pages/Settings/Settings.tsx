@@ -3,7 +3,7 @@ import { Outlet, Link } from "react-router-dom";
 
 const Settings = () => {
     return (
-        <div>
+        <div className="contentDiv">
             <h1>Settings</h1>
             <nav>
                 <ul>
