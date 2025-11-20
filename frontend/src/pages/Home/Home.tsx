@@ -8,6 +8,7 @@ const Home = () => {
             <ul>Multiplayer</ul>
             <ul><Link to="/tutorial">Tutorial</Link></ul>
             <ul><Link to="/settings">Settings</Link></ul>
+            <ul><Link to="/login">Login</Link></ul>
         </li>
     </>
     )

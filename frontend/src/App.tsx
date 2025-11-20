@@ -12,6 +12,7 @@ import Multiplayer from "./pages/Tutorial/Multiplayer"
 import Powerups from "./pages/Tutorial/Powerups"
 import Tesselation from "./pages/Tutorial/Tesselation"
 import MainLayout from "./Layout"
+import Login from "./pages/Login/Login"
 
 import { Routes, Route, Navigate } from 'react-router-dom';
 
@@ -22,6 +23,7 @@ const App = () => {
         <Routes>
             <Route element={<MainLayout />}>
                 <Route path="/" element={<Home/>}/>
+                <Route path="/login" element={<Login/>}/>
                 <Route path="/play" element={<Play/>}/>
                 <Route path="/tutorial" element={<Tutorial/>}>
                     <Route index element={<Navigate to="basics" replace />} /> 
