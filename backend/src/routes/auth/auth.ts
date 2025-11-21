@@ -21,6 +21,12 @@ authRoutes.post(
         const { username, password } = req.body;
 
         try {
+            // make sure existing user doesn't sign up again
+            const userExist = await pool.query("SELECT id, username, password_hash FROM users WHERE username = $1", [username]);
+            if(userExist.rows.length!==0){
+                return res.status(409).json({error:"User already exists"});
+            }
+            
             const hash = await bcrypt.hash(password, 10);
             
             const result = await pool.query(
@@ -41,9 +47,13 @@ authRoutes.post(
 
 authRoutes.post("/login", async(req:Request, res:Response)=>{
     const { username, password } = req.body;
-
     try {
         const result = await pool.query("SELECT id, username, password_hash FROM users WHERE username = $1", [username]);
+        
+        // if user doesn't exist and login request
+        if(result.rows.length===0){
+            return res.status(401).json({error:"Invalid username or password"});
+        }
 
         const user = result.rows[0];
         const isValid = await bcrypt.compare(password, user.password_hash);
