@@ -6,7 +6,7 @@ export async function setupDB(){
             CREATE TABLE IF NOT EXISTS users (
                 id SERIAL PRIMARY KEY,
                 username VARCHAR(50) UNIQUE NOT NULL,
-                email VARCHAR(50) UNIQUE NOT NULL,
+                email VARCHAR(50),
                 password_hash TEXT NOT NULL,
                 created_at TIMESTAMP DEFAULT NOW()
             );
@@ -14,10 +14,6 @@ export async function setupDB(){
         console.log("tables created successfully");
     } catch(err){
         console.error("error creating tables:", err);
-    } finally {
-        pool.end();
     }
-    
 }
-
 setupDB();
