@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom"
 
 type Inputs = {
     username: string;
@@ -14,6 +15,8 @@ function Login() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [mode, setMode] = useState<AuthMode>("login");
+
+    const navigate = useNavigate();
 
     // let accessToken: string | null = null;
 
@@ -37,6 +40,7 @@ function Login() {
             if(payload.user){
                 localStorage.setItem('user', JSON.stringify(payload.user));
             }
+            navigate("/settings", {replace:true});
         } catch (err: any) {
             setError(err.message);
         } finally {
