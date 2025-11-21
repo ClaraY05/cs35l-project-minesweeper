@@ -79,7 +79,7 @@ function Login() {
                     mode==="register"&&(
                         <div>
                             <input id="username" type="text" placeholder="username" {...register("username",{
-                                required:"Username is required", minLength:{value:5, message: "Username must be at least 5 characters"}
+                                required:"Username is required", pattern:{value:/^[a-zA-Z0-9]{5,51}$/, message: "Username must be between 5 and 50 characters with no special characters."}
                             })}/>
                             {errors.username && <p style={{color: 'red'}}>{errors.username.message}</p>}
                         </div>
