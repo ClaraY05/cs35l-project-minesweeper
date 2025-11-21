@@ -39,8 +39,12 @@ authRoutes.post(
 
             return res.status(201).json({token, user:{id:userID, username:username}});
         }
-        catch(err) {
+        catch(err: any) {
             console.error(err);
+            if (err.code === '23505') { // Unique violation
+                return res.status(409).json({error: "User already exists"});
+            }
+            return res.status(500).json({error: "Internal server error"});
         }
     }
 )

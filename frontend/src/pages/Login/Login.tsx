@@ -65,13 +65,16 @@ function Login() {
                         value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
                         message: "Invalid email address"
                     }})}/>
+                {errors.username && <p style={{color: 'red'}}>{errors.username.message}</p>}
                 <input id="password" type="password" {...register("password", {
                     required: "Password is required", pattern:{
                         value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                        message: "Password must be at least 8 characters"
+                        message: "Password must be at least 8 characters with uppercase, lowercase, number, and special character"
                     }
                 })
                 }/>
+                {errors.password && <p style={{color: 'red'}}>{errors.password.message}</p>}
+                {error && <p style={{color: 'red'}}>{error}</p>}
                 <button type="submit" disabled={loading}> {loading ? mode==="login"? "Logging in..." : "Signing up...": mode==="login"? "Login" : "Register"}</button>
             </form>
         </>
