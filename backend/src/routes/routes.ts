@@ -1,12 +1,14 @@
 import { Router } from "express";
 import gameRoutes from "./game/game";
-import authRoutes from "./auth/auth"
+import authRoutes from "./auth/auth";
+import leaderboardRoutes from "./leaderboard/leaderboard";
 
 // routes for our api.
 const router = Router();
 
 router.use("/game", gameRoutes);
 router.use("/auth", authRoutes);
+router.use("/leaderboard", leaderboardRoutes);
 
 router.use((req, res) => {
     res.status(404).send("page not found");

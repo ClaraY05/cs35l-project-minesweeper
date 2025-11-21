@@ -11,7 +11,7 @@ type Inputs = {
 
 type AuthMode = "login" | "register";
 
-function Login() {
+const Login = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
 
     const [loading, setLoading] = useState(false);
@@ -28,7 +28,7 @@ function Login() {
         try {
             setLoading(true);
 
-            const endpoint = mode==="login" ? "http://localhost:8000/api/auth/login" : "http://localhost:8000/api/auth/register";
+            const endpoint = mode==="login" ? "/api/auth/login" : "/api/auth/register";
             const dataBody = mode==="login" ? {email:data.email, password:data.password} : {email:data.email, password:data.password, username:data.username}
             
             const res = await fetch(endpoint, {
