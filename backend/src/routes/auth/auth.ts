@@ -33,8 +33,13 @@ authRoutes.post(
 
             return res.status(201).json({token});
         }
-        catch(err) {
+        // Catch if username is in db already
+        catch(err: any) {
             console.error(err);
+            if (err.code === '23505') { // Unique violation
+                return res.status(409).json({error: "Username already exists"});
+            }
+            return res.status(500).json({error: "Internal server error"});
         }
     }
 )
@@ -45,6 +50,11 @@ authRoutes.post("/login", async(req:Request, res:Response)=>{
     try {
         const result = await pool.query("SELECT id, username, password_hash FROM users WHERE username = $1", [username]);
 
+        // Catch if the username is not found
+        if (result.rows.length === 0) {
+            return res.status(401).json({error: "Invalid username or password"});
+        }
+        // Compare the passwords with the hash in the database
         const user = result.rows[0];
         const isValid = await bcrypt.compare(password, user.password_hash);
         
@@ -59,6 +69,7 @@ authRoutes.post("/login", async(req:Request, res:Response)=>{
     }
     catch(err) {
         console.error(err);
+        return res.status(500).json({error: "Internal server error"});
     }
     
 })
