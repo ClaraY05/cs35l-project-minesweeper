@@ -40,7 +40,7 @@ function Login() {
             if(payload.user){
                 localStorage.setItem('user', JSON.stringify(payload.user));
             }
-            navigate("/settings", {replace:true});
+            navigate("/", {replace:true});
         } catch (err: any) {
             setError(err.message);
         } finally {
