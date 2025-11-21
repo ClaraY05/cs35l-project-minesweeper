@@ -12,58 +12,67 @@ const JWT_SECRET = process.env.JWT_SECRET || "christinawang";
 const JWT_EXPIRES_IN = "1h";
 
 function signJwt(payload: object){
-    const jwtobj = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN});
+    const jwtobj = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
     return jwtobj;
 }
 
-authRoutes.post(
-    "/register", async(req:Request, res:Response) => {
-        const { username, password } = req.body;
+authRoutes.post("/register", async(req:Request, res:Response) => {
+        const { username, email, password } = req.body;
+
+        if(!username||!email||!password){
+            return res.status(400).json({error:"Username, email, password required."})
+        }
 
         try {
             // make sure existing user doesn't sign up again
-            const userExist = await pool.query("SELECT id, username, password_hash FROM users WHERE username = $1", [username]);
+            const userExist = await pool.query("SELECT id FROM users WHERE email = $1", [email]);
             if(userExist.rows.length!==0){
-                return res.status(409).json({error:"User already exists"});
+                return res.status(409).json({error:"Email already registered"});
+            }
+            // check username uniqueness
+            const takenUsername = await pool.query("SELECT id FROM users WHERE username = $1", [username]);
+            if(takenUsername.rows.length>0){
+                return res.status(409).json({error:"Username already taken"});
             }
             
             const hash = await bcrypt.hash(password, 10);
             
             const result = await pool.query(
-                "INSERT INTO users (username, password_hash) VALUES ($1, $2) RETURNING id",
-                [username, hash]
+                "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id, username, email",
+                [username, email, hash]
             );
 
             const userID = result.rows[0].id;
-            const token = signJwt({ userID, username});
+            const token = signJwt({ userID, email, username });
 
-            return res.status(201).json({token, user:{id:userID, username:username}});
+            return res.status(201).json({token, user:{id:userID, email: email, username:username}});
         }
         // Catch if username is in db already
         catch(err: any) {
             console.error(err);
-            if (err.code === '23505') { // Unique violation
-                return res.status(409).json({error: "Username already exists"});
-            }
+            // if (err.code === '23505') { // Unique violation
+            //     return res.status(409).json({error: "Username already exists"});
+            // }
             return res.status(500).json({error: "Internal server error"});
         }
     }
 )
 
 authRoutes.post("/login", async(req:Request, res:Response)=>{
-    const { username, password } = req.body;
+    const { email, password } = req.body;
+
+    if (!email||!password){
+        return res.status(400).json({error:"Email and password required"});
+    }
+
     try {
-        const result = await pool.query("SELECT id, username, password_hash FROM users WHERE username = $1", [username]);
+        const result = await pool.query("SELECT id, username, email, password_hash FROM users WHERE email = $1", [email]);
         
         // if user doesn't exist and login request
         if(result.rows.length===0){
-            return res.status(401).json({error:"Invalid username or password"});
+            return res.status(401).json({error:"Invalid email or password"});
         }
 
-        // Catch if the username is not found
-        if (result.rows.length === 0) {
-            return res.status(401).json({error: "Invalid username or password"});
-        }
         // Compare the passwords with the hash in the database
         const user = result.rows[0];
         const isValid = await bcrypt.compare(password, user.password_hash);
@@ -73,9 +82,10 @@ authRoutes.post("/login", async(req:Request, res:Response)=>{
         }
 
         const userID = user.id;
-        const token = signJwt({ userID, username});
+        const username = user.username;
+        const token = signJwt({ userID, email, username });
 
-        return res.status(200).json({token, user:{id: userID, username:user.username}});
+        return res.status(200).json({token, user:{id: userID, email:email, username:user.username}});
     }
     catch(err) {
         console.error(err);
