@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom"
+import { useLocalStorage } from "usehooks-ts";
 
 type Inputs = {
     username?: string;
@@ -18,6 +19,9 @@ function Login() {
     const [mode, setMode] = useState<AuthMode>("login");
 
     const navigate = useNavigate();
+
+    const [,setToken] = useLocalStorage<string|null>("token",null);
+    const [,setUser] = useLocalStorage<any|null>("user",null);
 
     const onSubmit = async (data: Inputs) => {
         setError("");
@@ -37,8 +41,8 @@ function Login() {
             if (!res.ok){
                 throw new Error(payload.error || "Invalid username or password");
             }
-            localStorage.setItem('token',payload.token);
-            localStorage.setItem('user', JSON.stringify(payload.user));
+            setToken(payload.token);
+            setUser(payload.user);
             navigate("/", {replace:true});
         } catch (err: any) {
             setError(err.message);
@@ -64,7 +68,7 @@ function Login() {
             </button>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div>
-                    <input id="email" type="email" {...register("email",{
+                    <input id="email" type="email" placeholder="email" {...register("email",{
                         required:"Email is required", pattern:{
                             value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
                             message: "Invalid email address"
@@ -74,7 +78,7 @@ function Login() {
                 {
                     mode==="register"&&(
                         <div>
-                            <input id="username" type="text" {...register("username",{
+                            <input id="username" type="text" placeholder="username" {...register("username",{
                                 required:"Username is required", minLength:{value:5, message: "Username must be at least 5 characters"}
                             })}/>
                             {errors.username && <p style={{color: 'red'}}>{errors.username.message}</p>}
@@ -82,7 +86,7 @@ function Login() {
                     )
                 }
                 <div>
-                    <input id="password" type="password" {...register("password", {
+                    <input id="password" type="password" placeholder="password" {...register("password", {
                         required: "Password is required", pattern:{
                             value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
                             message: "Password must be at least 8 characters with uppercase, lowercase, number, and special character"

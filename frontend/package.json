@@ -13,7 +13,8 @@
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.66.1",
     "react-markdown": "^10.1.0",
-    "react-router-dom": "^7.9.5"
+    "react-router-dom": "^7.9.5",
+    "usehooks-ts": "^3.1.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
