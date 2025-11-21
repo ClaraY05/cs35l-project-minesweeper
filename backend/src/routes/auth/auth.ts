@@ -31,7 +31,7 @@ authRoutes.post(
             const userID = result.rows[0].id;
             const token = signJwt({ userID, username});
 
-            return res.status(201).json({token});
+            return res.status(201).json({token, user:{id:userID, username:username}});
         }
         catch(err) {
             console.error(err);
@@ -55,7 +55,7 @@ authRoutes.post("/login", async(req:Request, res:Response)=>{
         const userID = user.id;
         const token = signJwt({ userID, username});
 
-        return res.status(200).json({token});
+        return res.status(200).json({token, user:{id: userID, username:user.username}});
     }
     catch(err) {
         console.error(err);
