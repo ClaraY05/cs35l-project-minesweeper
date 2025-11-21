@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken"
-import { pool } from "../../db/db"
+import jwt from "jsonwebtoken";
+import { pool } from "../../db/db";
 
 // routes for our api.
 const authRoutes = Router();

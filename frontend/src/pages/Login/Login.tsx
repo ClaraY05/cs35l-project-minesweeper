@@ -11,7 +11,7 @@ type Inputs = {
 
 type AuthMode = "login" | "register";
 
-function Login() {
+const Login = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
 
     const [loading, setLoading] = useState(false);
@@ -28,7 +28,7 @@ function Login() {
         try {
             setLoading(true);
 
-            const endpoint = mode==="login" ? "http://localhost:8000/api/auth/login" : "http://localhost:8000/api/auth/register";
+            const endpoint = mode==="login" ? "/api/auth/login" : "/api/auth/register";
             const dataBody = mode==="login" ? {email:data.email, password:data.password} : {email:data.email, password:data.password, username:data.username}
             
             const res = await fetch(endpoint, {
@@ -79,7 +79,7 @@ function Login() {
                     mode==="register"&&(
                         <div>
                             <input id="username" type="text" placeholder="username" {...register("username",{
-                                required:"Username is required", minLength:{value:5, message: "Username must be at least 5 characters"}
+                                required:"Username is required", pattern:{value:/^[a-zA-Z0-9]{5,51}$/, message: "Username must be between 5 and 50 characters with no special characters."}
                             })}/>
                             {errors.username && <p style={{color: 'red'}}>{errors.username.message}</p>}
                         </div>
