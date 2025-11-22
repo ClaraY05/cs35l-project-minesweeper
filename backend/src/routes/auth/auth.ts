@@ -25,12 +25,12 @@ authRoutes.post("/register", async(req:Request, res:Response) => {
 
         try {
             // make sure existing user doesn't sign up again
-            const userExist = await pool.query("SELECT id FROM users WHERE email = $1", [email]);
+            const userExist = await pool.query("SELECT user_id FROM users WHERE email = $1", [email]);
             if(userExist.rows.length!==0){
                 return res.status(409).json({error:"Email already registered"});
             }
             // check username uniqueness
-            const takenUsername = await pool.query("SELECT id FROM users WHERE username = $1", [username]);
+            const takenUsername = await pool.query("SELECT user_id FROM users WHERE username = $1", [username]);
             if(takenUsername.rows.length>0){
                 return res.status(409).json({error:"Username already taken"});
             }
@@ -38,14 +38,14 @@ authRoutes.post("/register", async(req:Request, res:Response) => {
             const hash = await bcrypt.hash(password, 10);
             
             const result = await pool.query(
-                "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id, username, email",
+                "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING user_id, username, email",
                 [username, email, hash]
             );
 
-            const userID = result.rows[0].id;
+            const userID = result.rows[0].user_id;
             const token = signJwt({ userID, email, username });
 
-            return res.status(201).json({token, user:{id:userID, email: email, username:username}});
+            return res.status(201).json({token, user:{user_id:userID, email:email, username:username}});
         }
         // Catch if username is in db already
         catch(err: any) {
@@ -66,7 +66,7 @@ authRoutes.post("/login", async(req:Request, res:Response)=>{
     }
 
     try {
-        const result = await pool.query("SELECT id, username, email, password_hash FROM users WHERE email = $1", [email]);
+        const result = await pool.query("SELECT user_id, username, email, password_hash FROM users WHERE email = $1", [email]);
         
         // if user doesn't exist and login request
         if(result.rows.length===0){
@@ -81,11 +81,11 @@ authRoutes.post("/login", async(req:Request, res:Response)=>{
             return res.status(401).json({error: "Invalid username or password"});
         }
 
-        const userID = user.id;
+        const userID = user.user_id;
         const username = user.username;
         const token = signJwt({ userID, email, username });
 
-        return res.status(200).json({token, user:{id: userID, email:email, username:user.username}});
+        return res.status(200).json({token, user:{user_id: userID, email:email, username:user.username}});
     }
     catch(err) {
         console.error(err);
