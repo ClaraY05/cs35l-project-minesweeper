@@ -13,10 +13,14 @@ export async function setupDB(){
             );
         `);
         await pool.query(`
-            CREATE TABLE IF NOT EXTSTS scores (
+            CREATE TABLE IF NOT EXISTS scores (
                 score_id INT GENERATED ALWAYS AS IDENTITY,
-                score INT NOT NULL,
-                created_at TIMESTAMPE DEFAULT NOW(),
+                user_id INT NOT NULL,
+                score INT,
+                game_id INT NOT NULL,
+                game_status TEXT NOT NULL,
+                diff_level TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT NOW(),
                 PRIMARY KEY(score_id),
                 CONSTRAINT fk_user
                     FOREIGN KEY(user_id)

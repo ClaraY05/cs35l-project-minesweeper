@@ -14,7 +14,7 @@ const Leaderboard = () => {
         const loadLeaderboard = async () => {
             setLoading(true);
             try{
-                const res = await authFetch("/api/leaderboard", {
+                const res = await authFetch("http://localhost:8000/api/leaderboard", {
                     method: "GET",
                 });
                 setEntries(res);
@@ -30,6 +30,7 @@ const Leaderboard = () => {
     return (
        <>
         <h2>Leaderboard</h2>
+        {error && <p style={{ color: "red" }}>{error}</p>}
         <table>
             <thead>
                 <tr>
@@ -38,7 +39,7 @@ const Leaderboard = () => {
                     <th>Best Score</th>
                 </tr>
             </thead>
-            <body>
+            <tbody>
                 {entries.map((entry, ind)=>(
                     <tr key={entry.username}>
                         <td>{ind+1}</td>
@@ -46,7 +47,7 @@ const Leaderboard = () => {
                         <td>{entry.best_score}</td>
                     </tr>
                 ))}
-            </body>
+            </tbody>
         </table>
        </> 
     );

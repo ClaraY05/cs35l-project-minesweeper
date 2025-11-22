@@ -4,7 +4,7 @@ import { authenticateToken } from "../middleware/authMiddleware";
 
 const leaderboardRoutes = Router();
 
-leaderboardRoutes.get("/leaderboard", authenticateToken, async (req, res)=>{
+leaderboardRoutes.get("/", authenticateToken, async (req, res)=>{
     try{
         const result = await pool.query(`
             SELECT
@@ -12,14 +12,16 @@ leaderboardRoutes.get("/leaderboard", authenticateToken, async (req, res)=>{
                 MIN(S.score) AS best_score,
                 MIN(S.created_at) AS earlier_score
             FROM users as U
-            JOIN scores as S ON S.user_id = U.id
-            GROUP BY U.id, U.username
+            JOIN scores as S ON S.user_id = U.user_id
+            WHERE S.game_status = 'win'
+            GROUP BY U.user_id, U.username
             ORDER BY best_score ASC, earlier_score ASC
+            LIMIT 20
         `);
         res.json(result.rows);
     } catch(err){
         console.error(err);
-        res.sendStatus(500).json({error: "Internal server error"});
+        res.status(500).json({error: "Internal server error"});
     }
 });
 
