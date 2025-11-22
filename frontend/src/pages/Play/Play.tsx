@@ -7,7 +7,7 @@ const Play = () => {
 
     // start a new game when page loads
     useEffect(() => {
-        fetch("/api/game/create", {
+        fetch("http://localhost:8000/api/game/create", {
             method: "POST",
         })
         .then((res) => res.json())
