@@ -45,7 +45,7 @@ authRoutes.post("/register", async(req:Request, res:Response) => {
             const userID = result.rows[0].user_id;
             const token = signJwt({ userID, email, username });
 
-            return res.status(201).json({token, user:{user_id:userID, email:email, username:username}});
+            return res.status(201).json({token:token, user:{user_id:userID, email:email, username:username}});
         }
         // Catch if username is in db already
         catch(err: any) {
@@ -85,7 +85,7 @@ authRoutes.post("/login", async(req:Request, res:Response)=>{
         const username = user.username;
         const token = signJwt({ userID, email, username });
 
-        return res.status(200).json({token, user:{user_id: userID, email:email, username:user.username}});
+        return res.status(200).json({token:token, user:{user_id: userID, email:email, username:user.username}});
     }
     catch(err) {
         console.error(err);
