@@ -1,68 +1,130 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { PublicCellData } from '../../../types/frontend-gametypes';
 import './minesweeper-board.css'
 
+const ROWS = 9;
+const COLS = 9;
+const MINES = 10;
+
 const Tile = ({ className, content, onLeftClick, onRightClick } : any) => {
     return (
-    <div 
-      className={className}
-      onClick={onLeftClick}
-      onContextMenu={
-        (e) => {
-            e.preventDefault();
-            onRightClick();
-        }
-      }>
-        {content}
-    </div>
-  )
-}
+        <div
+            className={className}
+            // Left click => reveal cell or flood-fill
+            onClick={onLeftClick}
+            // Right click => flag
+            onContextMenu={(e) => {
+                e.preventDefault();
+                onRightClick();
+            }}
+        >
+            {/* content is what the player sees: null, number, "M" , or "F" */}
+            {content}
+        </div>
+    )
+};
 
 const MinesweeperBoard = ({ GameID } : { GameID : number }) => {
-    const [Tiles, setTiles] = useState<(PublicCellData | null)[]>(Array(5*5).fill(null));
+    const [Tiles, setTiles] = useState<Array<PublicCellData | null>>(() => Array(ROWS * COLS).fill(null)); // frontend cell data store. null means "dont know"
+    const [status, setStatus] = useState<"playing" | "won" | "lost">("playing"); // TODO: notify server (Marissa's doing this?)
 
-    const handleTileRightClick = (i : number) => {
-        if (Tiles[i]?.State.Visibility === 'revealed') return;
+    const handleTileRightClick = (i : number) : void => {
+        const cell = Tiles[i];
+
+        // if already revealed, don't flag
+        if (cell?.State.Visibility === 'revealed')
+            return;
+
         const newTiles = [...Tiles];
-        newTiles[i] = { State: { Visibility: 'hidden', Flagged: !( Tiles[i]?.State.Flagged ?? false ) }, Content: Tiles[i]?.Content ?? null };
+
+        // previous flag status, defaults to false if we don't know
+        const wasFlagged = cell && "Flagged" in cell.State ? cell.State.Flagged : false;
+
+        const newCell : PublicCellData = {
+            Content: cell?.Content ?? null,
+            State: {
+                Visibility: "hidden", 
+                Flagged: !wasFlagged,
+            },
+        };
+        
+        newTiles[i] = newCell;
         setTiles(newTiles);
     }
 
-    const handleTileLeftClick = (i : number) => {
-        if (Tiles[i]?.State.Visibility === 'revealed' || Tiles[i]?.State.Flagged) return; // save api calls & block flagged cells from reveal
-        fetch(`http://localhost:8000/api/game/${GameID}/cell/${i}/reveal`) // for performance.
-        .then(res => {    
-            if (!res.ok) throw res; // if express returns 409
-            else return res.json();
-        })
-        .then(data => {
-            setTiles(oldTiles => {
-                const newTiles = [...oldTiles];
-                newTiles[i] = { State: { Visibility:'revealed' }, Content: data as GameTypes.CellContent };
-                return newTiles;
-            })
-        })
-        .catch((err) => console.error(err));
+    const handleTileLeftClick = async (i : number) : Promise<void> => {
+        // save api calls
+        const cell = Tiles[i];
+        const isFlagged = cell && "Flagged" in cell.State ? cell.State.Flagged : false;
+        if (cell?.State.Visibility === 'revealed' || isFlagged)
+            return; 
+
+        // get board data from server for revealed cell
+        const res = await fetch(`http://localhost:8000/api/game/${GameID}/cell/${i}/reveal`); // for performance.
+        if (!res.ok) throw res;
+        const revealedCellData = (await res.json()) as GameTypes.CellData[];
+
+        const newTiles = [...Tiles];
+
+        for (const revealedCell of revealedCellData) {
+            // if flagged or already revealed, don't reveal (floodfill from backend can return these)
+            const cell = Tiles[revealedCell.Position];
+            const isFlagged = cell && "Flagged" in cell.State ? cell.State.Flagged : false;
+            if (cell?.State.Visibility === 'revealed' || isFlagged) continue;
+
+            // reveal the cell
+            newTiles[revealedCell.Position] = {
+                Content: revealedCell.Content,
+                State: { Visibility: "revealed"},
+            };
+
+            if (revealedCell.Content.Type === "mine") {
+                // TODO: reveal all mines on loss
+
+/*                 hiddenBoard.forEach((hc, idx) => {
+                    if (hc.hasMine) {
+                        newTiles[idx] = {
+                            Content: makeContentFromHidden(hc),
+                            State: { Visibility: "revealed"},
+                        };
+                    }
+                }); */
+
+                setStatus("lost");
+            }
+        }
+        
+        setTiles(newTiles);
     }
 
     return (
         <div className="minesweeper-board-container">
-            <div className="minesweeper-board">
+            <div className="minesweeper-board" style={{ gridTemplateColumns: `repeat(${COLS}, 1fr)` }}>
                 {
-                    Tiles.map((cell, i) => (
-                        <Tile 
-                        className={`minesweeper-tile ${Tiles[i]?.State.Visibility === 'revealed' ? "revealed" : ""}`}
-                        content={cell === null ? null : 
-                            (cell.State.Visibility === 'hidden' && cell.State.Flagged) ? "F" :
-                            cell.Content === null ? null :
-                            (cell.Content.Type === 'mine' ? "M" : cell.Content.Number)}  // up to UI to modify display value.
-                        onLeftClick={() => handleTileLeftClick(i)}
-                        onRightClick={() => handleTileRightClick(i)}/>
-                    ))
+                    Tiles.map((cell, i) => {
+                        const isRevealed = cell?.State.Visibility === "revealed";
+                        const isHidden = cell?.State.Visibility === "hidden";
+                        const isFlagged = cell && "Flagged" in cell.State ? cell.State.Flagged : false;
+
+                        const content = cell === null ? null 
+                        : isHidden && isFlagged ? "F" 
+                        : cell.Content === null ? null 
+                        : cell.Content.Type === "mine" ? "M" 
+                        : cell.Content.Number;
+
+                        return (
+                            <Tile key={i} 
+                            className={`minesweeper-tile ${isRevealed ? "revealed" : ""}`} 
+                            content={content}
+                            onLeftClick={() => handleTileLeftClick(i)}
+                            onRightClick={() => handleTileRightClick(i)}
+                            />
+                        );
+                    })
                 }
             </div>
         </div>
     );
-}
+};
 
 export default MinesweeperBoard;
