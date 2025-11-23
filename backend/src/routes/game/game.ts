@@ -1,6 +1,6 @@
 import { generateKey } from "crypto";
 import { Router } from "express";
-import { createBoard, revealRegion } from "./helpers";
+import { createBoard, revealRegion, validateBoard } from "./helpers";
 
 // routes relating to game
 const gameRoutes = Router();
@@ -16,6 +16,7 @@ let boardData : GameTypes.CellData[] = [];
 // create a game and return its id to the frontend.
 gameRoutes.post("/create", (req, res) => {
     boardData = createBoard();
+    validateBoard(boardData);
     return res.json({ game_id: 1 });
 })
 
