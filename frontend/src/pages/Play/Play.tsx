@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import MinesweeperBoard from "./components/MinesweeperBoard"
 
-const ROWS = 5;
-const COLS = 5;
-const MINES = 3;
+const ROWS = 9;
+const COLS = 9;
+const MINES = 10;
 
 const Play = () => {
     const [activeGameID, setActiveGameID] = useState<number | null>(null);

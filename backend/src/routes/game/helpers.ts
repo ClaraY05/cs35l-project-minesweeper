@@ -1,8 +1,3 @@
-// ---TODO: move to Play.tsx, fine for now
-//const ROWS = 9;
-//const COLS = 9;
-//const MINES = 10;
-// ---
 
 // local type to make board generation easier. might refactor later
 // not to be used outside of helpers. defer to global types instead
