@@ -9,10 +9,16 @@ interface AccountDisplayProps {
 
 const AccountDisplay:React.FC<AccountDisplayProps> = ({ userName, gamerTag, imgUrl }:AccountDisplayProps)=>{
     const navigate = useNavigate();
-    const [,setToken] = useLocalStorage<string|null>("token",null);
     const [,setUser] = useLocalStorage<any|null>("user",null);
-    const onLogout = () =>{
-        setToken(null);
+    const onLogout = async () =>{
+        try {
+            await fetch("http://localhost:8000/api/auth/logout", {
+                method:"POST",
+                credentials:"include"
+            });
+        } catch (err) {
+            console.error(err)
+        }
         setUser(null);
         navigate("/login", { replace:true })
     }
