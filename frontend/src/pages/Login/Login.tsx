@@ -20,7 +20,7 @@ const Login = () => {
 
     const navigate = useNavigate();
 
-    const [,setToken] = useLocalStorage<string|null>("token",null);
+    // const [,setToken] = useLocalStorage<string|null>("token",null);
     const [,setUser] = useLocalStorage<any|null>("user",null);
 
     const onSubmit = async (data: Inputs) => {
@@ -34,6 +34,7 @@ const Login = () => {
             const res = await fetch(endpoint, {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
+                credentials: "include",
                 body: JSON.stringify(dataBody)
             });
 
@@ -41,7 +42,7 @@ const Login = () => {
             if (!res.ok){
                 throw new Error(payload.error || "Invalid username or password");
             }
-            setToken(payload.token);
+            // setToken(payload.token);
             setUser(payload.user);
             navigate("/", {replace:true});
         } catch (err: any) {

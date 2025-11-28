@@ -45,7 +45,10 @@ authRoutes.post("/register", async(req:Request, res:Response) => {
             const userID = result.rows[0].user_id;
             const token = signJwt({ userID, email, username });
 
-            return res.status(201).json({token:token, user:{user_id:userID, email:email, username:username}});
+            res.cookie("token",token,{httpOnly:true, secure:false, sameSite:"lax", maxAge:60*60*1000});
+
+
+            return res.status(201).json({user:{user_id:userID, email:email, username:username}});
         }
         // Catch if username is in db already
         catch(err: any) {
@@ -85,13 +88,20 @@ authRoutes.post("/login", async(req:Request, res:Response)=>{
         const username = user.username;
         const token = signJwt({ userID, email, username });
 
-        return res.status(200).json({token:token, user:{user_id: userID, email:email, username:user.username}});
+        res.cookie("token",token,{httpOnly:true, secure:false, sameSite:"lax", maxAge:60*60*1000});
+
+        return res.status(200).json({user:{user_id: userID, email:email, username:user.username}});
     }
     catch(err) {
         console.error(err);
         return res.status(500).json({error: "Internal server error"});
     }
     
+})
+
+authRoutes.post("/logout", (req,res)=>{
+    res.clearCookie("token", {httpOnly:true, sameSite:"lax", secure:false});
+    return res.status(200).json({message: "Logged out"})
 })
 
 
