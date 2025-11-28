@@ -22,6 +22,7 @@
     cursor: pointer;
     background-color: bisque;
     border: 1px solid black;
+    overflow: hidden;
 }
 
 .minesweeper-tile.revealed {
