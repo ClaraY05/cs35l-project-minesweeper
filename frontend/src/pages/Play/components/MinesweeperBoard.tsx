@@ -1,10 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { PublicCellData } from '../../../types/frontend-gametypes';
 import './minesweeper-board.css'
-
-const ROWS = 9;
-const COLS = 9;
-const MINES = 10;
 
 const Tile = ({ className, content, onLeftClick, onRightClick } : any) => {
     return (
@@ -24,8 +20,8 @@ const Tile = ({ className, content, onLeftClick, onRightClick } : any) => {
     )
 };
 
-const MinesweeperBoard = ({ GameID } : { GameID : number }) => {
-    const [Tiles, setTiles] = useState<Array<PublicCellData | null>>(() => Array(ROWS * COLS).fill(null)); // frontend cell data store. null means "dont know"
+const MinesweeperBoard = ({ GameID, rows, cols } : { GameID : number, rows : number, cols : number }) => {
+    const [Tiles, setTiles] = useState<Array<PublicCellData | null>>(() => Array(rows * cols).fill(null)); // frontend cell data store. null means "dont know"
     const [status, setStatus] = useState<"playing" | "won" | "lost">("playing"); // TODO: notify server (Marissa's doing this?)
 
     const handleTileRightClick = (i : number) : void => {
@@ -60,7 +56,11 @@ const MinesweeperBoard = ({ GameID } : { GameID : number }) => {
             return; 
 
         // get board data from server for revealed cell
-        const res = await fetch(`http://localhost:8000/api/game/${GameID}/cell/${i}/reveal`); // for performance.
+        const res = await fetch(`http://localhost:8000/api/game/${GameID}/cell/${i}/reveal`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ rows: rows, columns: cols })
+        }); // localhost for performance. NOT DEPLOYABLE
         if (!res.ok) throw res;
         const revealedCellData = (await res.json()) as GameTypes.CellData[];
 
@@ -99,7 +99,7 @@ const MinesweeperBoard = ({ GameID } : { GameID : number }) => {
 
     return (
         <div className="minesweeper-board-container">
-            <div className="minesweeper-board" style={{ gridTemplateColumns: `repeat(${COLS}, 1fr)` }}>
+            <div className="minesweeper-board" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
                 {
                     Tiles.map((cell, i) => {
                         const isRevealed = cell?.State.Visibility === "revealed";
