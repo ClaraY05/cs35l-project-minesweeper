@@ -20,7 +20,6 @@
     aspect-ratio: 1;
     display: grid;
     place-items: center;
-    overflow: hidden;
     cursor: pointer;
     background-color: bisque;
     border: 1px solid black;
