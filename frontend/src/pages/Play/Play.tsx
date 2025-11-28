@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import MinesweeperBoard from "./components/MinesweeperBoard"
 
+const ROWS = 9;
+const COLS = 9;
+const MINES = 10;
 
 const Play = () => {
     const [activeGameID, setActiveGameID] = useState<number | null>(null);
@@ -9,6 +12,8 @@ const Play = () => {
     useEffect(() => {
         fetch("http://localhost:8000/api/game/create", {
             method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ rows: ROWS, columns: COLS, mines : MINES })
         })
         .then((res) => res.json())
         .then((data) => setActiveGameID(data.game_id))
@@ -16,7 +21,7 @@ const Play = () => {
     }, []);
   
     return (
-        <MinesweeperBoard GameID={activeGameID ?? 0} />
+        <MinesweeperBoard GameID={activeGameID ?? 0} rows={ROWS} cols={COLS} />
     )
 }
 
