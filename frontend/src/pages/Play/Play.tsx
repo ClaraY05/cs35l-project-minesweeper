@@ -3,7 +3,7 @@ import MinesweeperBoard from "./components/MinesweeperBoard"
 
 const ROWS = 5;
 const COLS = 5;
-const MINES = 10;
+const MINES = 3;
 
 const Play = () => {
     const [activeGameID, setActiveGameID] = useState<number | null>(null);
@@ -13,7 +13,7 @@ const Play = () => {
         fetch("http://localhost:8000/api/game/create", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ rows: ROWS, columns: COLS })
+            body: JSON.stringify({ rows: ROWS, columns: COLS, mines : MINES })
         })
         .then((res) => res.json())
         .then((data) => setActiveGameID(data.game_id))

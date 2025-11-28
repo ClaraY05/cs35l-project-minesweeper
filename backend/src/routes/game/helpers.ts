@@ -1,7 +1,7 @@
 // ---TODO: move to Play.tsx, fine for now
 //const ROWS = 9;
 //const COLS = 9;
-const MINES = 10;
+//const MINES = 10;
 // ---
 
 // local type to make board generation easier. might refactor later
@@ -50,7 +50,7 @@ function getNeighborIndices(i : number, ROWS : number, COLS : number) : number[]
  * Generate a random board with computed neighbor counts server-side.
  * @returns A randomly generated board
  */
-export function createBoard(ROWS : number, COLS : number): GameTypes.CellData[] {
+export function createBoard(ROWS : number, COLS : number, MINES : number): GameTypes.CellData[] {
     const totalCells = ROWS * COLS;
 
     // start with all empty cells
