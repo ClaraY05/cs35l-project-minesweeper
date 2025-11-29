@@ -1,3 +1,5 @@
+import './difficulty-select.css'
+
 // game difficulty. might move to globals later.
 export type Difficulty = "easy" | "medium" | "hard";
 
