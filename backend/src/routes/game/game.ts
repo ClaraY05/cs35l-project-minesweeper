@@ -5,7 +5,7 @@ import { createBoard, revealRegion, validateBoard } from "./helpers";
 // routes relating to game
 const gameRoutes = Router();
 
-// -------- unassigned
+// -------- 
 // TODO: first click safety
 // --------
 
@@ -32,7 +32,9 @@ gameRoutes.post("/create", (req, res) => {
 gameRoutes.post("/:gameid/cell/:cellid/reveal", (req, res) => {
     const game_id = Number(req.params.gameid);
     const cell_id = Number(req.params.cellid);
-    const { rows, columns } = req.body;
+    const rows = Number(req.body.rows);
+    const columns = Number(req.body.columns);
+
      // TODO: remove placeholder with actual game ids that generate
     if (game_id === 1) {
         return res.json(revealRegion(boardData, cell_id, rows, columns)); // TODO: change this to backend storing size of each game rather than passing size in on every call
