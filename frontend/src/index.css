@@ -1,5 +1,4 @@
 /* CSS for tailwind */
-/*@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');*/
 @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap');
 @import "tailwindcss";
@@ -43,12 +42,15 @@ h1{
 }
 
 .option-bar{
-    @apply rounded-sm flex pt-1 pb-1 pl-6 w-[175%];
-    
+    @apply rounded-sm uppercase flex pt-1 pb-1 pl-6 w-[55%] transition-all duration-500 ease-in-out hover:w-screen;
 }
 
 .option-text{
     font-family:"Pixelify Sans", sans-serif;
     font-size: 300%;
-    @apply uppercase;
+    @apply truncate;
+}
+
+.page-transition-overlay {
+    pointer-events: none;
 }
