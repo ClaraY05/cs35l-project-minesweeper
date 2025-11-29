@@ -48,7 +48,7 @@ const FriendsPopout = ({
         >
           <div className="flex flex-row justify-between items-center">
             <h1>Friends</h1>
-            <button onClick={onClose}className="closeOverlay uppercase">Close</button>
+            <button onClick={onClose}className="closeOverlay uppercase hover:font-bold">Close</button>
           </div>
           <div className="w-full p-3">
             <h3 className="uppercase font-bold">Search Friends</h3>
