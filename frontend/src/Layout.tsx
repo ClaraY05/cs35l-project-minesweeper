@@ -23,13 +23,13 @@ const MainLayout = () => {
         <h1 className="flex font-pixel logo text-primary-text z-10 pl-5 shrink-0">Sweeper.io</h1>
         {user&&(
         <div className="flex flex-row-reverse gap-5 z-10 pr-5 pt2 shrink-0">
-          <AccountDisplay userName="User" gamerTag="676767" imgUrl="https://preview.redd.it/do-you-have-goofy-pics-of-your-pretty-cats-v0-51t4e3gnyvib1.jpg?auto=webp&s=27b628d946d585f415de91edb250544ccff0d02c"/>
+          <AccountDisplay userName={user.username} imgUrl="https://preview.redd.it/do-you-have-goofy-pics-of-your-pretty-cats-v0-51t4e3gnyvib1.jpg?auto=webp&s=27b628d946d585f415de91edb250544ccff0d02c"/>
           <Friends friendIDList={dummyFriendList} dummyRemove={dummyRemove}/>
           <Notifications/>
         </div>
         )}
       </header>
-      <main className="flex justify-center relative z-0">
+      <main className="flex relative z-0 w-full">
         <Outlet />
       </main>
     </div>
