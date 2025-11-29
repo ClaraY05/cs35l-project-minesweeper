@@ -11,6 +11,42 @@ console.log("Environment loaded. PORT:", process.env.PORT);
 const JWT_SECRET = process.env.JWT_SECRET || "christinawang";
 const JWT_EXPIRES_IN = "1h";
 
+const default_settings = {
+   keybinds: {
+       openCell:"",
+       flagCell:"",
+       chord:"",
+       restartGame:"",
+       escapeGame:"",
+       powerup1:"",
+       powerup2:""
+   },
+   selectors:{
+       graphics:"low",
+       notif_game_updates:"yes",
+       notif_friend_req:"yes"
+   },
+   sliders:{
+       music: 50,
+       sfx:50,
+       stereo:50
+   },
+   checkboxes:{
+       sound1:false,
+       sound2:false,
+       sound3:false,
+       sound4:false,
+       displayUsername:false,
+       changeTextSize:false,
+       changeCustomBg:false
+   },
+    inputs:{
+       customBg:"none",
+       textSize:16
+   },
+};
+
+
 function signJwt(payload: object){
     const jwtobj = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
     return jwtobj;
@@ -43,8 +79,13 @@ authRoutes.post("/register", async(req:Request, res:Response) => {
             );
 
             const userID = result.rows[0].user_id;
-            const token = signJwt({ userID, email, username });
 
+            await pool.query(
+                "INSERT INTO settings (user_id, keybinds, selectors, sliders, checkboxes, inputs) VALUES ($1,$2,$3,$4,$5,$6)",
+                [userID, default_settings.keybinds, default_settings.selectors, default_settings.sliders, default_settings.checkboxes, default_settings.inputs]
+            );
+
+            const token = signJwt({ userID, email, username });
             res.cookie("token",token,{httpOnly:true, secure:false, sameSite:"lax", maxAge:60*60*1000});
 
 

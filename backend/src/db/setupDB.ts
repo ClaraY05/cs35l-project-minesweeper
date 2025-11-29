@@ -52,6 +52,7 @@ export async function setupDB(){
             selectors JSONB NOT NULL DEFAULT '{}',
             sliders JSONB NOT NULL DEFAULT '{}',
             checkboxes JSONB NOT NULL DEFAULT '{}',
+            inputs JSONB NOT NULL DEFAULT '{}',
             updated_at TIMESTAMP DEFAULT NOW()
             );
         `);
