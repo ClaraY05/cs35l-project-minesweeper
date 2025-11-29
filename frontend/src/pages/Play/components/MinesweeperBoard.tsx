@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PublicCellData } from '../../../types/frontend-gametypes';
 import './minesweeper-board.css'
 
@@ -22,7 +22,13 @@ const Tile = ({ className, content, onLeftClick, onRightClick } : any) => {
 
 const MinesweeperBoard = ({ GameID, rows, cols } : { GameID : number, rows : number, cols : number }) => {
     const [Tiles, setTiles] = useState<Array<PublicCellData | null>>(() => Array(rows * cols).fill(null)); // frontend cell data store. null means "dont know"
-    const [status, setStatus] = useState<"playing" | "won" | "lost">("playing"); // TODO: notify server (Marissa's doing this?)
+    const [status, setStatus] = useState<"playing" | "won" | "lost">("playing"); // TODO: notify server (Marissa's doing this)
+
+    // whenever game ID or board size changes, reset board state
+    useEffect(() => {
+        setTiles(Array(rows * cols).fill(null));
+        setStatus("playing");
+    }, [GameID, rows, cols]);
 
     const handleTileRightClick = (i : number) : void => {
         const cell = Tiles[i];
@@ -67,7 +73,7 @@ const MinesweeperBoard = ({ GameID, rows, cols } : { GameID : number, rows : num
         const newTiles = [...Tiles];
 
         for (const revealedCell of revealedCellData) {
-            // if flagged or already revealed, don't reveal (floodfill from backend can return these)
+            // if flagged or already revealed, don't reveal (floodfill from backend can still return these)
             const cell = Tiles[revealedCell.Position];
             const isFlagged = cell && "Flagged" in cell.State ? cell.State.Flagged : false;
             if (cell?.State.Visibility === 'revealed' || isFlagged) continue;
