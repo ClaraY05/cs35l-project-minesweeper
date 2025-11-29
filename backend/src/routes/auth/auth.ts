@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { pool } from "../../db/db";
+import { default_settings } from "../settings/defaultSettings";
 
 // routes for our api.
 const authRoutes = Router();
@@ -10,42 +11,6 @@ console.log("Environment loaded. PORT:", process.env.PORT);
 
 const JWT_SECRET = process.env.JWT_SECRET || "christinawang";
 const JWT_EXPIRES_IN = "1h";
-
-const default_settings = {
-   keybinds: {
-       openCell:"",
-       flagCell:"",
-       chord:"",
-       restartGame:"",
-       escapeGame:"",
-       powerup1:"",
-       powerup2:""
-   },
-   selectors:{
-       graphics:"low",
-       notif_game_updates:"yes",
-       notif_friend_req:"yes"
-   },
-   sliders:{
-       music: 50,
-       sfx:50,
-       stereo:50
-   },
-   checkboxes:{
-       sound1:false,
-       sound2:false,
-       sound3:false,
-       sound4:false,
-       displayUsername:false,
-       changeTextSize:false,
-       changeCustomBg:false
-   },
-    inputs:{
-       customBg:"none",
-       textSize:16
-   },
-};
-
 
 function signJwt(payload: object){
     const jwtobj = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
