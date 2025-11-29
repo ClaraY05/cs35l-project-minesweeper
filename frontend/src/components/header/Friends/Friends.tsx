@@ -11,15 +11,13 @@ interface Friend {
   email: string;
 }
 
-type RemoveCallback = (id: string) => void; // type from FriendDisplay
-
-const renderFriendDisplay = (friend: Friend, onRemove: RemoveCallback) => {
+const renderFriendDisplay = (friend: Friend, onRemove: (friendId: number) => void) => {
   return (
     <FriendDisplay
       id={friend.username}
       name={friend.username}
       avatar="https://i.redd.it/help-me-find-the-cat-or-og-picture-from-the-cat-owl-meowl-v0-dghbx7likhgf1.jpg?width=1200&format=pjpg&auto=webp&s=45a83cd201b14934ad2000bf7834a4b92296f4a0"
-      onRemove={onRemove}
+      onRemove={() => onRemove(friend.user_id)}
     />
   );
 };
@@ -32,6 +30,15 @@ const Friends = () => {
 
   const handleSearch = (value: string) => {
     console.log("Search submitted for:", value);
+  };
+
+  const handleRemoveFriend = async (friendId: number) => {
+    try {
+      await authFetch(`/api/friends/${friendId}`, { method: "DELETE" });
+      setFriends(friends.filter(friend => friend.user_id !== friendId));
+    } catch (err) {
+      console.error("Failed to remove friend:", err);
+    }
   };
 
   useEffect(() => {
@@ -71,9 +78,7 @@ const Friends = () => {
             ) : (
               friends.map((friend) => (
                 <div key={friend.user_id}>
-                  {renderFriendDisplay(friend, () =>
-                    console.log("remove", friend.user_id)
-                  )}
+                  {renderFriendDisplay(friend, handleRemoveFriend)}
                 </div>
               ))
             )}
