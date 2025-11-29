@@ -5,7 +5,7 @@ interface Friend {
     user_id: number;
     username: string;
     email: string;
-
+    profile_picture: string | null;
 }
 
 export const createFriendHandlers = (

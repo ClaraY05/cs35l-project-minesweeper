@@ -68,7 +68,7 @@ const AccountDisplay:React.FC<AccountDisplayProps> = ({ userName, imgUrl }:Accou
                 <img 
                     src={imgUrl} 
                     alt="User Profile" 
-                    style={{ width: "75px", height: "75px", cursor: "pointer" }}
+                    style={{ width: "75px", height: "75px", cursor: "pointer" }} // Be able to click on the image to change it
                     onClick={handleImageClick}
                 />
             </div>
