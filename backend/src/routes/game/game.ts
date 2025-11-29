@@ -1,6 +1,6 @@
 import { generateKey } from "crypto";
 import { Router } from "express";
-import { createBoard, revealRegion } from "./helpers";
+import { createBoard, revealRegion, validateBoard } from "./helpers";
 
 // routes relating to game
 const gameRoutes = Router();

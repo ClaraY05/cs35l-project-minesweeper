@@ -131,3 +131,33 @@ export function revealRegion(boardData : GameTypes.CellData[], cellIndex : numbe
 
     return revealedCells;
 }
+
+// helpers.ts (or a debug utils file)
+export function validateBoard(boardData: GameTypes.CellData[]): void {
+    const errors: string[] = [];
+
+    const totalCells = boardData.length;
+
+    for (let i = 0; i < totalCells; i++) {
+        const cell = boardData[i];
+        if (cell.Content.Type === "mine") continue;
+
+        const neighbors = getNeighborIndices(i);
+        let count = 0;
+
+        for (const nIdx of neighbors) {
+            if (boardData[nIdx].Content.Type === "mine") {
+                count++;
+            }
+        }
+
+        if (count !== cell.Content.Number) {
+            errors.push(
+                `Mismatch at index ${i}: displayed=${cell.Content.Number}, actual=${count}`
+            );
+        }
+    }
+
+    console.log("Board validation:", errors.length === 0 ? "OK" : errors);
+    errors.forEach(e => console.error(e));
+}
