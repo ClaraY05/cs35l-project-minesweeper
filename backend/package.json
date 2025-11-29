@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "setup-db": "tsx src/db/setupDB.ts"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
