@@ -44,7 +44,7 @@ const Login = () => {
             }
             // setToken(payload.token);
             setUser(payload.user);
-            navigate("/", {replace:true});
+            navigate("/home", {replace:true});
         } catch (err: any) {
             setError(err.message);
         } finally {

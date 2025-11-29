@@ -54,7 +54,7 @@ const Settings = () => {
                 <Outlet />
             </main>
             <nav className="flex flex-row gap-x-5 flex-wrap justify-center">
-                <button><Link to="/">Home</Link></button>|
+                <button><Link to="/home">Home</Link></button>|
                 <button>Save</button>
             </nav>
         </div>
