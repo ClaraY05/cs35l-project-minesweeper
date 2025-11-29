@@ -1,25 +1,16 @@
 import { Router } from "express";
 import { pool } from "../../db/db";
-import { authenticateToken } from "../middleware/authMiddleware";
+import { authenticateToken, AuthRequest } from "../middleware/authMiddleware";
 import { KeyAction } from "../settings/keybindTypes";
+import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "./defaultSettings";
 
-const router = Router();
+const settingsRoutes = Router();
 
 type KeybindMap = Record<KeyAction, string>;
 
 type KeybindsBody = {
     bindings?: Partial<KeybindMap>;
 };
-
-const DEFAULT_KEYBINDS: Record<KeyAction, string> = {
-    openCell: "MouseLeft",
-    flagCell: "MouseRight",
-    chord: "MouseLeft+MouseRight",
-    restartGame: "KeyR",
-    escapeGame: "EscapeGame",
-    powerup1: "Key1",
-    powerup2: "Key2",
-}
 
 // Helper: get current keybinds for user (or defaults if none)
 async function getUserKeybinds(userId: number): Promise<KeybindMap> {
@@ -55,10 +46,55 @@ async function saveUserKeybinds(userId: number, keybinds: KeybindMap): Promise<v
     );
 }
 
+async function getUserSound(userID:number){
+    const result = await pool.query("SELECT sound FROM settings WHERE user_id = $1", [userID]);
+    const sound = result.rows[0].sound;
+    return { ...sound };
+};
+
+async function saveUserSound(userID:number, sound:any){
+    await pool.query(`
+        UPDATE settings
+        SET sound=$2
+        WHERE user_id=$1
+        `,[userID, sound]
+    );
+};
+
+async function getUserVideo(userID:number){
+    const result = await pool.query("SELECT video FROM settings WHERE user_id = $1", [userID]);
+    const video = result.rows[0].video;
+    return { ...video };
+};
+
+async function saveUserVideo(userID:number, video:any){
+    await pool.query(`
+        UPDATE settings
+        SET video=$2
+        WHERE user_id=$1
+        `,[userID, video]
+    );
+};
+
+async function getUserNotif(userID:number){
+    const result = await pool.query("SELECT notif FROM settings WHERE user_id = $1", [userID]);
+    const notif = result.rows[0].notif;
+    return { ...notif };
+};
+
+async function saveUserNotif(userID:number, notif:any){
+    await pool.query(`
+        UPDATE settings
+        SET notif=$2
+        WHERE user_id=$1
+        `,[userID, notif]
+    );
+};
+
 // GET /api/keybinds/:userid return the keybinds for a user
-router.get("/keybinds", authenticateToken, async (req: any, res) => {
+settingsRoutes.get("/keybinds", authenticateToken, async (req: AuthRequest, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user.userID;
         const bindings = await getUserKeybinds(userId);
         return res.json({ userId, bindings });
 
@@ -69,9 +105,9 @@ router.get("/keybinds", authenticateToken, async (req: any, res) => {
 });
 
 // PUT /api/settings/keybinds replace the entire keybind mapping
-router.put("/keybinds", authenticateToken, async (req:any, res) => {
+settingsRoutes.put("/keybinds", authenticateToken, async (req:AuthRequest, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user.userID;
         const body = req.body as KeybindsBody;
 
         const supplied = body.bindings ?? {};
@@ -92,9 +128,9 @@ router.put("/keybinds", authenticateToken, async (req:any, res) => {
 });
 
 // PATCH /api/settings/keybinds change only selected keybinds
-router.patch("/keybinds", authenticateToken, async (req: any, res) => {
+settingsRoutes.patch("/keybinds", authenticateToken, async (req: AuthRequest, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user.userID;
         const partial = (req.body?.bindings ?? {}) as Partial<KeybindMap>;
 
         const existing = await getUserKeybinds(userId);
@@ -109,9 +145,9 @@ router.patch("/keybinds", authenticateToken, async (req: any, res) => {
 });
 
 // POST /api/settings/keybinds/reset reset to default keybinds
-router.post("/keybinds/reset", authenticateToken, async (req: any, res) => {
+settingsRoutes.post("/keybinds/reset", authenticateToken, async (req: AuthRequest, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user.userID;
         const defaults = { ...DEFAULT_KEYBINDS };
         await saveUserKeybinds(userId, defaults);
         return res.json({ userId, bindings: defaults });
@@ -121,4 +157,71 @@ router.post("/keybinds/reset", authenticateToken, async (req: any, res) => {
     }
 });
 
-export default router;
+settingsRoutes.get("/sound", authenticateToken, async (req: AuthRequest, res) => {
+    try {
+        const userID = req.user.userID;
+        const sound = await getUserSound(userID);
+        return res.json({ userID, sound });
+
+    } catch (err) {
+        console.error("Error fetching sound:", err);
+        return res.status(500).json({ error: "Failed to fetch sound" });
+    }
+});
+
+settingsRoutes.put("/sound", authenticateToken, async (req: AuthRequest, res) => {
+    try {
+        const userID = req.user.userID;
+        const sound = req.body || DEFAULT_SOUND;
+        await saveUserSound(userID, sound);
+        return res.json({ userID, sound });
+    } catch (err) {
+        return res.status(500).json({ error: "Failed to update sound "})
+    }
+})
+
+settingsRoutes.get("/video", authenticateToken, async (req: AuthRequest, res) => {
+    try {
+        const userID = req.user.userID;
+        const video = await getUserVideo(userID);
+        return res.json({ userID, video });
+    } catch (err) {
+        console.error("Error fetching video:", err);
+        return res.status(500).json({ error: "Failed to fetch video" });
+    }
+});
+
+settingsRoutes.put("/video", authenticateToken, async (req: AuthRequest, res) => {
+    try {
+        const userID = req.user.userID;
+        const video = req.body || DEFAULT_VIDEO;
+        await saveUserVideo(userID, video);
+        return res.json({ userID, video });
+    } catch (err) {
+        return res.status(500).json({ error: "Failed to update video" });
+    }
+});
+
+settingsRoutes.get("/notif", authenticateToken, async (req: AuthRequest, res) => {
+    try {
+        const userID = req.user.userID;
+        const notif = await getUserNotif(userID);
+        return res.json({ userID, notif });
+    } catch (err) {
+        console.error("Error fetching notif:", err);
+        return res.status(500).json({ error: "Failed to fetch notif" });
+    }
+});
+
+settingsRoutes.put("/notif", authenticateToken, async (req: AuthRequest, res) => {
+    try {
+        const userID = req.user.userID;
+        const notif = req.body || DEFAULT_NOTIF;
+        await saveUserNotif(userID, notif);
+        return res.json({ userID, notif });
+    } catch (err) {
+        return res.status(500).json({ error: "Failed to update notif" });
+    }
+});
+
+export default settingsRoutes;

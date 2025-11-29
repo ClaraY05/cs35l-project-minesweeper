@@ -49,11 +49,9 @@ export async function setupDB(){
             CREATE TABLE IF NOT EXISTS settings (
             user_id INT NOT NULL PRIMARY KEY REFERENCES users(user_id) ON DELETE CASCADE,
             keybinds JSONB NOT NULL DEFAULT '{}',
-            selectors JSONB NOT NULL DEFAULT '{}',
-            sliders JSONB NOT NULL DEFAULT '{}',
-            checkboxes JSONB NOT NULL DEFAULT '{}',
-            inputs JSONB NOT NULL DEFAULT '{}',
-            updated_at TIMESTAMP DEFAULT NOW()
+            sound JSONB NOT NULL DEFAULT '{}',
+            video JSONB NOT NULL DEFAULT '{}',
+            notif JSONB NOT NULL DEFAULT '{}'
             );
         `);
         console.log("tables created successfully");

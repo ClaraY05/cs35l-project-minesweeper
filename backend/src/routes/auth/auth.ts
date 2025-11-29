@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { pool } from "../../db/db";
-import { default_settings } from "../settings/defaultSettings";
+import { DEFAULT_SETTINGS } from "../settings/defaultSettings";
 
 // routes for our api.
 const authRoutes = Router();
@@ -47,7 +47,7 @@ authRoutes.post("/register", async(req:Request, res:Response) => {
 
             await pool.query(
                 "INSERT INTO settings (user_id, keybinds, selectors, sliders, checkboxes, inputs) VALUES ($1,$2,$3,$4,$5,$6)",
-                [userID, default_settings.keybinds, default_settings.selectors, default_settings.sliders, default_settings.checkboxes, default_settings.inputs]
+                [userID, DEFAULT_SETTINGS.keybinds, DEFAULT_SETTINGS.sound, DEFAULT_SETTINGS.video, DEFAULT_SETTINGS.notif]
             );
 
             const token = signJwt({ userID, email, username });
