@@ -9,14 +9,17 @@ interface Friend {
   user_id: number;
   username: string;
   email: string;
+  profile_picture: string | null;
 }
 
 const renderFriendDisplay = (friend: Friend, onRemove: (friendId: number) => void) => {
+  const defaultPfp = "https://i.redd.it/help-me-find-the-cat-or-og-picture-from-the-cat-owl-meowl-v0-dghbx7likhgf1.jpg?width=1200&format=pjpg&auto=webp&s=45a83cd201b14934ad2000bf7834a4b92296f4a0";
+  
   return (
     <FriendDisplay
       id={friend.username}
       name={friend.username}
-      avatar="https://i.redd.it/help-me-find-the-cat-or-og-picture-from-the-cat-owl-meowl-v0-dghbx7likhgf1.jpg?width=1200&format=pjpg&auto=webp&s=45a83cd201b14934ad2000bf7834a4b92296f4a0"
+      avatar={friend.profile_picture || defaultPfp}
       onRemove={() => onRemove(friend.user_id)}
     />
   );

@@ -24,7 +24,8 @@ export async function getFriends(userID: number){
             SELECT 
                 u.user_id,
                 u.username,
-                u.email
+                u.email,
+                u.profile_picture
             FROM friends f
             JOIN users u ON f.friend_id = u.user_id
             WHERE f.user_id = $1
@@ -66,7 +67,8 @@ export async function searchUsers(searchName: string, currentUserID: number, lim
             SELECT 
             user_id,
             username,
-            email
+            email,
+            profile_picture
           FROM users
           WHERE username ILIKE $1
             AND user_id != $2

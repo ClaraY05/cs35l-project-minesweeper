@@ -24,7 +24,10 @@ const MainLayout = () => {
         {user&&(
 
       <div className="flex flex-row-reverse gap-5 z-10 pr-5 pt2 shrink-0">
-      <AccountDisplay userName={user.username} imgUrl="https://preview.redd.it/do-you-have-goofy-pics-of-your-pretty-cats-v0-51t4e3gnyvib1.jpg?auto=webp&s=27b628d946d585f415de91edb250544ccff0d02c"/>
+      <AccountDisplay 
+        userName={user.username} 
+        imgUrl={user.profile_picture || "https://preview.redd.it/do-you-have-goofy-pics-of-your-pretty-cats-v0-51t4e3gnyvib1.jpg?auto=webp&s=27b628d946d585f415de91edb250544ccff0d02c"}
+      />
       <Friends />
       <Notifications/>
       </div>
