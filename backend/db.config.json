@@ -1,0 +1,7 @@
+{
+    "user": "minesweep_user",
+    "password": "christinawang",
+    "host": "localhost",
+    "port": 5433,
+    "database": "minesweeper"
+}

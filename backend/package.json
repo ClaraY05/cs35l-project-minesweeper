@@ -9,10 +9,14 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "setup-db": "tsx src/db/setupDB.ts"
+    "setup-db": "tsx src/db/setupDB.ts",
+    "migrate": "node-pg-migrate --config-file db.config.json",
+    "migrate:up": "node-pg-migrate up --config-file db.config.json",
+    "migrate:down": "node-pg-migrate down --config-file db.config.json"
   },
   "dependencies": {
     "@types/multer": "^2.0.0",
+    "api": "file:",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -30,6 +34,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.9.2",
     "@types/pg": "^8.10.9",
+    "node-pg-migrate": "^8.0.3",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
