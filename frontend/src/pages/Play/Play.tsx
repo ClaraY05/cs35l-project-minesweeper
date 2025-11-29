@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import MinesweeperBoard from "./components/MinesweeperBoard"
 import DifficultySelect, { Difficulty } from "./components/DifficultySelect";
+import './play.css';
 
 const difficultyConfigs: Record<Difficulty, { rows: number; cols: number; mines: number }> = {
   easy:   { rows: 9,  cols: 9,  mines: 10 },
@@ -26,10 +27,10 @@ const Play = () => {
     }, [rows, cols, mines]);
   
     return (
-        <>
+        <div className="play-container">
             <DifficultySelect value={difficulty} onChange={setDifficulty} />
             <MinesweeperBoard GameID={activeGameID ?? 0} rows={rows} cols={cols} />
-        </>
+        </div>
     )
 }
 
