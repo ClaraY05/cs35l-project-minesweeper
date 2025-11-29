@@ -1,8 +1,3 @@
-// ---TODO: move to Play.tsx, fine for now
-const ROWS = 9;
-const COLS = 9;
-const MINES = 10;
-// ---
 
 // local type to make board generation easier. might refactor later
 // not to be used outside of helpers. defer to global types instead
@@ -14,18 +9,18 @@ type HiddenCell = {
 // generate random hidden board in place of testBoard
 
 // Helper Functions
-function indexToCoord(i : number) {
+function indexToCoord(i : number, COLS : number) {
     const row = Math.floor(i / COLS);
     const col = i % COLS;
     return { row, col };
 }
 
-function coordToIndex(row : number, col : number) : number {
+function coordToIndex(row : number, col : number, COLS : number) : number {
     return row * COLS + col;
 }
 
-function getNeighborIndices(i : number) : number[] {
-    const { row, col } = indexToCoord(i);
+function getNeighborIndices(i : number, ROWS : number, COLS : number) : number[] {
+    const { row, col } = indexToCoord(i, COLS);
     const neighbors : number[] = [];
     
     for (let dr = -1; dr <= 1; dr++) {
@@ -39,7 +34,7 @@ function getNeighborIndices(i : number) : number[] {
             if (nr < 0 || nr >= ROWS || nc < 0 || nc >= COLS) // out of bounds => skip
                 continue;
 
-            neighbors.push(coordToIndex(nr, nc));
+            neighbors.push(coordToIndex(nr, nc, COLS));
         }
     }
     
@@ -50,7 +45,7 @@ function getNeighborIndices(i : number) : number[] {
  * Generate a random board with computed neighbor counts server-side.
  * @returns A randomly generated board
  */
-export function createBoard(): GameTypes.CellData[] {
+export function createBoard(ROWS : number, COLS : number, MINES : number): GameTypes.CellData[] {
     const totalCells = ROWS * COLS;
 
     // start with all empty cells
@@ -80,7 +75,7 @@ export function createBoard(): GameTypes.CellData[] {
             continue;
         }
 
-        const neighbors = getNeighborIndices(i);
+        const neighbors = getNeighborIndices(i, ROWS, COLS);
         let count = 0;
         for(const nIdx of neighbors) {
             if(cells[nIdx].hasMine)
@@ -107,7 +102,7 @@ export function createBoard(): GameTypes.CellData[] {
  * @param cellIndex The base cell to reveal
  * @returns Array of all cells to be revealed. Up to frontend to interpret the data correctly
  */
-export function revealRegion(boardData : GameTypes.CellData[], cellIndex : number) : GameTypes.CellData[] {
+export function revealRegion(boardData : GameTypes.CellData[], cellIndex : number, ROWS : number, COLS : number) : GameTypes.CellData[] {
     let revealedCells : GameTypes.CellData[] = []; 
 
     // check first cell first, then do floodfill logic if it applies
@@ -128,7 +123,7 @@ export function revealRegion(boardData : GameTypes.CellData[], cellIndex : numbe
         if (hidden.Content.Number !== 0) // stop at first non-0 border
             continue;
 
-        const neighbors = getNeighborIndices(i);
+        const neighbors = getNeighborIndices(i, ROWS, COLS);
         for (const nIdx of neighbors) 
             if(!visited.includes(nIdx)) queue.push(nIdx);
         visited.push(i);

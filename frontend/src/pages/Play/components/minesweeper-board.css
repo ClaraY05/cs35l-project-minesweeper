@@ -4,7 +4,6 @@
     justify-content: center;
     padding: 0;
     margin: 0;
-    height: 100vh;
 }
 
 .minesweeper-board {
@@ -20,10 +19,10 @@
     aspect-ratio: 1;
     display: grid;
     place-items: center;
-    overflow: hidden;
     cursor: pointer;
     background-color: bisque;
     border: 1px solid black;
+    overflow: hidden;
 }
 
 .minesweeper-tile.revealed {

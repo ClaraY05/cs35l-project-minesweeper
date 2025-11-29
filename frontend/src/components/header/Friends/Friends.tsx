@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import TextInput from "./TextInput"
 import FriendDisplay from "./FriendDisplay"
+import icon from "./person-group-svgrepo-com.svg"
+
 import { authFetch } from "../../../api/authFetch";
 
 interface Friend {
   user_id: number;
   username: string;
   email: string;
-}
 
 type RemoveCallback = (id: string) => void; // type from FriendDisplay
 
@@ -46,12 +47,12 @@ const Friends = () => {
   }, []);
 
   return (
-    <div>
+    <div className="flex flex-shrink-0">
       <button
         onClick={() => setShowOverlay(true)}
-        className="showOverlay"
+        className="showOverlay rounded-sm bg-main ptpb-2.5 pl-3.5 pr-3.5"
       >
-        Friends
+        <img src={icon} alt="People Icon flex-shrink-0"/>
       </button>
 
       {showOverlay && (

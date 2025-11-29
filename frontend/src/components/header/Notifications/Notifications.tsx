@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Notification from "./Notification";
+import icon from "./mail-svgrepo-com.svg"
 
 const Notifications = () =>{
   const [showOverlay, setShowOverlay] = useState(false);
@@ -18,12 +19,12 @@ const Notifications = () =>{
   };
 
   return (
-    <div>
+    <div className="flex flex-shrink-0">
       <button
         onClick={() => setShowOverlay(true)}
-        className="showOverlay"
+        className="showOverlay rounded-sm bg-main ptpt-2.5 pl-3.5 pr-3.5"
       >
-        Notifications
+        <img src={icon} alt="Letter Icon"/>
       </button>
 
       {showOverlay && (

@@ -23,8 +23,8 @@ const App = () => {
     return (
         <Routes>
             <Route element={<MainLayout />}>
-                <Route path="/" element={<Home/>}/>
-                <Route path="/login" element={<Login/>}/>
+                <Route path="/" element={<Login/>}/>
+                <Route path="/home" element={<Home/>}/>
                 <Route path="/play" element={<Play/>}/>
                 <Route path="/leaderboard" element={<Leaderboard/>}/>
                 <Route path="/tutorial" element={<Tutorial/>}>
