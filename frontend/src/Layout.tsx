@@ -27,9 +27,7 @@ const MainLayout = () => {
         userName={user.username} 
         imgUrl={user.profile_picture || "https://preview.redd.it/do-you-have-goofy-pics-of-your-pretty-cats-v0-51t4e3gnyvib1.jpg?auto=webp&s=27b628d946d585f415de91edb250544ccff0d02c"}
       />
-      <Friends
-        
-       />
+      <Friends/>
       <Notifications/>
       </div>
         )}
