@@ -1,7 +1,9 @@
 export async function authFetch(url:string, options:RequestInit){
+    // browser needs to set it with boundary, so we need to check if the body is a FormData
+    const isFormData = options.body instanceof FormData;
     const headers : HeadersInit = {
         ...(options.headers || {}),
-        "Content-Type":"application/json",
+        ...(isFormData ? {} : { "Content-Type":"application/json" }),
     };
     const res = await fetch(url,{...options, credentials:"include", headers});
     const content_type = res.headers.get("content-type");
