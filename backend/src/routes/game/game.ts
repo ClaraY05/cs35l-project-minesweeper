@@ -1,6 +1,6 @@
 import { generateKey } from "crypto";
 import { Router } from "express";
-import { createBoard, revealRegion } from "./helpers";
+import { createBoard, revealRegion, validateBoard } from "./helpers";
 
 // routes relating to game
 const gameRoutes = Router();
@@ -22,6 +22,7 @@ gameRoutes.post("/create", (req, res) => {
     }
 
     boardData = createBoard(rows, cols, mines);
+    validateBoard(boardData, rows, cols);
     return res.json({ game_id: 1 });
 })
 
