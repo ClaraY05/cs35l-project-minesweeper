@@ -56,6 +56,7 @@ const Settings = () => {
             <nav className="flex flex-row gap-x-5 flex-wrap justify-center">
                 <button><Link to="/home">Home</Link></button>|
                 <button>Save</button>
+                <button>Default</button>
             </nav>
         </div>
     )
