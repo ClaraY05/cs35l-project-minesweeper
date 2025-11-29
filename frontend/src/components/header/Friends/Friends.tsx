@@ -9,6 +9,7 @@ interface Friend {
   user_id: number;
   username: string;
   email: string;
+}
 
 type RemoveCallback = (id: string) => void; // type from FriendDisplay
 
