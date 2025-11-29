@@ -1,4 +1,11 @@
+import { Router } from "express";
+import { authenticateToken, AuthRequest } from "../middleware/authMiddleware";
 import { pool } from "../../db/db";
+
+
+
+// Add routes for friends
+const friendsRouter = Router();
 
 // Add friends to the current user
 export async function addFriend(userID: number, friendID: number){
@@ -37,3 +44,22 @@ export async function getFriends(userID: number){
         throw err;
     }
 }
+
+// Get route to get friends for the current authenticated user
+friendsRouter.get("/", authenticateToken, async (req: AuthRequest, res) => {
+    try {
+      const userID = req.user?.userID;
+  
+      if (!userID) {
+        return res.status(400).json({ error: "Missing user ID in token" });
+      }
+  
+      const friends = await getFriends(userID);
+      return res.json(friends);
+    } catch (err) {
+      console.error("Error in GET /friends:", err);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  });
+  
+  export default friendsRouter;
