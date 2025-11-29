@@ -6,7 +6,6 @@ const VideoInterface = () => {
 
     return (
         <div>
-            <h2>Video & Interface</h2>
             <Selector label="Graphics" options={graphics}/>
             <Checkbox label="Display Tag"/>
             <Checkbox label="Display Username"/>
