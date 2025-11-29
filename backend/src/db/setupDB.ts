@@ -8,7 +8,7 @@ export async function setupDB(){
                 username VARCHAR(50) UNIQUE NOT NULL,
                 email VARCHAR(50) UNIQUE NOT NULL,
                 password_hash TEXT NOT NULL,
-                profile_picture_url TEXT,
+                profile_picture TEXT,
                 created_at TIMESTAMP DEFAULT NOW()
             );
         `);
