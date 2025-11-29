@@ -4,12 +4,12 @@ export async function setupDB(){
     try{
         await pool.query(`
             CREATE TABLE IF NOT EXISTS users (
-                user_id INT GENERATED ALWAYS AS IDENTITY,
+                user_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                 username VARCHAR(50) UNIQUE NOT NULL,
                 email VARCHAR(50) UNIQUE NOT NULL,
                 password_hash TEXT NOT NULL,
-                created_at TIMESTAMP DEFAULT NOW(),
-                PRIMARY KEY(user_id)
+                profile_picture_url TEXT,
+                created_at TIMESTAMP DEFAULT NOW()
             );
         `);
         await pool.query(`
