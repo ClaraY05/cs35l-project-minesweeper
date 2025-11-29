@@ -4,7 +4,7 @@ import { Outlet, NavLink, Link } from "react-router-dom";
 const Settings = () => {
     return (
         <div className="contentDiv">
-            <h1 className="text-fuchsia-500">&gt; Settings</h1>
+            <h1 className="text-fuchsia-500 mt-0 pt-0">&gt; Settings</h1>
             <nav>
                 <ul className="flex flex-row gap-x-11 flex-wrap justify-center py-.5">
                 <li className="flex uppercase font-semibold">
