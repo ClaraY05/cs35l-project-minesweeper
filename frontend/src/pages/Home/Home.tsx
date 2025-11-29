@@ -16,9 +16,17 @@ const Home = () => {
         setExpandingBar(index);
         setTargetPath(path);
 
-        createPageTransition(bar, path, navigate, () => {
-            setExpandingBar(null);
-        });
+        // Ensure the bar is at full width before starting transition
+        bar.style.width = '100vw';
+        
+        // Wait for the width transition to complete (500ms) before starting page transition
+        setTimeout(() => {
+            createPageTransition(bar, path, navigate, () => {
+                setExpandingBar(null);
+                // Reset the width style to allow CSS hover to work again
+                bar.style.width = '';
+            });
+        }, 500); // Match the transition duration from CSS
     };
 
     return (

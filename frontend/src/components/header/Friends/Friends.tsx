@@ -9,12 +9,7 @@ interface Friend {
   profile_picture: string | null;
 }
 
-interface UserFriends{
-    friendIDList:string[]; // fetch actual friend info from DB holding account info of every player
-    dummyRemove: (id: string) => void;
-}
-
-const Friends = ({ friendIDList = [], dummyRemove}: UserFriends) => {
+const Friends = () => {
   const [showOverlay, setShowOverlay] = useState(false);
 
   return (
