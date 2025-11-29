@@ -25,6 +25,7 @@ const TextInput = ({placeholder = "Enter text...", value="", onChange, onSubmit,
 
       <button
         type="submit"
+        className="hover:font-bold"
       >
         Search
       </button>
