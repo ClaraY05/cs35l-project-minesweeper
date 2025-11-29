@@ -38,7 +38,7 @@ authRoutes.post("/register", async(req:Request, res:Response) => {
             const hash = await bcrypt.hash(password, 10);
             
             const result = await pool.query(
-                "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING user_id, username, email",
+                "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING user_id, username, email, profile_picture",
                 [username, email, hash]
             );
 
@@ -48,7 +48,7 @@ authRoutes.post("/register", async(req:Request, res:Response) => {
             res.cookie("token",token,{httpOnly:true, secure:false, sameSite:"lax", maxAge:60*60*1000});
 
 
-            return res.status(201).json({user:{user_id:userID, email:email, username:username}});
+            return res.status(201).json({user:{user_id:userID, email:email, username:username, profile_picture: result.rows[0].profile_picture}});
         }
         // Catch if username is in db already
         catch(err: any) {
@@ -69,7 +69,7 @@ authRoutes.post("/login", async(req:Request, res:Response)=>{
     }
 
     try {
-        const result = await pool.query("SELECT user_id, username, email, password_hash FROM users WHERE email = $1", [email]);
+        const result = await pool.query("SELECT user_id, username, email, password_hash, profile_picture FROM users WHERE email = $1", [email]);
         
         // if user doesn't exist and login request
         if(result.rows.length===0){
@@ -90,7 +90,7 @@ authRoutes.post("/login", async(req:Request, res:Response)=>{
 
         res.cookie("token",token,{httpOnly:true, secure:false, sameSite:"lax", maxAge:60*60*1000});
 
-        return res.status(200).json({user:{user_id: userID, email:email, username:user.username}});
+        return res.status(200).json({user:{user_id: userID, email:email, username:user.username, profile_picture: user.profile_picture}});
     }
     catch(err) {
         console.error(err);

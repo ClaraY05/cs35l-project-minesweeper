@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { PublicCellData } from '../../../types/frontend-gametypes';
 import './minesweeper-board.css'
 
+const ROWS = 9;
+const COLS = 9;
+
 const Tile = ({ className, content, onLeftClick, onRightClick } : any) => {
     return (
         <div
