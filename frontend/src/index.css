@@ -51,6 +51,22 @@ h1{
     @apply truncate;
 }
 
+.friend-name{
+    font-family:"Pixelify Sans", sans-serif;
+    font-size: 2rem;
+    font-weight: 400;
+}
+
+.friend-tag{
+    font-family:"Pixelify Sans", sans-serif;
+    font-size: 1.5rem;
+}
 .page-transition-overlay {
     pointer-events: none;
+}
+
+.friends-overlay {
+    height: calc(100vh - 8.225rem);
+    min-height: 20rem;
+    max-height: 90vh;
 }
