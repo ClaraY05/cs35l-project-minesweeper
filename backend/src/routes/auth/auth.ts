@@ -46,7 +46,7 @@ authRoutes.post("/register", async(req:Request, res:Response) => {
             const userID = result.rows[0].user_id;
 
             await pool.query(
-                "INSERT INTO settings (user_id, keybinds, selectors, sliders, checkboxes, inputs) VALUES ($1,$2,$3,$4,$5,$6)",
+                "INSERT INTO settings (user_id, keybinds, sound, video, notif) VALUES ($1,$2,$3,$4,$5)",
                 [userID, DEFAULT_SETTINGS.keybinds, DEFAULT_SETTINGS.sound, DEFAULT_SETTINGS.video, DEFAULT_SETTINGS.notif]
             );
 

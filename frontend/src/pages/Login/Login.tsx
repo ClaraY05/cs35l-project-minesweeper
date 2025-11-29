@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom"
 import { useLocalStorage } from "usehooks-ts";
+import { loadAllSettings } from "../../api/loadAllSettings";
 
 type Inputs = {
     username?: string;
@@ -43,6 +44,7 @@ const Login = () => {
                 throw new Error(payload.error || "Invalid username or password");
             }
             // setToken(payload.token);
+            await loadAllSettings();
             setUser(payload.user);
             navigate("/home", {replace:true});
         } catch (err: any) {
