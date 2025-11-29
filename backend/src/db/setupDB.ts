@@ -45,6 +45,16 @@ export async function setupDB(){
                     ON DELETE CASCADE
             );
         `);
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS settings (
+            user_id INT NOT NULL PRIMARY KEY REFERENCES users(user_id) ON DELETE CASCADE,
+            keybinds JSONB NOT NULL DEFAULT '{}',
+            selectors JSONB NOT NULL DEFAULT '{}',
+            sliders JSONB NOT NULL DEFAULT '{}',
+            checkboxes JSONB NOT NULL DEFAULT '{}',
+            updated_at TIMESTAMP DEFAULT NOW()
+            );
+        `);
         console.log("tables created successfully");
     } catch(err){
         console.error("error creating tables:", err);
