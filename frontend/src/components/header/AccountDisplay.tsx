@@ -55,7 +55,7 @@ const AccountDisplay:React.FC<AccountDisplayProps> = ({ userName, imgUrl }:Accou
         <div className="flex flex-row bg-main p-2 rounded-sm">
             <div className="flex flex-col p-2">
                 <strong className="text-primary-text account">{userName}</strong>
-                <button onClick={onLogout} className="uppercase text-xs font-bold">Logout</button>
+                <button onClick={onLogout} className="uppercase text-xs font-bold hover:text-red-500">Logout</button>
             </div>
             <div className="flex flex-shrink-0">
                 <input
