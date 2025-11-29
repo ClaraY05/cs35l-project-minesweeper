@@ -20,29 +20,29 @@ const upload = multer({
     }
 });
 
-profilePictureRoutes.post("/upload", authenticateToken, upload.single('profilePicture'), async (req: AuthRequest, res: Response) => {
+profilePictureRoutes.post("/", authenticateToken, upload.single('image'), async (req: AuthRequest, res: Response) => {
     try {
         const userID = req.user?.userID;
         if (!userID) {
-            return res.status(400).json({ error: "Missing user ID in token" });
+            return res.status(401).json({ error: "Unauthorized" });
         }
         if (!req.file) {
-            return res.status(400).json({ error: "No file uploaded" });
+            return res.status(400).json({ error: "No image file provided" });
         }
         
         // Convert the image to base64 to store in db
         const imageBase64 = req.file.buffer.toString('base64');
-        const imageUrl = `data:${req.file.mimetype};base64,${imageBase64}`;
+        const base64Image = `data:${req.file.mimetype};base64,${imageBase64}`;
 
         // update the user pfp in database
         await pool.query(
-            "UPDATE users SET profile_picture_url = $1 WHERE user_id = $2",
-            [imageUrl, userID]
+            "UPDATE users SET profile_picture = $1 WHERE user_id = $2",
+            [base64Image, userID]
         );
 
         return res.status(200).json({
-            message: "Profile picture uploaded successfully",
-            profilePictureUrl: imageUrl
+            message: "Profile picture updated successfully",
+            profile_picture: base64Image
         })
         
     } catch (err) {
