@@ -133,7 +133,7 @@ export function revealRegion(boardData : GameTypes.CellData[], cellIndex : numbe
 }
 
 // helpers.ts (or a debug utils file)
-export function validateBoard(boardData: GameTypes.CellData[]): void {
+export function validateBoard(boardData: GameTypes.CellData[], ROWS : number, COLS : number): void {
     const errors: string[] = [];
 
     const totalCells = boardData.length;
@@ -142,7 +142,7 @@ export function validateBoard(boardData: GameTypes.CellData[]): void {
         const cell = boardData[i];
         if (cell.Content.Type === "mine") continue;
 
-        const neighbors = getNeighborIndices(i);
+        const neighbors = getNeighborIndices(i, ROWS, COLS);
         let count = 0;
 
         for (const nIdx of neighbors) {

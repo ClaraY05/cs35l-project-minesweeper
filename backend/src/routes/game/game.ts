@@ -22,6 +22,7 @@ gameRoutes.post("/create", (req, res) => {
     }
 
     boardData = createBoard(rows, cols, mines);
+    validateBoard(boardData, rows, cols);
     return res.json({ game_id: 1 });
 })
 
