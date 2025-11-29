@@ -1,27 +1,49 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TextInput from "./TextInput"
 import FriendDisplay from "./FriendDisplay"
+import { authFetch } from "../../../api/authFetch";
 
-interface UserFriends{
-    friendIDList:string[]; // fetch actual friend info from DB holding account info of every player
-    dummyRemove: (id: string) => void;
+interface Friend {
+  user_id: number;
+  username: string;
+  email: string;
 }
 
-type RemoveCallback = (id: string) => void; // type from Friend Display
+type RemoveCallback = (id: string) => void; // type from FriendDisplay
 
-const renderFriendDisplay = (friendID:string, dummyRemove:RemoveCallback) => {
-    return(
-        <FriendDisplay id={friendID} name="Friend Name" avatar="https://i.redd.it/help-me-find-the-cat-or-og-picture-from-the-cat-owl-meowl-v0-dghbx7likhgf1.jpg?width=1200&format=pjpg&auto=webp&s=45a83cd201b14934ad2000bf7834a4b92296f4a0" onRemove={dummyRemove}/>
-    );
+const renderFriendDisplay = (friend: Friend, onRemove: RemoveCallback) => {
+  return (
+    <FriendDisplay
+      id={friend.username}
+      name={friend.username}
+      avatar="https://i.redd.it/help-me-find-the-cat-or-og-picture-from-the-cat-owl-meowl-v0-dghbx7likhgf1.jpg?width=1200&format=pjpg&auto=webp&s=45a83cd201b14934ad2000bf7834a4b92296f4a0"
+      onRemove={onRemove}
+    />
+  );
 };
 
-const Friends = ({ friendIDList = [], dummyRemove}: UserFriends) => {
+
+const Friends = () => {
   const [showOverlay, setShowOverlay] = useState(false);
   const [text, setText] = useState("");
+  const [friends, setFriends] = useState<Friend[]>([]);
 
   const handleSearch = (value: string) => {
     console.log("Search submitted for:", value);
   };
+
+  useEffect(() => {
+    async function loadFriends() {
+      try {
+        const data = await authFetch("/api/friends", { method: "GET" });
+        setFriends(data);
+      } catch (err) {
+        console.error("Failed to load friends:", err);
+      }
+    }
+
+    loadFriends();
+  }, []);
 
   return (
     <div>
@@ -42,11 +64,15 @@ const Friends = ({ friendIDList = [], dummyRemove}: UserFriends) => {
 
           <div>
             <h3>Friend List</h3>
-            {friendIDList.length === 0 ? (
+            {friends.length === 0 ? (
               <p>No friends found</p>
             ) : (
-                friendIDList.map(friendID => (
-                renderFriendDisplay(friendID,dummyRemove)
+              friends.map((friend) => (
+                <div key={friend.user_id}>
+                  {renderFriendDisplay(friend, () =>
+                    console.log("remove", friend.user_id)
+                  )}
+                </div>
               ))
             )}
           </div>
