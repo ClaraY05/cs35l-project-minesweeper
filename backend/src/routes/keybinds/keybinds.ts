@@ -53,7 +53,7 @@ router.patch("/:userid", (req, res) => {
 
     const updated: UserKeybinds = {
         userId, 
-        bindings: { ...existing.bindings, ...Router(req.body.bindings ?? {}) },
+        bindings: { ...existing.bindings, ...(req.body.bindings ?? {}) },
     };
 
     userKeybindsStore.set(userId, updated);
