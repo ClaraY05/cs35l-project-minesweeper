@@ -1,18 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface SliderProps {
     label: string;        
-    defaultValue?: number;  
+    nowValue: number;  
     min?: number;      
-    max?: number;             
+    max?: number;
+    onChange?: (nowValue: number) => void;             
   }
   
-const Slider: React.FC<SliderProps> = ({label, defaultValue = 67, min = 1, max = 100,}) => {
-    const [value, setValue] = useState(defaultValue);
+const Slider: React.FC<SliderProps> = ({label, nowValue, min = 1, max = 100, onChange}) => {
+    const [value, setValue] = useState(nowValue);
   
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setValue(Number(e.target.value));
+      const next = Number(e.target.value);
+      setValue(next);
+      if (onChange) onChange(next)
     };
+    useEffect(()=>{setValue(nowValue)},[nowValue])
   
     return (
       <div>
