@@ -2,14 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom"
 import { useLocalStorage } from "usehooks-ts";
-
-type Inputs = {
-    username?: string;
-    password: string;
-    email: string
-};
-
-type AuthMode = "login" | "register";
+import { Inputs, AuthMode, handleLogin, toggleAuthMode } from "./utils/LoginHandler";
 
 const Login = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
@@ -28,20 +21,7 @@ const Login = () => {
         try {
             setLoading(true);
 
-            const endpoint = mode==="login" ? "http://localhost:8000/api/auth/login" : "http://localhost:8000/api/auth/register";
-            const dataBody = mode==="login" ? {email:data.email, password:data.password} : {email:data.email, password:data.password, username:data.username}
-            
-            const res = await fetch(endpoint, {
-                method: 'POST',
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify(dataBody)
-            });
-
-            const payload = await res.json();
-            if (!res.ok){
-                throw new Error(payload.error || "Invalid username or password");
-            }
+            const payload = await handleLogin(data, mode);
             // setToken(payload.token);
             setUser(payload.user);
             navigate("/home", {replace:true});
@@ -52,19 +32,13 @@ const Login = () => {
         }
     }
 
-    const toggle = () =>{
-        if (mode==="login"){
-            setMode("register");
-        }
-        else{
-            setMode("login");
-        }
+    const toggle = () => {
+        setMode(toggleAuthMode(mode));
     }
 
     return (
-        <> 
-        <button type="button" onClick={() => navigate("/")}> Home </button>
-            <h2>Login Form</h2>
+        <div className="contentDiv flex flex-col items-center justify-center"> 
+            <h1>Login Form</h1>
             <button type="button" onClick={toggle}>
                 {mode==="login" ? "Don't have an account? Register" : "Already have an account? Login"}
             </button>
@@ -102,7 +76,7 @@ const Login = () => {
                     <button type="submit" disabled={loading}> {loading ? mode==="login"? "Logging in..." : "Signing up...": mode==="login"? "Login" : "Register"}</button>
                 </div>
             </form>
-        </>
+        </div>
     )
 };
 
