@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import TextInput from "./TextInput"
 import FriendDisplay from "./FriendDisplay"
 import icon from "./person-group-svgrepo-com.svg"
-
+import { createFriendHandlers } from "./FriendHandlers";
 import { authFetch } from "../../../api/authFetch";
 
 interface Friend {
@@ -22,24 +22,20 @@ const renderFriendDisplay = (friend: Friend, onRemove: (friendId: number) => voi
   );
 };
 
-
 const Friends = () => {
   const [showOverlay, setShowOverlay] = useState(false);
   const [text, setText] = useState("");
   const [friends, setFriends] = useState<Friend[]>([]);
+  const [searchResults, setSearchResults] = useState<Friend[]>([]);
 
-  const handleSearch = (value: string) => {
-    console.log("Search submitted for:", value);
-  };
+  // Get the friend handlers
+  const { handleSearch, handleRemoveFriend, handleAddFriend } = createFriendHandlers(
+    setFriends,
+    setSearchResults,
+    friends,
+    searchResults
+  );
 
-  const handleRemoveFriend = async (friendId: number) => {
-    try {
-      await authFetch(`/api/friends/${friendId}`, { method: "DELETE" });
-      setFriends(friends.filter(friend => friend.user_id !== friendId));
-    } catch (err) {
-      console.error("Failed to remove friend:", err);
-    }
-  };
 
   useEffect(() => {
     async function loadFriends() {
@@ -70,7 +66,24 @@ const Friends = () => {
             <h3>Search Friends</h3>
             <TextInput placeholder="Search gamertag..." value={text} onChange={setText} onSubmit={handleSearch}/>
           </div>
-
+          
+          {searchResults.length > 0 && (
+            <div>
+              <h3>Search Results</h3>
+              {searchResults.map((user) => (
+                <div key={user.user_id}>
+                  <div>
+                    <strong>{user.username}</strong>
+                    <em>@{user.email}</em>
+                  </div>
+                  <button onClick={() => handleAddFriend(user.user_id)}>
+                    Add Friend
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          
           <div>
             <h3>Friend List</h3>
             {friends.length === 0 ? (
