@@ -13,8 +13,10 @@ interface FriendProps extends Friend {
 const Friends = ({ id, name, avatar, onRemove}:FriendProps) =>{
     return (
         <div>
-            <strong>{name}</strong>
-            <em>@{id}</em>
+            <div>
+                <strong>{name}</strong>
+                <em>@{id}</em>
+            </div>
             <img src={avatar} alt={`Friend ${name}'s Profile`} style={{ width: "100px", height: "auto" }}/>
             <button
                 onClick={() => onRemove(id)}

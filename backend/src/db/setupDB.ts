@@ -26,6 +26,24 @@ export async function setupDB(){
             created_at TIMESTAMP DEFAULT NOW()
             );
         `);
+
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS friends (
+                friends_id INT GENERATED ALWAYS AS IDENTITY,
+                user_id INT NOT NULL,
+                friend_id INT NOT NULL,
+                created_at TIMESTAMP DEFAULT NOW(),
+                PRIMARY KEY(friends_id),
+                CONSTRAINT fk_user_friend
+                    FOREIGN KEY(user_id)
+                    REFERENCES users(user_id)
+                    ON DELETE CASCADE,
+                CONSTRAINT fk_friend
+                    FOREIGN KEY(friend_id)
+                    REFERENCES users(user_id)
+                    ON DELETE CASCADE
+            );
+        `);
         console.log("tables created successfully");
     } catch(err){
         console.error("error creating tables:", err);

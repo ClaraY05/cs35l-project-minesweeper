@@ -14,14 +14,14 @@ let boardData : GameTypes.CellData[] = [];
 
 // create a game and return its id to the frontend.
 gameRoutes.post("/create", (req, res) => {
-    const { rows, columns, mines } = req.body;
+    const { rows, cols, mines } = req.body;
 
     // Basic validation
-    if (!rows || !columns || rows <= 0 || columns <= 0) {
+    if (!rows || !cols || rows <= 0 || cols <= 0) {
         return res.status(400).json({ error: "rows and columns must be positive integers" });
     }
 
-    boardData = createBoard(rows, columns, mines);
+    boardData = createBoard(rows, cols, mines);
     return res.json({ game_id: 1 });
 })
 

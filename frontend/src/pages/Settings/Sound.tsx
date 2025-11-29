@@ -4,7 +4,6 @@ import Checkbox from "./components/CommonCheckbox";
 const Sound = () => {
     return (
         <div>
-            <h2>Sound</h2>
                 <Slider label="music"/>
                 <Slider label="sfx"/>
                 <Slider label="stereo"/>

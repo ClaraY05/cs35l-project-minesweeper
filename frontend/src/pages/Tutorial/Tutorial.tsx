@@ -3,7 +3,7 @@ import { Outlet, Link } from "react-router-dom";
 
 const Tutorial = () => {
     return (
-        <div>
+        <div className="contentDiv">
             <h1>Tutorial</h1>
             <nav>
                 <ul>
@@ -12,7 +12,7 @@ const Tutorial = () => {
                     <li><Link to="powerups">Powerups</Link></li>
                     <li><Link to="debuffs">Debuffs</Link></li>
                     <li><Link to="tesselation">Tesselation</Link></li>
-                    <li><button><Link to="/">Home</Link></button></li>
+                    <li><button><Link to="/home">Home</Link></button></li>
                 </ul>
             </nav>
             <main> 

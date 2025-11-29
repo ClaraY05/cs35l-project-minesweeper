@@ -1,0 +1,5 @@
+#difficulty-select {
+    &:open {
+        background-color: #1e1f23;
+    }
+}

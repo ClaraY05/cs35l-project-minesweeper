@@ -44,7 +44,7 @@ const Login = () => {
             }
             // setToken(payload.token);
             setUser(payload.user);
-            navigate("/", {replace:true});
+            navigate("/home", {replace:true});
         } catch (err: any) {
             setError(err.message);
         } finally {
@@ -63,7 +63,8 @@ const Login = () => {
 
     return (
         <> 
-            <h2>{mode==="login" ? "Login Form" : "Register Form"}</h2>
+        <button type="button" onClick={() => navigate("/")}> Home </button>
+            <h2>Login Form</h2>
             <button type="button" onClick={toggle}>
                 {mode==="login" ? "Don't have an account? Register" : "Already have an account? Login"}
             </button>

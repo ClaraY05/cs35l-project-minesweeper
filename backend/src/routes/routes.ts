@@ -1,6 +1,7 @@
 import { Router } from "express";
 import gameRoutes from "./game/game";
 import authRoutes from "./auth/auth";
+import friendsRoutes from "./friends/friends";
 import leaderboardRoutes from "./leaderboard/leaderboard";
 
 // routes for our api.
@@ -8,6 +9,7 @@ const router = Router();
 
 router.use("/game", gameRoutes);
 router.use("/auth", authRoutes);
+router.use("/friends", friendsRoutes);
 router.use("/leaderboard", leaderboardRoutes);
 
 router.use((req, res) => {
