@@ -1,3 +1,5 @@
+// This is just a helper script to hash passwords for testing purposes,
+// if you need to hash a password, run `node hash-password.js <password>`
 const bcrypt = require('bcrypt');
 
 const password = process.argv[2];
