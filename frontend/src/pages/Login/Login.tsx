@@ -2,14 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom"
 import { useLocalStorage } from "usehooks-ts";
-
-type Inputs = {
-    username?: string;
-    password: string;
-    email: string
-};
-
-type AuthMode = "login" | "register";
+import { Inputs, AuthMode, handleLogin, toggleAuthMode } from "./utils/LoginHandler";
 
 const Login = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
@@ -28,20 +21,7 @@ const Login = () => {
         try {
             setLoading(true);
 
-            const endpoint = mode==="login" ? "http://localhost:8000/api/auth/login" : "http://localhost:8000/api/auth/register";
-            const dataBody = mode==="login" ? {email:data.email, password:data.password} : {email:data.email, password:data.password, username:data.username}
-            
-            const res = await fetch(endpoint, {
-                method: 'POST',
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify(dataBody)
-            });
-
-            const payload = await res.json();
-            if (!res.ok){
-                throw new Error(payload.error || "Invalid username or password");
-            }
+            const payload = await handleLogin(data, mode);
             // setToken(payload.token);
             setUser(payload.user);
             navigate("/home", {replace:true});
@@ -52,57 +32,56 @@ const Login = () => {
         }
     }
 
-    const toggle = () =>{
-        if (mode==="login"){
-            setMode("register");
-        }
-        else{
-            setMode("login");
-        }
+    const toggle = () => {
+        setMode(toggleAuthMode(mode));
     }
 
     return (
-        <> 
-        <button type="button" onClick={() => navigate("/")}> Home </button>
-            <h2>Login Form</h2>
-            <button type="button" onClick={toggle}>
-                {mode==="login" ? "Don't have an account? Register" : "Already have an account? Login"}
-            </button>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <div>
-                    <input id="email" type="email" placeholder="email" {...register("email",{
-                        required:"Email is required", pattern:{
-                            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                            message: "Invalid email address"
-                        }})}/>
-                    {errors.email && <p style={{color: 'red'}}>{errors.email.message}</p>}
-                </div>
-                {
-                    mode==="register"&&(
-                        <div>
-                            <input id="username" type="text" placeholder="username" {...register("username",{
-                                required:"Username is required", pattern:{value:/^[a-zA-Z0-9]{5,51}$/, message: "Username must be between 5 and 50 characters with no special characters."}
-                            })}/>
-                            {errors.username && <p style={{color: 'red'}}>{errors.username.message}</p>}
-                        </div>
-                    )
-                }
-                <div>
-                    <input id="password" type="password" placeholder="password" {...register("password", {
-                        required: "Password is required", pattern:{
-                            value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                            message: "Password must be at least 8 characters with uppercase, lowercase, number, and special character"
-                        }
-                    })
-                    }/>
-                    {errors.password && <p style={{color: 'red'}}>{errors.password.message}</p>}
-                    {error && <p style={{color: 'red'}}>{error}</p>}
-                </div>
-                <div>
-                    <button type="submit" disabled={loading}> {loading ? mode==="login"? "Logging in..." : "Signing up...": mode==="login"? "Login" : "Register"}</button>
-                </div>
-            </form>
-        </>
+        <div className="contentDiv flex flex-col items-center p-2"> 
+            <h1 className="pb-0">Login Form</h1>
+            <hr className="w-full border-t-2 border-dashed border-white mb-2"></hr>
+            <div className="flex flex-col items-center gap-2">
+                <form onSubmit={handleSubmit(onSubmit)} className="p-5 bg-stone-900 w-[200%] rounded-lg">
+                    <div className="flex flex-col mb-2">
+                        <label htmlFor="email" className="uppercase font-bold">Email</label>
+                        <input id="email" type="email" placeholder="email" className="px-1 rounded-md bg-white text-black" {...register("email",{
+                            required:"Email is required", pattern:{
+                                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                                message: "Invalid email address"
+                            }})}/>
+                        {errors.email && <p style={{color: 'red'}}>{errors.email.message}</p>}
+                    </div>
+                        {mode==="register"&&(
+                            <div className="flex flex-col mb-2">
+                                <label htmlFor="username" className="uppercase font-bold">Username</label>
+                                <input id="username" type="text" placeholder="username" className="px-1 rounded-md bg-white text-black" {...register("username",{
+                                    required:"Username is required", pattern:{value:/^[a-zA-Z0-9]{5,51}$/, message: "Username must be between 5 and 50 characters with no special characters."}
+                                })}/>
+                                {errors.username && <p style={{color: 'red'}}>{errors.username.message}</p>}
+                            </div>
+                        )}
+                    <div className="flex flex-col mb-2">
+                        <label htmlFor="Password" className="uppercase font-bold">Password</label>
+                        <input id="password" type="password" placeholder="password" className="px-1 rounded-md bg-white text-black" {...register("password", {
+                            required: "Password is required", pattern:{
+                                value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                                message: "Password must be at least 8 characters with uppercase, lowercase, number, and special character"
+                            }})}/>
+                            {errors.password && <p style={{color: 'red'}}>{errors.password.message}</p>}
+                        {error && <p style={{color: 'red'}}>{error}</p>}
+                    </div>
+                    <div>
+                        <button type="submit" disabled={loading} className="pt-3 hover:font-bold transition-all duration-300"> 
+                            {loading ? mode==="login"? "Logging in..." : "Signing up...": mode==="login"? "Login" : "Register"}</button>
+                    </div>
+                </form>
+
+                <button type="button" onClick={toggle} 
+                    className="mt-2 text-sm text-primary-text hover:text-secondary-text transition-all duration-300"> 
+                    {mode==="login" ? "Don't have an account? Register" : "Already have an account? Login"} 
+                </button>            
+            </div>
+        </div>
     )
 };
 
