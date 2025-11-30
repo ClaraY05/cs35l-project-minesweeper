@@ -18,7 +18,7 @@ export async function authFetch(url:string, options:RequestInit){
     if(!res.ok){
         if(res.status===401||res.status===403){
             localStorage.removeItem("user");
-            window.location.replace("/login"); // TODO: /login currently doesn't exist
+            window.location.replace("/");
             throw new Error("Session expired.")
         }
         throw new Error(payload.error || "Request failed");
