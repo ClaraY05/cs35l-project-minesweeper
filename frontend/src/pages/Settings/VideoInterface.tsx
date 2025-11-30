@@ -8,7 +8,7 @@ const VideoInterface = () => {
     const [video, setVideo] = useLocalStorage("video", DEFAULT_VIDEO);
     const update = (newChange:any) => setVideo((prev:any)=>({ ...prev, ...newChange}))
     return (
-        <div className="w-full flex flex-col gap-2 px-20">
+        <div className="w-full flex flex-col gap-3 px-20">
             <Selector label="Graphics" options={graphics} value={video.graphics} onChange={(e)=>update({graphics:e})}/>
             {/* <Checkbox label="Display Tag"/> */}
             <Checkbox label="Display Username" nowChecked={video.displayUsername} onChange={(e)=>update({displayUsername:e})}/>

@@ -19,7 +19,7 @@ interface SelectorProps {
     useEffect(()=> {setSelected(value)},[value]); // sync child with parent if parent's value changed through other reasons
   
     return (
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full py-2">
         <div className="uppercase font-semibold text-xl">{label}</div>
         <div className="flex w-full">
           {options.map(option => (
