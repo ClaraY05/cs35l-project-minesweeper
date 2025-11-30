@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { createBoard, revealRegion, validateBoard } from "./helpers";
-import { addNewGame, getGameById } from "./db-helpers";
+import { addNewGame, getGameById, updateGameStatus } from "./db-helpers";
 import { authenticateToken, AuthRequest } from "../middleware/authMiddleware";
 
 // routes relating to game
@@ -27,7 +27,7 @@ gameRoutes.post("/create", authenticateToken, async (req: AuthRequest, res) => {
     const gameID = await addNewGame(userID, boardData, rows, cols, mines, difficulty);
 
     return res.json({ game_id: gameID });
-})
+});
 
 // --- routes requiring a game be active
 // reveal a cell. 
@@ -42,7 +42,36 @@ gameRoutes.post("/cell/reveal", authenticateToken, async (req: AuthRequest, res)
     } else {    
         return res.json(revealRegion(game.board_data, cell_id, game.rows, game.cols));
     } 
-})
+});
 
+// mark a game as finished (win or loss) and set ended_at
+gameRoutes.post("/:gameid/finish", authenticateToken, async (req: AuthRequest, res) => {
+    try {
+        const gameId = Number(req.params.gameid);
+        const { status } = req.body as { status: "end_win" | "end_lose" };
+
+        if (status !== "end_win" && status !== "end_lose") {
+            return res.status(400).json({ error: "Invalid status "});
+        }
+
+        const game = await getGameById(gameId);
+        if(!game) {
+            return res.status(404).json({ error: "Game not found" });
+        }
+
+        // ensure the caller owns this game
+        const userID = Number(req.user?.userID);
+        if (game.user_id !== userID) {
+            return res.status(403).json({ error: "Not your game" });
+        }
+
+        await updateGameStatus(gameId, status);
+
+        return res.json({ game_id: gameId, status });
+    } catch (err) {
+        console.error("Error in POST /game/:gameid/finish:", err);
+        return res.status(500).json({ error: "Failed to finish game" });
+    }
+});
 
 export default gameRoutes;
