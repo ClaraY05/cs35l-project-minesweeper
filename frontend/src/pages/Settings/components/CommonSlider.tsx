@@ -30,11 +30,11 @@ const Slider: React.FC<SliderProps> = ({label, nowValue, min = 1, max = 100, onC
           min={min}
           max={max}
           value={value}
-          className="slider absolute left-[40%] w-[120%] flex flex-shrink-0"
+          className="slider absolute left-[20%] w-[60%] flex flex-shrink-0"
           style={{ '--value': `${percentage}%` } as React.CSSProperties}
           onChange={handleChange}
         />
-        <span className="font-bold uppercase p-1 text-xl absolute left-[160%] ml-2 flex flex-shrink-0">{value}%</span>
+        <span className="font-bold uppercase p-1 text-xl absolute left-[80%] ml-2 flex flex-shrink-0">{value}%</span>
       </div>
     );
   };
