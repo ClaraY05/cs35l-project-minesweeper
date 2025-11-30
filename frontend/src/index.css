@@ -177,3 +177,26 @@ input[type="password"]:-moz-autofill {
     background: transparent;
     cursor: pointer;
 }
+
+.custom-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: black;
+    border: 2px solid white;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+.custom-checkbox:checked {
+    background-color: #c026d3; /* fuchsia-600 */
+    border-color: #86198f; /* fuchsia-800 */
+}
+
+.custom-checkbox:checked::before {
+    display: block;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    line-height: 1.5rem;
+}

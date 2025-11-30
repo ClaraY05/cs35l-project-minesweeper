@@ -13,7 +13,7 @@ const Sound = () => {
                 <Slider label="sfx" nowValue={sound.sfx} onChange={(e)=>update({sfx:e})}/>
                 <Slider label="stereo" nowValue={sound.stereo} onChange={(e)=>update({stereo:e})}/>
             </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col gap-1">
                     <Checkbox label="Sound 1" nowChecked={sound.sound1} onChange={(e)=>update({sound1:e})}/>
                     <Checkbox label="Sound 2" nowChecked={sound.sound2} onChange={(e)=>update({sound2:e})}/>
                     <Checkbox label="Sound 3" nowChecked={sound.sound3} onChange={(e)=>update({sound3:e})}/>
