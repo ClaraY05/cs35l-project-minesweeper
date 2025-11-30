@@ -32,11 +32,3 @@ export const DEFAULT_NOTIF = {
     notif_game_updates:"Yes",
     notif_friend_req:"Yes"
 };
-
-
-export const DEFAULT_SETTINGS = {
-   keybinds: DEFAULT_KEYBINDS,
-   sound:DEFAULT_SOUND,
-   video:DEFAULT_VIDEO,
-   notif:DEFAULT_NOTIF
-};
