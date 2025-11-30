@@ -1,4 +1,3 @@
-import { generateKey } from "crypto";
 import { Router } from "express";
 import { createBoard, revealRegion, validateBoard } from "./helpers";
 import { addNewGame, getGameById } from "./db-helpers";

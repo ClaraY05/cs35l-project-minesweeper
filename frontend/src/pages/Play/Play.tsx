@@ -15,21 +15,36 @@ const Play = () => {
     const [difficulty, setDifficulty] = useState<GameTypes.Difficulty>("easy");
     const { rows, cols, mines } = difficultyConfigs[difficulty];
 
-    // start a new game when page loads
-    useEffect(() => {
-        authFetch("http://localhost:8000/api/game/create", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ rows, cols, mines, difficulty })
-        })
-        .then((data) => setActiveGameID(data.game_id))
-        .catch((err) => console.error(err));
-    }, [rows, cols, mines, difficulty]);
+    // start a new game
+    const startGame = async () => {
+        // If a game already exists, don't create another one
+        // if (activeGameID !== null) return activeGameID;
+
+        try {
+            const data = await authFetch("http://localhost:8000/api/game/create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ rows, cols, mines, difficulty }),
+            });
+
+            setActiveGameID(data.game_id);
+            return data.game_id as number;
+        } catch (err) {
+            console.error("Failed to start game:", err);
+            return null;
+        }
+    };
+    
+    // Optional: reset game when difficulty changes
+    const handleDifficultyChange = (value: GameTypes.Difficulty) => {
+        setDifficulty(value);
+        setActiveGameID(null); // clear current game so a new one is created on first click
+    };
   
     return (
         <div className="play-container">
-            <DifficultySelect value={difficulty} onChange={setDifficulty} />
-            <MinesweeperBoard GameID={activeGameID ?? 0} rows={rows} cols={cols} />
+            <DifficultySelect value={difficulty} onChange={handleDifficultyChange} />
+            <MinesweeperBoard GameID={activeGameID} rows={rows} cols={cols} onFirstClick={startGame} />
         </div>
     )
 }
