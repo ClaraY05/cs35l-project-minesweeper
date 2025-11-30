@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet, NavLink, Link } from "react-router-dom";
 import { authFetch } from "../../api/authFetch";
-import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "./utils/defaultSettings";
+import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "./defaultSettings";
 import { useLocalStorage } from "usehooks-ts";
 
 const Settings = () => {
