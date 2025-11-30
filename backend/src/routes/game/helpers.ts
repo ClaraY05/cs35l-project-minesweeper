@@ -6,8 +6,6 @@ type HiddenCell = {
     adjacentMines: GameTypes.CellNumber;
 }
 
-// generate random hidden board in place of testBoard
-
 // Helper Functions
 function indexToCoord(i : number, COLS : number) {
     const row = Math.floor(i / COLS);
@@ -113,6 +111,7 @@ export function revealRegion(boardData : GameTypes.CellData[], cellIndex : numbe
 
     while (queue.length > 0) {
         const i = queue.shift() as number;
+        visited.push(i);
         const hidden = boardData[i];
 
         if (hidden.Content.Type === "mine") // never flood through mines
@@ -126,7 +125,6 @@ export function revealRegion(boardData : GameTypes.CellData[], cellIndex : numbe
         const neighbors = getNeighborIndices(i, ROWS, COLS);
         for (const nIdx of neighbors) 
             if(!visited.includes(nIdx)) queue.push(nIdx);
-        visited.push(i);
     }
 
     return revealedCells;
