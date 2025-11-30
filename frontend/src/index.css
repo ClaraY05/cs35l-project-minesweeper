@@ -70,3 +70,51 @@ h1{
     min-height: 20rem;
     max-height: 90vh;
 }
+
+/* Form input styling - white background with black text */
+input[type="email"],
+input[type="text"],
+input[type="password"] {
+    background-color: white !important;
+    color: black !important;
+}
+
+/* Maintain white background on interaction states */
+input[type="email"]:focus,
+input[type="email"]:active,
+input[type="email"]:hover,
+input[type="text"]:focus,
+input[type="text"]:active,
+input[type="text"]:hover,
+input[type="password"]:focus,
+input[type="password"]:active,
+input[type="password"]:hover {
+    background-color: white !important;
+    color: black !important;
+}
+
+/* Override autofill styling with box-shadow trick */
+input[type="email"]:-webkit-autofill,
+input[type="text"]:-webkit-autofill,
+input[type="password"]:-webkit-autofill,
+input[type="email"]:-webkit-autofill:hover,
+input[type="text"]:-webkit-autofill:hover,
+input[type="password"]:-webkit-autofill:hover,
+input[type="email"]:-webkit-autofill:focus,
+input[type="text"]:-webkit-autofill:focus,
+input[type="password"]:-webkit-autofill:focus,
+input[type="email"]:-webkit-autofill:active,
+input[type="text"]:-webkit-autofill:active,
+input[type="password"]:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px white inset !important;
+    box-shadow: 0 0 0 1000px white inset !important;
+    -webkit-text-fill-color: black !important;
+    color: black !important;
+}
+
+/* Firefox autofill */
+input[type="email"]:-moz-autofill,
+input[type="text"]:-moz-autofill,
+input[type="password"]:-moz-autofill {
+    background-color: white !important;
+}
