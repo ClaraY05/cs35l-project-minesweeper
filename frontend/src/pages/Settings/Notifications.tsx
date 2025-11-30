@@ -8,8 +8,8 @@ const Notifications = () => {
     const update = (newChange:any) => setNotif((prev:any)=>({ ...prev, ...newChange}));
     return (
         <div>
-            <Selector label="Game Updates" options={bool} value={notif.notif_game_updates} onChange={(e)=>update({notif_game_updates:e})}/>
-            <Selector label="Friend Requests" options={bool} value={notif.notif_friend_req} onChange={(e)=>update({notif_friend_req:e})}/>
+            <Selector label="Game Updates" options={bool} value={notif.notifGameUpdates} onChange={(e)=>update({notifGameUpdates:e})}/>
+            <Selector label="Friend Requests" options={bool} value={notif.notifFriendReq} onChange={(e)=>update({notifFriendReq:e})}/>
         </div>
     );
 }
