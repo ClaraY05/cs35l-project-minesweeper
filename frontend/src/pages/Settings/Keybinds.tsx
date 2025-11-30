@@ -1,6 +1,6 @@
 import KeybindSetter from "./components/AddKey";
 import { useLocalStorage } from "usehooks-ts";
-import { DEFAULT_KEYBINDS } from "./defaultSettings";
+import { DEFAULT_KEYBINDS } from "./utils/defaultSettings"
 
 const Keybinds = () => {
     const [keybinds,setKeybinds] = useLocalStorage("keybinds", DEFAULT_KEYBINDS);

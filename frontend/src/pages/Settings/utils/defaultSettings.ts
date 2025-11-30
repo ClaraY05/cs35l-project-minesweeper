@@ -24,7 +24,6 @@ export const DEFAULT_VIDEO = {
     changeCustomBg:false,
     customBg:"none",
     textSize:16
-
 };
 
 export const DEFAULT_NOTIF = {
