@@ -14,6 +14,7 @@ const AccountDisplay:React.FC<AccountDisplayProps> = ({ userName, imgUrl }:Accou
     const [user, setUser] = useLocalStorage<any|null>("user",null);
     const onLogout = async () =>{
         try {
+            localStorage.clear();
             await fetch("http://localhost:8000/api/auth/logout", {
                 method:"POST",
                 credentials:"include"
