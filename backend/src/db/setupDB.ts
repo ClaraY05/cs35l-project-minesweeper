@@ -23,6 +23,7 @@ export async function setupDB(){
             started_at TIMESTAMP NULL,
             ended_at TIMESTAMP NULL,
             diff_level TEXT NOT NULL,
+            board_data JSONB NOT NULL,
             score INT,
             created_at TIMESTAMP DEFAULT NOW()
             );

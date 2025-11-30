@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import MinesweeperBoard from "./components/MinesweeperBoard"
-import DifficultySelect, { Difficulty } from "./components/DifficultySelect";
+import DifficultySelect from "./components/DifficultySelect";
 import './play.css';
+import { authFetch } from "../../api/authFetch";
 
-const difficultyConfigs: Record<Difficulty, { rows: number; cols: number; mines: number }> = {
+const difficultyConfigs: Record<GameTypes.Difficulty, { rows: number; cols: number; mines: number }> = {
     easy:   { rows: 9,  cols: 9,  mines: 10 },
     medium: { rows: 16, cols: 16, mines: 40 },
     hard:   { rows: 16, cols: 30, mines: 99 },
@@ -11,20 +12,19 @@ const difficultyConfigs: Record<Difficulty, { rows: number; cols: number; mines:
 
 const Play = () => {
     const [activeGameID, setActiveGameID] = useState<number | null>(null);
-    const [difficulty, setDifficulty] = useState<Difficulty>("easy");
+    const [difficulty, setDifficulty] = useState<GameTypes.Difficulty>("easy");
     const { rows, cols, mines } = difficultyConfigs[difficulty];
 
     // start a new game when page loads
     useEffect(() => {
-        fetch("http://localhost:8000/api/game/create", {
+        authFetch("http://localhost:8000/api/game/create", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ rows, cols, mines })
+            body: JSON.stringify({ rows, cols, mines, difficulty })
         })
-        .then((res) => res.json())
         .then((data) => setActiveGameID(data.game_id))
         .catch((err) => console.error(err));
-    }, [rows, cols, mines]);
+    }, [rows, cols, mines, difficulty]);
   
     return (
         <div className="play-container">

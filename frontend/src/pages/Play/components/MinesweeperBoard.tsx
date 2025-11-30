@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { PublicCellData } from '../../../types/frontend-gametypes';
 import './minesweeper-board.css'
+import { authFetch } from '../../../api/authFetch';
 
 const Tile = ({ className, content, onLeftClick, onRightClick } : any) => {
     return (
@@ -62,14 +63,18 @@ const MinesweeperBoard = ({ GameID, rows, cols } : { GameID : number, rows : num
             return; 
 
         // get board data from server for revealed cell
-        const res = await fetch(`http://localhost:8000/api/game/${GameID}/cell/${i}/reveal`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ rows: rows, columns: cols })
-        }); // localhost for performance. NOT DEPLOYABLE
-        if (!res.ok) throw res;
-        const revealedCellData = (await res.json()) as GameTypes.CellData[];
-
+        let res;
+        try {
+            res = await authFetch(`http://localhost:8000/api/game/cell/reveal`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ gameid: GameID, cellid: i })
+            });
+        } catch (err) {
+            const error = err as Error;
+            console.log("Error during reveal: ", error.message);
+        }
+        const revealedCellData = res as GameTypes.CellData[];
         const newTiles = [...Tiles];
 
         for (const revealedCell of revealedCellData) {
