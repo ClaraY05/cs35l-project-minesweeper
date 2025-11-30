@@ -17,9 +17,6 @@ const Play = () => {
 
     // start a new game
     const startGame = async (firstClickedCell : number) => {
-        // If a game already exists, don't create another one
-        // if (activeGameID !== null) return activeGameID;
-
         try {
             const data = await authFetch("http://localhost:8000/api/game/create", {
                 method: "POST",
