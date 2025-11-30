@@ -41,7 +41,7 @@ const Play = () => {
     return (
         <div className="play-container">
             <DifficultySelect value={difficulty} onChange={handleDifficultyChange} />
-            <MinesweeperBoard GameID={activeGameID} rows={rows} cols={cols} onFirstClick={startGame} />
+            <MinesweeperBoard GameID={activeGameID} rows={rows} mines={mines} cols={cols} onFirstClick={startGame} />
         </div>
     )
 }

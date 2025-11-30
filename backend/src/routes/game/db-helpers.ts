@@ -38,7 +38,7 @@ export const addNewGame = async (
         // TODO: initiate statuses after first click.
         const result = await pool.query(
         `
-        INSERT INTO games (user_id, board_data, rows, cols, mines, diff_level, started_at)
+        INSERT INTO games (user_id, board_data, rows, cols, mines, diff_level, status, started_at)
         VALUES ($1, $2, $3, $4, $5, $6, 'play', (NOW() AT TIME ZONE 'UTC'))
         RETURNING game_id
         `,
