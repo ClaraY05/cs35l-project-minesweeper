@@ -5,11 +5,11 @@ export const addNewGame = async (userID : number, boardData : GameTypes.CellData
         // TODO: initiate statuses after first click.
         const result = await pool.query(
         `
-        INSERT INTO games (user_id, board_data, rows, cols, mines, diff_level)
-        VALUES ($1, $2, $3, $4, $5, $6)
+        INSERT INTO games (user_id, board_data, rows, cols, mines, diff_level, started_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING game_id
         `,
-        [userID, JSON.stringify(boardData), rows, cols, mines, String(difficulty)]
+        [userID, JSON.stringify(boardData), rows, cols, mines, String(difficulty), new Date()]
         );
         return Number(result.rows[0].game_id);
     }
