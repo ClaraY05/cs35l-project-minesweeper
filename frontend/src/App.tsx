@@ -16,6 +16,7 @@ import Login from "./pages/Login/Login"
 import Leaderboard from "./pages/Leaderboard/Leaderboard"
 
 import { Routes, Route, Navigate } from 'react-router-dom';
+import AuthRedirect from "./components/AuthRedirect";
 
 // because of react-router conventions, App now contains all available routes rather than the homepage.
 // you can add more routes as you see fit.
@@ -23,7 +24,11 @@ const App = () => {
     return (
         <Routes>
             <Route element={<MainLayout />}>
-                <Route path="/" element={<Login/>}/>
+                <Route path="/" element={
+                    <AuthRedirect>
+                        <Login />
+                    </AuthRedirect>
+                }/>
                 <Route path="/home" element={<Home/>}/>
                 <Route path="/play" element={<Play/>}/>
                 <Route path="/leaderboard" element={<Leaderboard/>}/>
