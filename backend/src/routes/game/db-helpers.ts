@@ -35,7 +35,6 @@ export const addNewGame = async (
     difficulty : GameTypes.Difficulty
 ) : Promise<number> => {
     try {
-        // TODO: initiate statuses after first click.
         const result = await pool.query(
         `
         INSERT INTO games (user_id, board_data, rows, cols, mines, diff_level, status, started_at)
@@ -54,7 +53,6 @@ export const addNewGame = async (
 
 export const getGameById = async (gameId: number): Promise<any> => {
     try {
-        // TODO: guards to ensure user matches user created ?
         const result = await pool.query(
             `
             SELECT *

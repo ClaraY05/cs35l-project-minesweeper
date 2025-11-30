@@ -39,7 +39,12 @@ gameRoutes.post("/cell/reveal", authenticateToken, async (req: AuthRequest, res)
 
     if (!game) {
         return res.status(404).send("Unknown game id");
-    } else {    
+    } else {  
+        // ensure the caller owns this game
+        const userID = Number(req.user?.userID);
+        if (game.user_id !== userID) {
+            return res.status(403).json({ error: "Not your game" });
+        } 
         return res.json(revealRegion(game.board_data, cell_id, game.rows, game.cols));
     } 
 });
