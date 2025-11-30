@@ -17,8 +17,17 @@ export async function authFetch(url:string, options:RequestInit){
     }
     if(!res.ok){
         if(res.status===401||res.status===403){
-            localStorage.removeItem("user");
-            window.location.replace("/login");
+            // clear jwt from httpOnly cookie
+            try{
+                await fetch("http://localhost:8000/api/auth/logout", {
+                    method:"POST",
+                    credentials:"include"
+                });
+            } catch (error){
+                console.error("clear token failed")
+            }
+            localStorage.clear()
+            window.location.replace("/");
             throw new Error("Session expired.")
         }
         throw new Error(payload.error || "Request failed");
