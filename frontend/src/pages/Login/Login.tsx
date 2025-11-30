@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom"
 import { useLocalStorage } from "usehooks-ts";
+import { loadAllSettings } from "../../api/loadAllSettings";
 import { Inputs, AuthMode, handleLogin, toggleAuthMode } from "./utils/LoginHandler";
 
 const Login = () => {
@@ -23,6 +24,7 @@ const Login = () => {
 
             const payload = await handleLogin(data, mode);
             // setToken(payload.token);
+            await loadAllSettings();
             setUser(payload.user);
             navigate("/home", {replace:true});
         } catch (err: any) {
