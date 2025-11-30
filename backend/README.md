@@ -8,4 +8,4 @@ Just like for the frontend, try to use subfolders under `routes/` to subdivide r
 
 ## Statefulness problems
 
-tsx attempts to rerun your server every time it detects a typescript file change. For certain methods like `revealRegion()` this will not work because it clears any local memory the server process was using, i.e. `boardData`, so methods that rely on server state will fail. to fix this just restart the whole app with `npm run dev`
+tsx attempts to rerun your server every time it detects a typescript file change. ~~For certain methods like `revealRegion()` this will not work because it clears any local memory the server process was using, i.e. `boardData`, so methods that rely on server state will fail. to fix this just restart the whole app with `npm run dev`~~ Not anymore because the server no longer stores the game information (or any stateful information for that matter)

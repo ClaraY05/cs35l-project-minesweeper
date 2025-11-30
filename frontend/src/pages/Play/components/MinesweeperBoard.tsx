@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
 import { PublicCellData } from '../../../types/frontend-gametypes';
 import './minesweeper-board.css'
-
-const ROWS = 9;
-const COLS = 9;
+import { authFetch } from '../../../api/authFetch';
 
 const Tile = ({ className, content, onLeftClick, onRightClick } : any) => {
     return (
@@ -23,7 +21,7 @@ const Tile = ({ className, content, onLeftClick, onRightClick } : any) => {
     )
 };
 
-const MinesweeperBoard = ({ GameID, rows, cols } : { GameID : number, rows : number, cols : number }) => {
+const MinesweeperBoard = ({ GameID, rows, cols, onFirstClick } : { GameID : number | null, rows : number, cols : number, onFirstClick : (arg0 : number) => Promise<any> }) => {
     const [Tiles, setTiles] = useState<Array<PublicCellData | null>>(() => Array(rows * cols).fill(null)); // frontend cell data store. null means "dont know"
     const [status, setStatus] = useState<"playing" | "won" | "lost">("playing"); // TODO: notify server (Marissa's doing this)
 
@@ -58,6 +56,20 @@ const MinesweeperBoard = ({ GameID, rows, cols } : { GameID : number, rows : num
     }
 
     const handleTileLeftClick = async (i : number) : Promise<void> => {
+        // start game on first click
+        let gameIdToUse = GameID;
+        if (gameIdToUse === null) {
+            if (!onFirstClick) {
+                console.error("No GameID and no onFirstClick handler provided.");
+                return;
+            }
+            gameIdToUse = await onFirstClick(i);
+            if (gameIdToUse === null) {
+                console.error("Failed to start game on first click.");
+                return;
+            }
+        }
+
         // save api calls
         const cell = Tiles[i];
         const isFlagged = cell && "Flagged" in cell.State ? cell.State.Flagged : false;
@@ -65,14 +77,18 @@ const MinesweeperBoard = ({ GameID, rows, cols } : { GameID : number, rows : num
             return; 
 
         // get board data from server for revealed cell
-        const res = await fetch(`http://localhost:8000/api/game/${GameID}/cell/${i}/reveal`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ rows: rows, columns: cols })
-        }); // localhost for performance. NOT DEPLOYABLE
-        if (!res.ok) throw res;
-        const revealedCellData = (await res.json()) as GameTypes.CellData[];
-
+        let res;
+        try {
+            res = await authFetch(`http://localhost:8000/api/game/cell/reveal`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ gameid: gameIdToUse, cellid: i })
+            });
+        } catch (err) {
+            const error = err as Error;
+            console.log("Error during reveal: ", error.message);
+        }
+        const revealedCellData = res as GameTypes.CellData[];
         const newTiles = [...Tiles];
 
         for (const revealedCell of revealedCellData) {

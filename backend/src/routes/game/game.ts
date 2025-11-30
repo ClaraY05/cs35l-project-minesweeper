@@ -1,43 +1,46 @@
-import { generateKey } from "crypto";
 import { Router } from "express";
 import { createBoard, revealRegion, validateBoard } from "./helpers";
+import { addNewGame, getGameById } from "./db-helpers";
+import { authenticateToken, AuthRequest } from "../middleware/authMiddleware";
 
 // routes relating to game
 const gameRoutes = Router();
 
-// -------- unassigned
-// TODO: first click safety
-// --------
-
-// the generated board. will need to throw this into db later to support multiple live games probably
-let boardData : GameTypes.CellData[] = [];
-
 // create a game and return its id to the frontend.
-gameRoutes.post("/create", (req, res) => {
-    const { rows, cols, mines } = req.body;
+gameRoutes.post("/create", authenticateToken, async (req: AuthRequest, res) => {
+    const rows = Number(req.body.rows);
+    const cols = Number(req.body.cols);
+    const mines = Number(req.body.mines);
+    const difficulty : GameTypes.Difficulty = String(req.body.difficulty) as GameTypes.Difficulty;
+    const first = Number(req.body.firstClickedCell)
 
     // Basic validation
     if (!rows || !cols || rows <= 0 || cols <= 0) {
         return res.status(400).json({ error: "rows and columns must be positive integers" });
     }
 
-    boardData = createBoard(rows, cols, mines);
+    const boardData : GameTypes.CellData[] = createBoard(rows, cols, mines, first);
     validateBoard(boardData, rows, cols);
-    return res.json({ game_id: 1 });
+    
+    const userID = Number(req.user?.userID);
+
+    const gameID = await addNewGame(userID, boardData, rows, cols, mines, difficulty);
+
+    return res.json({ game_id: gameID });
 })
 
 // --- routes requiring a game be active
 // reveal a cell. 
 // gets a cell's content. TODO: add cell index to set of revealed cells for win condition tracking
-gameRoutes.post("/:gameid/cell/:cellid/reveal", (req, res) => {
-    const game_id = Number(req.params.gameid);
-    const cell_id = Number(req.params.cellid);
-    const { rows, columns } = req.body;
-     // TODO: remove placeholder with actual game ids that generate
-    if (game_id === 1) {
-        return res.json(revealRegion(boardData, cell_id, rows, columns)); // TODO: change this to backend storing size of each game rather than passing size in on every call
-    } else {    
+gameRoutes.post("/cell/reveal", authenticateToken, async (req: AuthRequest, res)  => {
+    const game_id = Number(req.body.gameid);
+    const cell_id = Number(req.body.cellid);
+    const game = await getGameById(game_id);
+
+    if (!game) {
         return res.status(404).send("Unknown game id");
+    } else {    
+        return res.json(revealRegion(game.board_data, cell_id, game.rows, game.cols));
     } 
 })
 
