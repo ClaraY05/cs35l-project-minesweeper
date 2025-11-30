@@ -35,7 +35,7 @@
     "@types/node": "^24.9.2",
     "@types/pg": "^8.10.9",
     "dotenv-cli": "^11.0.0",
-    "node-pg-migrate": "^8.0.3",
+    "node-pg-migrate": "^7.6.1",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"

@@ -14,4 +14,9 @@ declare namespace GameTypes {
      * Server-side truth of what each cell *is*.
      */
     type CellData = { readonly Content: CellContent; readonly Position: number; }
+
+    /**
+     * Shared possible states for game difficulty
+     */
+    type Difficulty = "easy" | "medium" | "hard";
 }

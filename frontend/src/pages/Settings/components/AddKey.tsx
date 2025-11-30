@@ -41,15 +41,14 @@ const KeybindSetter: React.FC<KeybindSetterProp> = ({ defaultAction, nowKey, thi
         <div
         tabIndex={0} // needed to focus the div
         onKeyDown={handleKeyDown}
-        className={`{thisClassName} w-full flex flex-row p-1`}
+        className={`{thisClassName} w-full flex flex-row p-1 px-20 justify-between items-center`}
         >
-        <strong className="uppercase font-semibold text-neutral-300 pl-15 pr-45">{keybind.action} </strong>
-      
-        <span 
-            onClick={() => setListening(true)}
-            className="uppercase font-semibold text-slate-50 hover:text-fuchsia-600 text-neutral-50">
-            {listening ? "Press a key..." : normalizeKey(keybind.key)}
-        </span>
+            <strong className="uppercase font-semibold text-neutral-300 flex">{keybind.action} </strong>
+            <span 
+                onClick={() => setListening(true)}
+                className="uppercase font-semibold text-slate-50 hover:text-fuchsia-600 text-neutral-50 flex">
+                {listening ? "Press a key..." : normalizeKey(keybind.key)}
+            </span>
         </div>
     );
 };
