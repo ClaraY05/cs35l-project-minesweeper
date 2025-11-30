@@ -16,7 +16,7 @@ const Play = () => {
     const { rows, cols, mines } = difficultyConfigs[difficulty];
 
     // start a new game
-    const startGame = async () => {
+    const startGame = async (firstClickedCell : number) => {
         // If a game already exists, don't create another one
         // if (activeGameID !== null) return activeGameID;
 
@@ -24,7 +24,7 @@ const Play = () => {
             const data = await authFetch("http://localhost:8000/api/game/create", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ rows, cols, mines, difficulty }),
+                body: JSON.stringify({ rows, cols, mines, difficulty, firstClickedCell }),
             });
 
             setActiveGameID(data.game_id);

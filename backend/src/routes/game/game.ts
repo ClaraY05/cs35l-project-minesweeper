@@ -6,23 +6,20 @@ import { authenticateToken, AuthRequest } from "../middleware/authMiddleware";
 // routes relating to game
 const gameRoutes = Router();
 
-// -------- 
-// TODO: first click safety
-// --------
-
 // create a game and return its id to the frontend.
 gameRoutes.post("/create", authenticateToken, async (req: AuthRequest, res) => {
     const rows = Number(req.body.rows);
     const cols = Number(req.body.cols);
     const mines = Number(req.body.mines);
     const difficulty : GameTypes.Difficulty = String(req.body.difficulty) as GameTypes.Difficulty;
+    const first = Number(req.body.firstClickedCell)
 
     // Basic validation
     if (!rows || !cols || rows <= 0 || cols <= 0) {
         return res.status(400).json({ error: "rows and columns must be positive integers" });
     }
 
-    const boardData : GameTypes.CellData[] = createBoard(rows, cols, mines);
+    const boardData : GameTypes.CellData[] = createBoard(rows, cols, mines, first);
     validateBoard(boardData, rows, cols);
     
     const userID = Number(req.user?.userID);

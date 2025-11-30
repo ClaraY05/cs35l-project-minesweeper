@@ -41,18 +41,19 @@ function getNeighborIndices(i : number, ROWS : number, COLS : number) : number[]
 
 /**
  * Generate a random board with computed neighbor counts server-side.
+ * @param FIRST the first clicked cell (safety guarantee.) pass null if don't care
  * @returns A randomly generated board
  */
-export function createBoard(ROWS : number, COLS : number, MINES : number): GameTypes.CellData[] {
+export function createBoard(ROWS : number, COLS : number, MINES : number, FIRST : number | null): GameTypes.CellData[] {
     const totalCells = ROWS * COLS;
 
     // start with all empty cells
-    const cells: HiddenCell[] = Array.from({ length: totalCells}, () => ({
+    const cells: HiddenCell[] = Array.from({ length: totalCells }, () => ({
         hasMine: false,
         adjacentMines: 0,
     }))
 
-    // create array, shuffle, and choose the mines
+    // create array, shuffle
     const indices = Array.from({ length: totalCells }, (_, i) => i);
 
     for (let i = indices.length - 1; i > 0; i--) { // Fisher-Yates
@@ -60,8 +61,15 @@ export function createBoard(ROWS : number, COLS : number, MINES : number): GameT
         [indices[i], indices[j]] = [indices[j], indices[i]];
     }
     
-    for (let k = 0; k < MINES; k++) {
+    // choose first MINES indicies as mines (k), unless that index is the FIRST click
+    // k should never go out of bounds because MINES << totalCells always but added a check anyways
+    for (let i = 0, k = 0; i < MINES && k < indices.length; i++, k++) {
         const mineIndex = indices[k];
+        if (mineIndex === FIRST) {
+            k++;
+            i--;
+            continue;
+        }
         cells[mineIndex].hasMine = true;
     }
 

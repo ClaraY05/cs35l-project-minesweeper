@@ -21,7 +21,7 @@ const Tile = ({ className, content, onLeftClick, onRightClick } : any) => {
     )
 };
 
-const MinesweeperBoard = ({ GameID, rows, cols, onFirstClick } : { GameID : number | null, rows : number, cols : number, onFirstClick : () => Promise<any> }) => {
+const MinesweeperBoard = ({ GameID, rows, cols, onFirstClick } : { GameID : number | null, rows : number, cols : number, onFirstClick : (arg0 : number) => Promise<any> }) => {
     const [Tiles, setTiles] = useState<Array<PublicCellData | null>>(() => Array(rows * cols).fill(null)); // frontend cell data store. null means "dont know"
     const [status, setStatus] = useState<"playing" | "won" | "lost">("playing"); // TODO: notify server (Marissa's doing this)
 
@@ -63,7 +63,7 @@ const MinesweeperBoard = ({ GameID, rows, cols, onFirstClick } : { GameID : numb
                 console.error("No GameID and no onFirstClick handler provided.");
                 return;
             }
-            gameIdToUse = await onFirstClick();
+            gameIdToUse = await onFirstClick(i);
             if (gameIdToUse === null) {
                 console.error("Failed to start game on first click.");
                 return;
