@@ -108,10 +108,10 @@ export function revealRegion(boardData : GameTypes.CellData[], cellIndex : numbe
 
     const queue: number[] = [cellIndex] // BFS queue
     const visited: number[] = []; // so that the BFS doesn't crawl back onto itself. wasn't needed in Marissa's implementation bc she tracked revealed on frontend
+    visited.push(cellIndex);
 
     while (queue.length > 0) {
         const i = queue.shift() as number;
-        visited.push(i);
         const hidden = boardData[i];
 
         if (hidden.Content.Type === "mine") // never flood through mines
@@ -123,8 +123,12 @@ export function revealRegion(boardData : GameTypes.CellData[], cellIndex : numbe
             continue;
 
         const neighbors = getNeighborIndices(i, ROWS, COLS);
-        for (const nIdx of neighbors) 
-            if(!visited.includes(nIdx)) queue.push(nIdx);
+        for (const nIdx of neighbors) {
+            if(!visited.includes(nIdx)) {
+                queue.push(nIdx);
+                visited.push(nIdx);
+            }
+        }
     }
 
     return revealedCells;
