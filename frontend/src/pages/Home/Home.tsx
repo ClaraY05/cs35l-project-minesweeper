@@ -1,27 +1,82 @@
-import { Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
+import { useState, useRef } from "react"
+import { createPageTransition } from "./utils/pageTransition"
 
 const Home = () => {
+    const navigate = useNavigate();
+    const [expandingBar, setExpandingBar] = useState<number | null>(null);
+    const [targetPath, setTargetPath] = useState<string>("");
+    const barRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+
+    const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, index: number, path: string) => {
+        e.preventDefault();
+        const bar = barRefs.current[index];
+        if (!bar) return;
+
+        setExpandingBar(index);
+        setTargetPath(path);
+
+        // Ensure the bar is at full width before starting transition
+        bar.style.width = '100vw';
+        
+        // Wait for the width transition to complete (500ms) before starting page transition
+        setTimeout(() => {
+            createPageTransition(bar, path, navigate, () => {
+                setExpandingBar(null);
+                // Reset the width style to allow CSS hover to work again
+                bar.style.width = '';
+            });
+        }, 500); // Match the transition duration from CSS
+    };
+
     return (
-        <div className="w-full flex justify-end">
-        <li className="h-full flex gap-2 flex-col w-[55%]">
-            <ul><Link to="/play" className="option-text option-bar bg-amber-500 flex">
-              &gt; <div className="truncate">Single Player</div>
-            </Link></ul>
-            <ul><Link to="/play" className="option-text option-bar bg-sky-500 flex">
-                &gt; <div className="truncate">Multiplayer</div>
-            </Link></ul>
-            <ul><Link to="/tutorial" className="option-text option-bar bg-lime-500 flex">
-              &gt; <div className="truncate">Tutorial</div>
-            </Link> </ul>
-            <ul><Link to="/settings" className="option-text option-bar bg-fuchsia-500 flex">
-              &gt; <div className="truncate">Settings</div>
-            </Link></ul>
-            <ul><Link to="/leaderboard" className="option-text option-bar bg-indigo-600 flex">
-              &gt; <div className="truncate">Leaderboard</div>
-            </Link></ul>
-        </li>
-      </div>      
-    )
+      <div className="w-full h-full relative flex flex-col items-end gap-2 p-4">
+        <a
+          href="/play"
+          ref={(el) => { barRefs.current[0] = el; }}
+          onClick={(e) => handleClick(e, 0, "/play")}
+          className="option-bar bg-amber-500"
+        >
+          <div className="option-text">&gt; Single Player_</div>
+        </a>
+  
+        <a
+          href="/play"
+          ref={(el) => { barRefs.current[1] = el; }}
+          onClick={(e) => handleClick(e, 1, "/play")}
+          className="option-bar bg-sky-500"
+        >
+          <div className="option-text">&gt; Multiplayer_</div>
+        </a>
+  
+        <a
+          href="/tutorial"
+          ref={(el) => { barRefs.current[2] = el; }}
+          onClick={(e) => handleClick(e, 2, "/tutorial")}
+          className="option-bar bg-lime-500"
+        >
+          <div className="option-text">&gt; Tutorial_</div>
+        </a>
+  
+        <a
+          href="/settings"
+          ref={(el) => { barRefs.current[3] = el; }}
+          onClick={(e) => handleClick(e, 3, "/settings")}
+          className="option-bar bg-fuchsia-500"
+        >
+          <div className="option-text">&gt; Settings_</div>
+        </a>
+  
+        <a
+          href="/leaderboard"
+          ref={(el) => { barRefs.current[4] = el; }}
+          onClick={(e) => handleClick(e, 4, "/leaderboard")}
+          className="option-bar bg-indigo-600"
+        >
+          <div className="option-text">&gt; Leaderboard_</div>
+        </a>
+      </div>
+    );
 }
 
 export default Home;

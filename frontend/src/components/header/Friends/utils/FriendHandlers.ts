@@ -1,4 +1,4 @@
-import { authFetch } from "../../../api/authFetch";
+import { authFetch } from "../../../../api/authFetch";
 
 
 interface Friend {
@@ -57,3 +57,4 @@ export const createFriendHandlers = (
 
     return { handleSearch, handleRemoveFriend, handleAddFriend };
 };
+
