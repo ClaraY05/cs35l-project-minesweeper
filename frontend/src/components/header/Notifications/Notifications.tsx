@@ -22,7 +22,7 @@ const Notifications = () =>{
     <div className="flex flex-shrink-0">
       <button
         onClick={() => setShowOverlay(true)}
-        className="showOverlay rounded-sm bg-main ptpt-2.5 pl-3.5 pr-3.5"
+        className="showOverlay rounded-sm bg-main ptpt-2.5 pl-3.5 pr-3.5 cursor-pointer"
       >
         <img src={icon} alt="Letter Icon"/>
       </button>
