@@ -1,4 +1,4 @@
-import { KeyAction } from "./keybindTypes";
+import { KeyAction, SoundAction, VideoAction, NotifAction } from "./settingTypes";
 
 export const DEFAULT_KEYBINDS: Record<KeyAction, string> = {
     openCell: "MouseLeft",
@@ -10,7 +10,7 @@ export const DEFAULT_KEYBINDS: Record<KeyAction, string> = {
     powerup2: "Key2",
 };
 
-export const DEFAULT_SOUND = {
+export const DEFAULT_SOUND: Record<SoundAction, number | boolean> = {
     music:50,
     sfx:50,
     stereo:50,
@@ -20,8 +20,8 @@ export const DEFAULT_SOUND = {
     sound4:false
 };
 
-export const DEFAULT_VIDEO = {
-    graphics:"low",
+export const DEFAULT_VIDEO: Record<VideoAction, string | number | boolean> = {
+    graphics:"Low",
     displayUsername:false,
     changeTextSize:false,
     changeCustomBg:false,
@@ -30,9 +30,9 @@ export const DEFAULT_VIDEO = {
 
 };
 
-export const DEFAULT_NOTIF = {
-    notif_game_updates:"yes",
-    notif_friend_req:"yes"
+export const DEFAULT_NOTIF: Record<NotifAction, string | boolean> = {
+    notif_game_updates:"Yes",
+    notif_friend_req:"Yes"
 };
 
 

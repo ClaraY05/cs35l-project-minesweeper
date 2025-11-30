@@ -1,12 +1,16 @@
 import { Router } from "express";
 import { pool } from "../../db/db";
 import { authenticateToken, AuthRequest } from "../middleware/authMiddleware";
-import { KeyAction } from "../settings/keybindTypes";
+import { KeyAction, SoundAction, VideoAction, NotifAction } from "./settingTypes";
 import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "./defaultSettings";
 
 const settingsRoutes = Router();
 
 type KeybindMap = Record<KeyAction, string>;
+type SoundMap = Record<SoundAction, number | boolean>;
+type VideoMap = Record<VideoAction, string | number | boolean>;
+type NotifMap = Record<NotifAction, string | boolean>;
+
 
 type KeybindsBody = {
     bindings?: Partial<KeybindMap>;
@@ -39,8 +43,7 @@ async function saveUserKeybinds(userId: number, keybinds: KeybindMap): Promise<v
         INSERT INTO settings (user_id, keybinds)
         VALUES ($1, $2)
         ON CONFLICT (user_id) DO UPDATE
-        SET keybinds = EXCLUDED.keybinds,
-            updated_at = NOW()
+        SET keybinds = EXCLUDED.keybinds
         `,
         [userId, keybinds]
     );
@@ -48,7 +51,9 @@ async function saveUserKeybinds(userId: number, keybinds: KeybindMap): Promise<v
 
 async function getUserSound(userID:number){
     const result = await pool.query("SELECT sound FROM settings WHERE user_id = $1", [userID]);
-    const sound = result.rows[0].sound;
+    const dbValue = result.rows[0].sound as any;
+    const sound: Partial<SoundMap> = typeof dbValue ==="string" ? JSON.parse(dbValue) : dbValue;
+
     return { ...sound };
 };
 
@@ -63,8 +68,9 @@ async function saveUserSound(userID:number, sound:any){
 
 async function getUserVideo(userID:number){
     const result = await pool.query("SELECT video FROM settings WHERE user_id = $1", [userID]);
-    const video = result.rows[0].video;
-    return { ...video };
+    const dbValue = result.rows[0].video;
+    const video: Partial<VideoMap> = typeof dbValue === "string" ? JSON.parse(dbValue) : dbValue;
+    return { ...DEFAULT_VIDEO, ...video };
 };
 
 async function saveUserVideo(userID:number, video:any){
@@ -78,8 +84,9 @@ async function saveUserVideo(userID:number, video:any){
 
 async function getUserNotif(userID:number){
     const result = await pool.query("SELECT notif FROM settings WHERE user_id = $1", [userID]);
-    const notif = result.rows[0].notif;
-    return { ...notif };
+    const dbValue = result.rows[0].notif;
+    const notif: Partial<NotifMap> = typeof dbValue === "string" ? JSON.parse(dbValue) : dbValue;
+    return { ...DEFAULT_NOTIF, ...notif };
 };
 
 async function saveUserNotif(userID:number, notif:any){
@@ -172,7 +179,7 @@ settingsRoutes.get("/sound", authenticateToken, async (req: AuthRequest, res) =>
 settingsRoutes.put("/sound", authenticateToken, async (req: AuthRequest, res) => {
     try {
         const userID = req.user.userID;
-        const sound = req.body || DEFAULT_SOUND;
+        const sound = req.body.sound || DEFAULT_SOUND;
         await saveUserSound(userID, sound);
         return res.json({ userID, sound });
     } catch (err) {
@@ -194,7 +201,7 @@ settingsRoutes.get("/video", authenticateToken, async (req: AuthRequest, res) =>
 settingsRoutes.put("/video", authenticateToken, async (req: AuthRequest, res) => {
     try {
         const userID = req.user.userID;
-        const video = req.body || DEFAULT_VIDEO;
+        const video = req.body.video || DEFAULT_VIDEO;
         await saveUserVideo(userID, video);
         return res.json({ userID, video });
     } catch (err) {
@@ -216,7 +223,7 @@ settingsRoutes.get("/notif", authenticateToken, async (req: AuthRequest, res) =>
 settingsRoutes.put("/notif", authenticateToken, async (req: AuthRequest, res) => {
     try {
         const userID = req.user.userID;
-        const notif = req.body || DEFAULT_NOTIF;
+        const notif = req.body.notif || DEFAULT_NOTIF;
         await saveUserNotif(userID, notif);
         return res.json({ userID, notif });
     } catch (err) {
