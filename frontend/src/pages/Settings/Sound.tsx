@@ -7,7 +7,7 @@ const Sound = () => {
     const [sound,setSound] = useLocalStorage("sound", DEFAULT_SOUND);
     const update = (newChange:any) => setSound((prev:any)=>({ ...prev,...newChange}));
     return (
-        <div>
+        <div className="w-fullflex flex-col gap-2 items-center px-15">
                 <Slider label="music" nowValue={sound.music} onChange={(e)=>update({music:e})}/>
                 <Slider label="sfx" nowValue={sound.sfx} onChange={(e)=>update({sfx:e})}/>
                 <Slider label="stereo" nowValue={sound.stereo} onChange={(e)=>update({stereo:e})}/>

@@ -118,3 +118,62 @@ input[type="text"]:-moz-autofill,
 input[type="password"]:-moz-autofill {
     background-color: white !important;
 }
+
+.slider {
+    height: 1rem;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    border-radius: 0.25rem;
+    padding: 0;
+}
+
+.slider::-webkit-slider-runnable-track {
+    height: 1rem;
+    background: linear-gradient(to right, 
+        #3b0764 0%, 
+        #d946ef var(--value, 0%), 
+        black var(--value, 0%), 
+        black 100%);
+    border-radius: 0.25rem;
+    border: 2px solid white;
+}
+
+.slider::-webkit-slider-track {
+    height: 1rem;
+    background: black;
+    border-radius: 0.25rem;
+    border: 2px solid white;
+}
+
+.slider::-moz-range-track {
+    height: 1rem;
+    background: black;
+    border-radius: 0.25rem;
+    border: 1px solid white;
+}
+
+.slider::-moz-range-progress {
+    height: 1rem;
+    background: linear-gradient(to right,rgb(134, 24, 144), #d946ef);
+    border-radius: 0.25rem;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 0;
+    height: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+  
+.slider::-moz-range-thumb {
+    width: 0;
+    height: 0;
+    border: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+}

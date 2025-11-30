@@ -4,8 +4,8 @@ const Keybinds = () => {
     return (
         <div className="w-full">
             <div className="p-2">
-                <KeybindSetter defaultAction="openCell" defaultKey="MouseLeft" thisClassName="Game"/>
-                <KeybindSetter defaultAction="flagCell" defaultKey="MouseRight" thisClassName="Game"/>
+                <KeybindSetter defaultAction="open Cell" defaultKey="MouseLeft" thisClassName="Game"/>
+                <KeybindSetter defaultAction="flag Cell" defaultKey="MouseRight" thisClassName="Game"/>
                 <KeybindSetter defaultAction="chord" defaultKey="MouseLeft+MouseRight" thisClassName="Game"/>
             </div>
             <div className="p-3">

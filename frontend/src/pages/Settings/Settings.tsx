@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet, NavLink, Link } from "react-router-dom";
 import { authFetch } from "../../api/authFetch";
-import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "./defaultSettings";
+import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "./utils/defaultSettings";
 import { useLocalStorage } from "usehooks-ts";
 
 const Settings = () => {
@@ -96,10 +96,10 @@ const Settings = () => {
             <main className="flex flex-grow"> 
                 <Outlet />
             </main>
-            <nav className="flex flex-row gap-x-5 flex-wrap justify-center">
-                <button><Link to="/home">Home</Link></button>|
-                <button onClick={handleSave}>Save</button>|
-                <button onClick={handleDefault}>Default</button>
+            <nav className="flex flex-row gap-x-2 flex-wrap justify-center">
+                <button><Link to="/home" className="hover:font-bold transition-all duration-300">Home</Link></button>|
+                <button onClick={handleSave} className="hover:font-bold transition-all duration-300">Save</button>|
+                <button onClick={handleDefault} className="hover:font-bold transition-all duration-300">Default</button>
             </nav>
         </div>
     )
