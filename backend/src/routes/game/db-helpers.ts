@@ -4,9 +4,15 @@ type GameStatusDB = "waiting" | "play" | "end_win" | "end_lose";
 
 export const updateGameStatus = async (
     gameId: number,
-    status: GameStatusDB
+    status: GameTypes.GameState
 ): Promise<void> => {
     try {
+        // block writes after status has been updated to end_x.
+        const curStatus = await getGameStatus(gameId);
+        if (curStatus !== "play") 
+            return;
+
+        const dbstatus : GameStatusDB = status === "won" ? "end_win" : "end_lose";
         await pool.query(
             `
             UPDATE games
@@ -18,7 +24,7 @@ export const updateGameStatus = async (
                             END
             WHERE game_id = $2
             `,
-            [status, gameId]
+            [dbstatus, gameId]
         );
     } catch (err) {
         console.error("Error updating game status:", err);
@@ -68,6 +74,30 @@ export const getGameById = async (gameId: number): Promise<any> => {
         }
 
         return result.rows[0];
+    } catch (err) {
+        console.error("Error fetching game:", err);
+        throw err;
+    }
+};
+
+// check what game queried status is, if any.
+const getGameStatus = async (gameId: number): Promise<GameStatusDB | null> => {
+    try {
+        const result = await pool.query(
+            `
+            SELECT *
+            FROM games
+            WHERE game_id = $1
+            `,
+            [gameId]
+        );
+
+        // No game found
+        if (result.rows.length === 0) {
+            return null;
+        }
+
+        return result.rows[0].status as GameStatusDB;
     } catch (err) {
         console.error("Error fetching game:", err);
         throw err;

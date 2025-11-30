@@ -19,4 +19,9 @@ declare namespace GameTypes {
      * Shared possible states for game difficulty
      */
     type Difficulty = "easy" | "medium" | "hard";
+
+    /**
+     * Shared possible states for game state
+     */
+    type GameState = "playing" | "won" | "lost";
 }

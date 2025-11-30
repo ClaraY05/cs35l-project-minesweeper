@@ -45,7 +45,12 @@ gameRoutes.post("/cell/reveal", authenticateToken, async (req: AuthRequest, res)
         if (game.user_id !== userID) {
             return res.status(403).json({ error: "Not your game" });
         } 
-        return res.json(revealRegion(game.board_data, cell_id, game.rows, game.cols));
+        // if player revealed a mine, mark a loss by force
+        const revealedCells = revealRegion(game.board_data, cell_id, game.rows, game.cols);
+        if (revealedCells[0]?.Content.Type === "mine") {  
+            await updateGameStatus(game_id, "lost");
+        }
+        return res.json(revealedCells);
     } 
 });
 
@@ -53,10 +58,10 @@ gameRoutes.post("/cell/reveal", authenticateToken, async (req: AuthRequest, res)
 gameRoutes.post("/:gameid/finish", authenticateToken, async (req: AuthRequest, res) => {
     try {
         const gameId = Number(req.params.gameid);
-        const { status } = req.body as { status: "end_win" | "end_lose" };
+        const { status } = req.body as { status: GameTypes.GameState };
 
-        if (status !== "end_win" && status !== "end_lose") {
-            return res.status(400).json({ error: "Invalid status "});
+        if (status !== "won" && status !== "lost") {
+            return res.status(400).json({ error: "Invalid status" });
         }
 
         const game = await getGameById(gameId);

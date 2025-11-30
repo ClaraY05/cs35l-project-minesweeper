@@ -25,7 +25,7 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
     const [Tiles, setTiles] = useState<Array<PublicCellData | null>>(() => Array(rows * cols).fill(null)); // frontend cell data store. null means "dont know"
 
     // UI status only
-    const [status, setStatus] = useState<"playing" | "won" | "lost">("playing");
+    const [status, setStatus] = useState<GameTypes.GameState>("playing");
 
     // timer
     const [startTime, setStartTime] = useState<number | null>(null);
@@ -55,11 +55,10 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
 
     const finishGameOnServer = async (gameId: number, status: "won" | "lost"): Promise<void> => {
         try {
-            const dbStatus = status === "won" ? "end_win" : "end_lose";
             await authFetch(`http://localhost:8000/api/game/${gameId}/finish`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ status: dbStatus })
+                body: JSON.stringify({ status: status })
             });
         } catch (err) {
             const error = err as Error;
@@ -157,16 +156,6 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
 
             if (revealedCell.Content.Type === "mine") {
                 hitMine = true;
-                // TODO: reveal all mines on loss
-
-/*                 hiddenBoard.forEach((hc, idx) => {
-                    if (hc.hasMine) {
-                        newTiles[idx] = {
-                            Content: makeContentFromHidden(hc),
-                            State: { Visibility: "revealed"},
-                        };
-                    }
-                }); */
             } else {
                 // only count new safe reveals
                 newRevealedSafeCount += 1;
