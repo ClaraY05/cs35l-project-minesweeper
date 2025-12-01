@@ -33,6 +33,9 @@ const FriendsPopout = ({
   const handleAcceptFriend = (userId: number) => {
     console.log("Accepting friend request for user:", userId);
   };
+  const handleDenyFriend = (userId: number) => {
+    console.log("Denying friend request for user:", userId);
+  };
   const friendRequests = [{user_id: 1, username: "Desperate", email: "pls.pls@example.com", profile_picture: defaultPfp}, {user_id: 2, username: "Tobias Duerschmid", email: "tobias.duerschmid@example.com", profile_picture: defaultPfp}];
   
   // Get the friend handlers
@@ -111,8 +114,9 @@ const FriendsPopout = ({
                     name={friend.username}
                     avatar={friend.profile_picture || defaultPfp}
                     email={friend.email}
-                    buttonType="accept"
+                    buttonType="request"
                     onAction={() => handleAcceptFriend(friend.user_id)}
+                    onSecondaryAction={() => handleAcceptFriend(friend.user_id)}
                   />
                 ))}
               </div>
