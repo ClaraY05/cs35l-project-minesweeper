@@ -22,7 +22,7 @@ export const DEFAULT_VIDEO = {
     graphics:"Low",
     displayUsername:false,
     changeCustomBg:false,
-    customBg:"none",
+    customBg:"/bg.png",
     textSize:16
 };
 

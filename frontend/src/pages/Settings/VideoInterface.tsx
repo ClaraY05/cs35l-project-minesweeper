@@ -4,14 +4,38 @@ import Slider from "./components/CommonSlider";
 import TextInput from "../../components/header/Friends/components/TextInput";
 import { useLocalStorage } from "usehooks-ts";
 import { DEFAULT_VIDEO } from "./utils/defaultSettings";
+import { useState } from "react";
 
 const VideoInterface = () => {
     let graphics: string[] = ["Low","Medium","Tobias"];
     const [video, setVideo] = useLocalStorage("video", DEFAULT_VIDEO);
     const update = (newChange:any) => setVideo((prev:any)=>({ ...prev, ...newChange}))
 
-    const handleSubmit = (text: string) => {};
-    const setText = (text: string) => {}; 
+    const checkImage = async (url:string) => {
+        try {
+            const res = await fetch(url, {method:"GET"});
+            if (!res.ok){
+                return false;
+            }
+            const blob = await res.blob();
+            return blob.type.startsWith("image/");
+        } catch(err){
+            return false;
+        }
+    }
+
+    const handleSubmit = async (text: string) => {
+        try{
+            const res = await checkImage(text);
+            if(!res){
+                console.error("image doesn't exist");
+            }
+            update({customBg:text})
+        } catch(err){
+            console.error(err);
+        }
+    };
+    const [bgUrl, setBgUrl] = useState(video.customBg ?? "");
 
     // for conversion from percent to size
     const getTextSizeLabel = (value: number): string => {
@@ -38,8 +62,8 @@ const VideoInterface = () => {
             <Checkbox label="Use Custom Background" nowChecked={video.changeCustomBg} onChange={(e)=>update({changeCustomBg:e})}/>
             <TextInput 
                 placeholder="Enter background url" 
-                value=""
-                onChange={setText} 
+                value={bgUrl}
+                onChange={setBgUrl} 
                 onSubmit={handleSubmit}
                 buttonText="Enter"/>
         </div>

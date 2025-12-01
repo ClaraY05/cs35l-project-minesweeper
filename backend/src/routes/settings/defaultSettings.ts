@@ -24,7 +24,7 @@ export const DEFAULT_VIDEO: Record<VideoAction, string | number | boolean> = {
     graphics:"Low",
     displayUsername:false,
     changeCustomBg:false,
-    customBg:"none",
+    customBg:"/bg.png",
     textSize:16
 
 };

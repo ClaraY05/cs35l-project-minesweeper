@@ -12,7 +12,7 @@ const MainLayout = () => {
   const isLoginPage = location.pathname === "/";
 
   return (
-      <div className="relative bg-[url('./components/bg.png')] bg-cover bg-center h-screen flex flex-col">
+      <div className="relative bg-[url('/bg.png')] bg-cover bg-center h-screen flex flex-col">
       <header className="relative flex flex-row justify-between items-center w-full pb-4 z-20">
         <div className = "headerColor absolute inset-0 z-0">
           <div className="bg-main/70 h-[3.5rem]"></div>
