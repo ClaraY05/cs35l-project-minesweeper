@@ -29,8 +29,10 @@ const VideoInterface = () => {
             const res = await checkImage(text);
             if(!res){
                 console.error("image doesn't exist");
+                return;
             }
-            update({customBg:text})
+            update({customBg:text});
+            setBgUrl(text);
         } catch(err){
             console.error(err);
         }
@@ -63,9 +65,18 @@ const VideoInterface = () => {
             <TextInput 
                 placeholder="Enter background url" 
                 value={bgUrl}
-                onChange={setBgUrl} 
-                onSubmit={handleSubmit}
-                buttonText="Enter"/>
+                onChange={(text)=>{
+                    if(video.changeCustomBg) {
+                        setBgUrl(text);
+                    }
+                }}
+                onSubmit={(text)=>{
+                    if(video.changeCustomBg){
+                        handleSubmit(text);
+                    }
+                }}
+                buttonText="Enter"
+                disabled={!video.changeCustomBg}/>
         </div>
     );
 }
