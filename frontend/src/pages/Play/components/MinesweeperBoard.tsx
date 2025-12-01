@@ -94,6 +94,8 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
                 console.error("Failed to start game on first click.");
                 return;
             }    
+        }
+        if (startTime === null) {
             setStartTime(Date.now());
         }
 
