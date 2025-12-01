@@ -13,7 +13,7 @@ const VideoInterface = () => {
     const handleSubmit = (text: string) => {};
     const setText = (text: string) => {}; 
 
-    // Add this function
+    // for conversion from percent to size
     const getTextSizeLabel = (value: number): string => {
         const labels = [
             "xs", "sm", "base", "lg", "xl", 
