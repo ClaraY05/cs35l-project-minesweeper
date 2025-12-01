@@ -5,7 +5,7 @@ export const createNotificationHandlers = (
     setNotifications: React.Dispatch<React.SetStateAction<Notification[]>>,
     notifications: Notification[]
     ) => {
-    const fetchNotifications = async () => {
+    const getNotifications = async () => {
         try {
             const data = await authFetch("/api/notifications", { method: "GET" });
             setNotifications(data);
@@ -35,5 +35,5 @@ export const createNotificationHandlers = (
         }
     };
 
-    return { fetchNotifications, handleRemoveMessage, handleRemoveAll };
+    return { getNotifications, handleRemoveMessage, handleRemoveAll };
 };
