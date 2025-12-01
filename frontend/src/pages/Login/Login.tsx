@@ -42,8 +42,8 @@ const Login = () => {
         <div className="contentDiv flex flex-col items-center p-2"> 
             <h1 className="pb-0">Login Form</h1>
             <hr className="w-full border-t-2 border-dashed border-white mb-2"></hr>
-            <div className="flex flex-col items-center gap-2">
-                <form onSubmit={handleSubmit(onSubmit)} className="p-5 bg-stone-900  w-[70%] rounded-lg">
+            <div className="flex flex-col items-center gap-2 w-[60%] m-2">
+                <form onSubmit={handleSubmit(onSubmit)} className="p-5 bg-stone-900  w-full rounded-lg">
                     <div className="flex flex-col mb-2">
                         <label htmlFor="email" className="uppercase font-bold">Email</label>
                         <input id="email" type="email" placeholder="email" className="px-1 rounded-md bg-white text-black" {...register("email",{
