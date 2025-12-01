@@ -1,13 +1,5 @@
 import NotificationsContent from "./NotificationsContent";
-
-interface Notification {
-  notification_id: number;
-  message: string;
-  type: string;
-  comes_from_ID: number | null;
-  is_read: boolean;
-  created_at: string;
-}
+import { Notification } from "../utils/notificationInter";
 
 interface NotificationsPopoutProps {
   isOpen: boolean;
