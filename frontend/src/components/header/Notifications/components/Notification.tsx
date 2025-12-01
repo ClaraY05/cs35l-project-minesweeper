@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { Notification } from "../utils/notificationInter";
 
-interface NotificationProps{
-    message:string;
+interface NotificationItemProps{
+    notification: Notification;
     onDelete: () => void; // parent callback
 };
 
-const Notification = ({message,onDelete}:NotificationProps) =>{
+const NotificationItem = ({notification,onDelete}:NotificationItemProps) =>{
     return(
         <div className="flex flex-row gap-2 items-cente justify-between hover:bg-blue-900 pr-3 pl-3 pt-1 pb-1 rounded-sm">
-            <p>{message}</p>
+            <p>{notification.message}</p>
             <button onClick={onDelete} className="uppercase text-xs font-bold hover:text-red-500">
                 Delete
             </button>
@@ -16,4 +16,4 @@ const Notification = ({message,onDelete}:NotificationProps) =>{
     );
 };
 
-export default Notification;
+export default NotificationItem;
