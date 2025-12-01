@@ -5,9 +5,10 @@ interface TextInputProps {
   value: string;
   onChange: (value: string) => void;
   onSubmit: (value: string) => void;
+  buttonText?: string;
 }
 
-const TextInput = ({placeholder = "Enter text...", value="", onChange, onSubmit,}: TextInputProps) => {
+const TextInput = ({placeholder = "Enter text...", value="", onChange, onSubmit, buttonText = "Search"}: TextInputProps) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); 
     onSubmit(value);  
@@ -27,7 +28,7 @@ const TextInput = ({placeholder = "Enter text...", value="", onChange, onSubmit,
         type="submit"
         className="hover:font-bold"
       >
-        Search
+        {buttonText}
       </button>
     </form>
   );
