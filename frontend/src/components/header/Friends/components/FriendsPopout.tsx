@@ -28,6 +28,13 @@ const FriendsPopout = ({
   const [searchResults, setSearchResults] = useState<Friend[]>([]);
   const [text, setText] = useState("");
 
+  // change to work w/ backend
+  const [hasRequests, setHasRequests] = useState(true);
+  const handleAcceptFriend = (userId: number) => {
+    console.log("Accepting friend request for user:", userId);
+  };
+  const friendRequests = [{user_id: 1, username: "Desperate", email: "pls.pls@example.com", profile_picture: defaultPfp}, {user_id: 2, username: "Tobias Duerschmid", email: "tobias.duerschmid@example.com", profile_picture: defaultPfp}];
+  
   // Get the friend handlers
   const { handleSearch, handleRemoveFriend, handleAddFriend } = createFriendHandlers(
     setFriends,
@@ -73,10 +80,11 @@ const FriendsPopout = ({
               onSubmit={handleSearch}
             />
           </div>
-          
+  
           {searchResults.length > 0 && (
-            <div className="p-3 flex flex-col gap-2">
-              <h3 className="uppercase font-bold">Search Results</h3>
+            <div>
+            <h3 className="uppercase font-bold">Search Results</h3>
+            <div className="p-3 flex flex-col gap-2 min-h-[40vh] max-h-[40vh] overflow-y-auto pb-3">
               {searchResults.map((user) => (
                 <FriendDisplay
                   key={user.user_id}
@@ -89,25 +97,47 @@ const FriendsPopout = ({
                 />
               ))}
             </div>
+            </div>
+          )}
+
+          {hasRequests && (
+            <div>
+              <h3 className="uppercase font-bold">Friend Requests</h3>
+              <div className="min-h-[40vh] max-h-[40vh] overflow-y-auto pb-3 flex flex-col gap-2">
+                {friendRequests.map((friend) => (
+                  <FriendDisplay
+                    key={friend.user_id}
+                    id={friend.username}
+                    name={friend.username}
+                    avatar={friend.profile_picture || defaultPfp}
+                    email={friend.email}
+                    buttonType="accept"
+                    onAction={() => handleAcceptFriend(friend.user_id)}
+                  />
+                ))}
+              </div>
+            </div>
           )}
 
           <div className="p-3 flex flex-col gap-2">
             <h3 className="uppercase font-bold">Friend List</h3>
-            {friends.length === 0 ? (
-              <p>No friends found</p>
-            ) : (
-              friends.map((friend) => (
-                <FriendDisplay
-                  key={friend.user_id}
-                  id={friend.username}
-                  name={friend.username}
-                  avatar={friend.profile_picture || defaultPfp}
-                  email={friend.email}
-                  buttonType="remove"
-                  onAction={() => handleRemoveFriend(friend.user_id)}
-                />
-              ))
-            )}
+            <div className="min-h-[40vh] max-h-[40vh] overflow-y-auto pb-3 flex flex-col gap-2">
+              {friends.length === 0 ? (
+                <p>No friends found</p>
+              ) : (
+                friends.map((friend) => (
+                  <FriendDisplay
+                    key={friend.user_id}
+                    id={friend.username}
+                    name={friend.username}
+                    avatar={friend.profile_picture || defaultPfp}
+                    email={friend.email}
+                    buttonType="remove"
+                    onAction={() => handleRemoveFriend(friend.user_id)}
+                  />
+                ))
+              )}
+            </div>
           </div>
         </div>
       </div>

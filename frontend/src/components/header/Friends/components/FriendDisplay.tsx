@@ -3,15 +3,24 @@ interface FriendDisplayProps {
   name: string;
   avatar: string;
   email?: string;
-  buttonType: "add" | "remove";
+  buttonType: "add" | "remove" | "accept";
   onAction: () => void;
 }
 
 const FriendDisplay = ({ id, name, avatar, email, buttonType, onAction }: FriendDisplayProps) => {
-  const buttonText = buttonType === "add" ? "Add Friend" : "Remove Friend";
-  const buttonClass = buttonType === "add" 
-    ? "uppercase text-xs font-bold hover:text-green-500" 
-    : "uppercase text-xs font-bold hover:text-red-500";
+  const buttonText =
+    buttonType === "add"
+      ? "Add Friend"
+      : buttonType === "accept"
+        ? "Accept Request"
+        : "Remove Friend";
+
+  const buttonClass =
+    buttonType === "add"
+      ? "uppercase text-xs font-bold hover:text-green-500"
+      : buttonType === "accept"
+        ? "uppercase text-xs font-bold hover:text-emerald-400"
+        : "uppercase text-xs font-bold hover:text-red-500";
 
   return (
     <div className="flex flex-row gap-2 p-3 bg-stone-900 rounded-sm items-center">
