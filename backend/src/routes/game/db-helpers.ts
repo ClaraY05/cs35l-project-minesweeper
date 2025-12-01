@@ -31,27 +31,29 @@ export const updateRevealedCells = async (
 export const updateGameStatus = async (
     gameId: number,
     status: GameTypes.GameState
-): Promise<void> => {
+): Promise<any> => {
     try {
         // block writes after status has been updated to end_x.
         const curStatus = await getGameStatus(gameId);
-        if (curStatus === "play") 
+        if (curStatus !== "play") 
             return;
 
         const dbstatus : GameStatusDB = status === "won" ? "end_win" : "end_lose";
-        await pool.query(
+        let res = await pool.query(
             `
             UPDATE games
             SET status = $1,
-                ended_at = CASE
+            ended_at = CASE
                                 WHEN $1 IN ('end_win', 'end_lose')
                                 THEN (NOW() AT TIME ZONE 'UTC')
                                 ELSE ended_at
                             END
             WHERE game_id = $2
+            RETURNING EXTRACT(EPOCH FROM (ended_at - started_at)) * 1000 AS gametime_ms
             `,
             [dbstatus, gameId]
         );
+        return res.rows[0].gametime_ms;
     } catch (err) {
         console.error("Error updating game status:", err);
         throw err;

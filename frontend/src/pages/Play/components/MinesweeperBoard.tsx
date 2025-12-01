@@ -52,20 +52,7 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
 
         return () => clearInterval(id);
     }, [status, startTime]);
-
-    const finishGameOnServer = async (gameId: number, status: "won" | "lost"): Promise<void> => {
-        try {
-            await authFetch(`http://localhost:8000/api/game/${gameId}/finish`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ status: status })
-            });
-        } catch (err) {
-            const error = err as Error;
-            console.error("Error finishing game:", error.message);
-        }
-    };
-
+    
     const handleTileRightClick = (i : number) : void => {
         const cell = Tiles[i];
 
@@ -106,11 +93,7 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
             if (gameIdToUse === null) {
                 console.error("Failed to start game on first click.");
                 return;
-            }
-        }
-
-        // start timer on first revealing click
-        if (startTime === null) {
+            }    
             setStartTime(Date.now());
         }
 
@@ -168,9 +151,6 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
 
         if (hitMine) {
             setStatus("lost");
-            if (gameIdToUse !== null) {
-                finishGameOnServer(gameIdToUse, "lost");
-            }
             return;
         }
 
@@ -178,9 +158,6 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
         const totalSafeCells = rows * cols - mines;
         if (newRevealedSafeCount === totalSafeCells) {
             setStatus("won");
-            if(gameIdToUse !== null) {
-                finishGameOnServer(gameIdToUse, "won");
-            }
         }
     };
 

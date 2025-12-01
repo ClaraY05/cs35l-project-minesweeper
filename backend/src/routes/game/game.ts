@@ -31,7 +31,7 @@ gameRoutes.post("/create", authenticateToken, async (req: AuthRequest, res) => {
 
 // --- routes requiring a game be active
 // reveal a cell. 
-// gets a cell's content. TODO: add cell index to set of revealed cells for win condition tracking
+// gets a cell's content. checks immediately if the game has been won or lost
 gameRoutes.post("/cell/reveal", authenticateToken, async (req: AuthRequest, res)  => {
     const game_id = Number(req.body.gameid);
     const cell_id = Number(req.body.cellid);
@@ -49,7 +49,8 @@ gameRoutes.post("/cell/reveal", authenticateToken, async (req: AuthRequest, res)
         const revealedCells = revealRegion(game.board_data, cell_id, game.rows, game.cols);
         const numRevealed = await updateRevealedCells(game_id, revealedCells.length);
         if (revealedCells[0]?.Content.Type === "mine") { 
-            await updateGameStatus(game_id, "lost");
+            let gametime = await updateGameStatus(game_id, "lost")
+            console.log(gametime);
         }
         else if (numRevealed === game.rows*game.cols-game.mines) {
             console.log("player won")
@@ -57,36 +58,6 @@ gameRoutes.post("/cell/reveal", authenticateToken, async (req: AuthRequest, res)
         }
         return res.json(revealedCells);
     } 
-});
-
-// mark a game as finished (win or loss) and set ended_at
-gameRoutes.post("/:gameid/finish", authenticateToken, async (req: AuthRequest, res) => {
-    try {
-        const gameId = Number(req.params.gameid);
-        const { status } = req.body as { status: GameTypes.GameState };
-
-        if (status !== "won" && status !== "lost") {
-            return res.status(400).json({ error: "Invalid status" });
-        }
-
-        const game = await getGameById(gameId);
-        if(!game) {
-            return res.status(404).json({ error: "Game not found" });
-        }
-
-        // ensure the caller owns this game
-        const userID = Number(req.user?.userID);
-        if (game.user_id !== userID) {
-            return res.status(403).json({ error: "Not your game" });
-        }
-
-        await updateGameStatus(gameId, status);
-
-        return res.json({ game_id: gameId, status });
-    } catch (err) {
-        console.error("Error in POST /game/:gameid/finish:", err);
-        return res.status(500).json({ error: "Failed to finish game" });
-    }
 });
 
 export default gameRoutes;
