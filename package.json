@@ -18,7 +18,7 @@
     "backend"
   ],
   "scripts": {
-    "dev": "concurrently -r \"npm:dev:web\" \"npm:dev:backend\"",
+    "dev": "concurrently --prefix \"[{name}]\" --prefix-colors \"bgBlue.bold,bgMagenta.bold\" -r \"npm:dev:web\" \"npm:dev:backend\"",
     "dev:web": "npm --workspace frontend run dev",
     "dev:backend": "npm --workspace backend run dev",
     "build": "npm run -ws build",

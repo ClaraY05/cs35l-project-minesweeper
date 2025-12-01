@@ -19,11 +19,10 @@ export type SoundAction =
 export type VideoAction =
 | "graphics"
 | "displayUsername"
-| "changeTextSize"
 | "changeCustomBg"
 | "customBg"
 | "textSize";
 
 export type NotifAction = 
-|"notif_game_updates" 
-| "notif_friend_req";
+|"notifGameUpdates" 
+| "notifFriendReq";

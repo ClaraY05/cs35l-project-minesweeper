@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface Keybind {
   action: string;
@@ -7,15 +7,16 @@ interface Keybind {
 
 interface KeybindSetterProp {
     defaultAction: string;
-    defaultKey: string;
+    nowKey: string;
     thisClassName?: string;
+    onChange?: (nowKey:string)=> void;
 }
 
-const KeybindSetter: React.FC<KeybindSetterProp> = ({ defaultAction, defaultKey, thisClassName}) => {
+const KeybindSetter: React.FC<KeybindSetterProp> = ({ defaultAction, nowKey, thisClassName, onChange}) => {
     // set state vars
     const [keybind, setKeybind] = useState<Keybind>({
         action: defaultAction,
-        key: defaultKey,
+        key: nowKey,
     });
     const [listening, setListening] = useState(false);
     const [hover, setHover] = useState(false);
@@ -31,8 +32,10 @@ const KeybindSetter: React.FC<KeybindSetterProp> = ({ defaultAction, defaultKey,
         pressedKey.preventDefault();
 
         setKeybind(prev => ({action: keybind.action, key: pressedKey.key}));
+        if (onChange) onChange(normalizeKey(pressedKey.key));
         setListening(false);
     };
+    useEffect(()=>{setKeybind({action: defaultAction, key: nowKey})},[nowKey]);
 
     return (
         <div

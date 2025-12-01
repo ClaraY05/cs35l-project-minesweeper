@@ -21,14 +21,12 @@ export const DEFAULT_SOUND = {
 export const DEFAULT_VIDEO = {
     graphics:"Low",
     displayUsername:false,
-    changeTextSize:false,
     changeCustomBg:false,
-    customBg:"none",
+    customBg:"/bg.png",
     textSize:16
-
 };
 
 export const DEFAULT_NOTIF = {
-    notif_game_updates:"Yes",
-    notif_friend_req:"Yes"
+    notifGameUpdates:"Yes",
+    notifFriendReq:"Yes"
 };

@@ -9,7 +9,7 @@ const Notifications = () => {
     <div className="flex flex-shrink-0">
       <button
         onClick={() => setShowOverlay(true)}
-        className="showOverlay rounded-sm bg-main ptpt-2.5 pl-3.5 pr-3.5 cursor-pointer"
+        className="showOverlay rounded-sm bg-main pt-2.5 pl-3.5 pr-3.5 hover:border-2 transition-all duration-300 cursor-pointer"
       >
         <img src={icon} alt="Letter Icon"/>
       </button>

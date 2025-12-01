@@ -7,5 +7,6 @@
     "noEmit": false
   },
   "include": ["src",
-    "../utils/types"]
+    "../utils/types"],
+    "exclude": ["node_modules", "dist"]
 }

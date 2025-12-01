@@ -23,16 +23,15 @@ export const DEFAULT_SOUND: Record<SoundAction, number | boolean> = {
 export const DEFAULT_VIDEO: Record<VideoAction, string | number | boolean> = {
     graphics:"Low",
     displayUsername:false,
-    changeTextSize:false,
     changeCustomBg:false,
-    customBg:"none",
+    customBg:"/bg.png",
     textSize:16
 
 };
 
 export const DEFAULT_NOTIF: Record<NotifAction, string | boolean> = {
-    notif_game_updates:"Yes",
-    notif_friend_req:"Yes"
+    notifGameUpdates:"Yes",
+    notifFriendReq:"Yes"
 };
 
 

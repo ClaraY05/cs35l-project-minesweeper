@@ -11,11 +11,6 @@ const Settings = () => {
     const [notif, setNotif]    = useLocalStorage("notif", DEFAULT_NOTIF);
     const handleSave = async () =>{
         try{
-            // const keybinds = JSON.parse(localStorage.getItem("keybinds")||"null");
-            // const sound = JSON.parse(localStorage.getItem("sound")||"null");
-            // const video = JSON.parse(localStorage.getItem("video")||"null");
-            // const notif = JSON.parse(localStorage.getItem("notif")||"null");
-
             await Promise.all([
                 authFetch("http://localhost:8000/api/settings/keybinds", {method:"PUT", body: JSON.stringify({bindings:keybinds})}),
                 authFetch("http://localhost:8000/api/settings/sound", {method:"PUT", body: JSON.stringify({sound:sound})}),
