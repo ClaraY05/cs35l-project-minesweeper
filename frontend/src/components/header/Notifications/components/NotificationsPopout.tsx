@@ -1,17 +1,26 @@
 import NotificationsContent from "./NotificationsContent";
 
+interface Notification {
+  notification_id: number;
+  message: string;
+  type: string;
+  comes_from_ID: number | null;
+  is_read: boolean;
+  created_at: string;
+}
+
 interface NotificationsPopoutProps {
   isOpen: boolean;
   onClose: () => void;
-  messages: string[];
-  removeMessage: (index: number) => void;
+  notifications: Notification[];
+  removeMessage: (notificationId: number) => void;
   removeAll: () => void;
 }
 
 const NotificationsPopout = ({ 
   isOpen, 
   onClose, 
-  messages,
+  notifications,
   removeMessage,
   removeAll
 }: NotificationsPopoutProps) => {
@@ -33,7 +42,7 @@ const NotificationsPopout = ({
             <button onClick={onClose} className="closeOverlay uppercase hover:font-bold">Close</button>
           </div>
           <NotificationsContent 
-            messages={messages}
+            notifications={notifications}
             removeMessage={removeMessage}
             removeAll={removeAll}
           />

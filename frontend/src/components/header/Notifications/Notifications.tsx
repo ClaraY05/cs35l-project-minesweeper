@@ -1,21 +1,34 @@
 import { useState } from "react";
 import icon from "./mail-svgrepo-com.svg"
-import NotificationsPopout from "./NotificationsPopout"
+import NotificationsPopout from "./components/NotificationsPopout"
+import { authFetch } from "../../../api/authFetch";
+
+
+// notification types and messages
+interface Notification {
+  notification_id: number;
+  message: string;
+  type: string;
+  comes_from_ID: number | null;
+  is_read: boolean;
+  created_at: string;
+}
 
 const Notifications = () =>{
   const [showOverlay, setShowOverlay] = useState(false);
-  const [messages, setMessages] = useState([
-    "You have a new friend request!",
-    "Your game has started!",
-    "Daily reward available!"
-  ]); //setup to load values later
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  const removeMessage = (index: number) => {
-    setMessages(prev => prev.filter((_, i) => i !== index));
+  const removeMessage = (notif_id: number) => {
+    setNotifications(prev => prev.filter(notif => notif.notification_id !== notif_id));
   };
 
-  const removeAll = () => {
-    setMessages([]); 
+  const removeAll = async () => {
+    try {
+      await authFetch("/api/notifications", { method: "DELETE" });
+      setNotifications([]);
+    } catch (err) {
+      console.error("Failed to delete all notifications:", err);
+    }
   };
 
   return (
@@ -30,7 +43,7 @@ const Notifications = () =>{
       <NotificationsPopout
         isOpen={showOverlay}
         onClose={() => setShowOverlay(false)}
-        messages={messages}
+        notifications={notifications}
         removeMessage={removeMessage}
         removeAll={removeAll}
       />
