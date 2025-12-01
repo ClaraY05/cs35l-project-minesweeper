@@ -2,6 +2,32 @@ import { pool } from "../../db/db";
 
 type GameStatusDB = "waiting" | "play" | "end_win" | "end_lose";
 
+export const updateRevealedCells = async (
+    gameId: number,
+    numRevealed: number
+): Promise<number | null> => {
+    try {
+        // block writes after status has been updated to end_x.
+        const curStatus = await getGameStatus(gameId);
+        if (curStatus !== "play") 
+            return null;
+
+        const res = await pool.query(
+            `
+            UPDATE games
+            SET num_revealed = num_revealed + $1
+            WHERE game_id = $2
+            RETURNING num_revealed
+            `,
+            [numRevealed, gameId]
+        );
+        return res.rows[0].num_revealed;
+    } catch (err) {
+        console.error("Error updating game status:", err);
+        throw err;
+    }
+};
+
 export const updateGameStatus = async (
     gameId: number,
     status: GameTypes.GameState
@@ -9,7 +35,7 @@ export const updateGameStatus = async (
     try {
         // block writes after status has been updated to end_x.
         const curStatus = await getGameStatus(gameId);
-        if (curStatus !== "play") 
+        if (curStatus === "play") 
             return;
 
         const dbstatus : GameStatusDB = status === "won" ? "end_win" : "end_lose";

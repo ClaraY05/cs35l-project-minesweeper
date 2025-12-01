@@ -140,15 +140,13 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
         let hitMine = false;
 
         for (const revealedCell of revealedCellData) {
-            // if flagged or already revealed, don't reveal (floodfill from backend can still return these)
             const cell = Tiles[revealedCell.Position];
             const isRevealed = cell?.State.Visibility === "revealed";
             let isFlagged = cell && "Flagged" in cell.State ? cell.State.Flagged : false;
             
             if (revealedCell.Content.Type === "mine") isFlagged = false; // if the game ends (hit a mine), reveal the cell even if flagged
-            
 
-            if (isRevealed || isFlagged)
+            if (isRevealed || isFlagged) // if flagged or already revealed, don't reveal (floodfill from backend can still return these)
                 continue;
 
             // reveal the cell
