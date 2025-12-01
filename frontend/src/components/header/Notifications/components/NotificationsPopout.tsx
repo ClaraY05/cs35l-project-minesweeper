@@ -29,7 +29,7 @@ const NotificationsPopout = ({
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex flex-row justify-between items-center">
-            <h1>Notifications</h1>
+            <h1 className="tracking-wide">Notifications</h1>
             <button onClick={onClose} className="closeOverlay uppercase hover:font-bold">Close</button>
           </div>
           <NotificationsContent 
