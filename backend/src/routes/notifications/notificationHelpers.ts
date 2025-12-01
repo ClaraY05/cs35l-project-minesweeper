@@ -32,10 +32,10 @@ export async function getNotifications(userID: number){
 export async function createNotification(userID: number, message: string, type: string, comesFromID: number){
     try {
         const result = await pool.query(`
-            INSERT INTO notifications (user_id, message, type, comes_from_ID)
-            VALUES ($1, $2, $3, $4)
+            INSERT INTO notifications (user_id, message, type, comes_from_ID || null)
+            VALUES ($1, $2, $3, $4 || null)
             RETURNING notification_id, user_id, message, type, comes_from_ID, is_read, created_at
-        `, [userID, message, type, comesFromID]);
+        `, [userID, message, type, comesFromID || null]);
         return result.rows[0];
     }
     catch (err) {
@@ -45,13 +45,14 @@ export async function createNotification(userID: number, message: string, type: 
 }
 
 // Mark a notification as read which is deleting the notification
-export async function readNotification(notificationID: number){
+export async function readNotification(notificationID: number, userID: number){
     try {
         const result = await pool.query(`
             DELETE FROM notifications
             WHERE notification_id = $1
             RETURNING notification_id
-        `, [notificationID]);
+        `, [notificationID, userID]);
+        return result.rows[0];
     }
     catch (err) {
         console.error("Error reading notification:", err);

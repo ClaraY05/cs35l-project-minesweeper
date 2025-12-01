@@ -25,7 +25,7 @@ notificationRoutes.post("/", authenticateToken, async (req: AuthRequest, res) =>
     try {
         const userID = req.user?.userID;
         const { message, type, comesFromID } = req.body;
-        if (!userID || !message || !type || !comesFromID) {
+        if (!userID || !message || !type) {
             return res.status(400).json({ error: "missing fields"});
         }
         const newNotification = await createNotification(userID, message, type, comesFromID);
@@ -45,7 +45,7 @@ notificationRoutes.delete("/:notificationID", authenticateToken, async (req: Aut
         if (!userID || !notificationID) {
             return res.status(400).json({ error: "missing fields"});
         }
-        const deletedNotification = await readNotification(notificationID);
+        const deletedNotification = await readNotification(notificationID, userID);
         return res.json(deletedNotification);
     }
     catch (err) {
