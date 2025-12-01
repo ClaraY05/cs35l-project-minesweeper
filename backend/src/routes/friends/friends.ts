@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { authenticateToken, AuthRequest } from "../middleware/authMiddleware";
 import { getFriends, deleteFriend, addFriend, searchUsers } from "./friendHelpers";
+import { createNotification } from "../notifications/notificationHelpers";
+import { pool } from "../../db/db";
 
 
 // Add routes for friends
@@ -91,7 +93,29 @@ friendsRouter.post("/", authenticateToken, async (req: AuthRequest, res) => {
             return res.status(400).json({ error: "Cannot add yourself as a friend" });
           }
       
+          // Get the sender's username for the notification message
+          const senderResult = await pool.query(
+            "SELECT username FROM users WHERE user_id = $1",
+            [userID]
+          );
+          
+          if (senderResult.rows.length === 0) {
+            return res.status(404).json({ error: "User not found" });
+          }
+          
+          const senderUsername = senderResult.rows[0].username;
+          
+          // Create a notification for the friend
+          await createNotification(
+            friendID, 
+            `${senderUsername} sent you a friend request`,
+            "friend_request",
+            userID
+          );
+          
+          // Also auto-add the friend immediately
           await addFriend(userID, friendID);
+          
           return res.json({ message: "Friend added successfully" });
     } catch (err) {
         console.error("Error in POST /friends:", err);
