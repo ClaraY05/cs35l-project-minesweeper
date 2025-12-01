@@ -1,4 +1,4 @@
-import NotificationComponent from "./Notification";
+import NotificationItem from "./Notification";
 import { Notification } from "../utils/notificationInter";
 
 interface NotificationsContentProps {
@@ -15,7 +15,7 @@ const NotificationsContent = ({ notifications, removeMessage, removeAll }: Notif
           <p>No notifications</p>
         ) : (
           notifications.map((notification) => (
-            <NotificationComponent 
+            <NotificationItem 
               key={notification.notification_id} 
               notification={notification} 
               onDelete={() => removeMessage(notification.notification_id)} 

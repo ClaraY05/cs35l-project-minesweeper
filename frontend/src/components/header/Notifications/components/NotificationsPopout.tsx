@@ -1,22 +1,33 @@
 import NotificationsContent from "./NotificationsContent";
 import { Notification } from "../utils/notificationInter";
+import { useEffect, useState } from "react";
+import { createNotificationHandlers } from "../utils/helpers";
 
 interface NotificationsPopoutProps {
   isOpen: boolean;
   onClose: () => void;
-  notifications: Notification[];
-  removeMessage: (notificationId: number) => void;
-  removeAll: () => void;
 }
 
 const NotificationsPopout = ({ 
   isOpen, 
-  onClose, 
-  notifications,
-  removeMessage,
-  removeAll
+  onClose
 }: NotificationsPopoutProps) => {
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  // Get the notification handlers
+  const { fetchNotifications, handleRemoveMessage, handleRemoveAll } = createNotificationHandlers(
+    setNotifications,
+    notifications
+  );
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchNotifications();
+    }
+  }, [isOpen]);
 
   return (
     <>
@@ -35,8 +46,8 @@ const NotificationsPopout = ({
           </div>
           <NotificationsContent 
             notifications={notifications}
-            removeMessage={removeMessage}
-            removeAll={removeAll}
+            removeMessage={handleRemoveMessage}
+            removeAll={handleRemoveAll}
           />
         </div>
       </div>
