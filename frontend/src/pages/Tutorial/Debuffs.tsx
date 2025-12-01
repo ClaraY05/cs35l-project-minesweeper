@@ -1,10 +1,13 @@
 import ReactMarkdown from "react-markdown";
 import debuffs from "./content/debuffs.md?raw"
+import "./tutorial-markdown.css"
+
 const Debuffs = () => {
     return (
         <div>
-            <h2>Debuffs</h2>
-            <ReactMarkdown>{debuffs}</ReactMarkdown>
+            <div className="tutorial-markdown">
+                <ReactMarkdown>{debuffs}</ReactMarkdown>
+            </div>
         </div>
     );
 }

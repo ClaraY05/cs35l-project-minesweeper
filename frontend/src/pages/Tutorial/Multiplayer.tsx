@@ -1,11 +1,13 @@
 import ReactMarkdown from "react-markdown";
 import multiplayer from "./content/multiplayer.md?raw"
+import "./tutorial-markdown.css"
 
 const Multiplayer = () => {
     return (
         <div>
-            <h2>Multiplayer</h2>
-            <ReactMarkdown>{multiplayer}</ReactMarkdown>
+            <div className="tutorial-markdown">
+                <ReactMarkdown>{multiplayer}</ReactMarkdown>
+            </div>
         </div>
     );
 }
