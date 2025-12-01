@@ -102,8 +102,8 @@ const FriendsPopout = ({
 
           {hasRequests && (
             <div>
-              <h3 className="uppercase font-bold">Friend Requests</h3>
-              <div className="min-h-[40vh] max-h-[40vh] overflow-y-auto pb-3 flex flex-col gap-2">
+              <h3 className="uppercase font-bold px-3 py-2">Friend Requests</h3>
+              <div className="min-h-[40vh] max-h-[40vh] overflow-y-auto p-3 flex flex-col gap-2">
                 {friendRequests.map((friend) => (
                   <FriendDisplay
                     key={friend.user_id}
