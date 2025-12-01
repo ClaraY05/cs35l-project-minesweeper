@@ -69,3 +69,5 @@ notificationRoutes.delete("/", authenticateToken, async (req: AuthRequest, res) 
         return res.status(500).json({ error: "Internal server error" });
     }
 });
+
+export default notificationRoutes;
