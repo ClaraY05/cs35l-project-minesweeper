@@ -1,35 +1,31 @@
-import Notification from "./Notification";
+import { Notification } from "../utils/notificationInter";
+import NotificationItem from "./Notification"
 
 interface NotificationsContentProps {
-  messages: string[];
+  messages: Notification[];
   removeMessage: (index: number) => void;
   removeAll: () => void;
 }
 
 const NotificationsContent = ({ messages, removeMessage, removeAll }: NotificationsContentProps) => {
   return (
-    <>
-      <div className="p-3 flex flex-col gap-2 bg-stone-900 rounded-sm h-[90vh] overflow-y-auto">
+    <div>
         {messages.length === 0 ? (
           <p>No notifications</p>
         ) : (
           messages.map((msg, i) => (
-            <Notification 
-              key={i} 
-              message={msg} 
+            <NotificationItem 
+              notification={msg} 
               onDelete={() => removeMessage(i)} 
             />
           ))
         )}
-      </div>
-      {messages.length > 0 && (
-        <div className="pt-3">
+      <div className="pt-3">
           <button onClick={removeAll} className="uppercase font-bold hover:text-red-500 hover:bg-stone-900 border border-white rounded-sm p-1">
             Clear All Notifications
           </button>
-        </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 };
 
