@@ -1,6 +1,6 @@
 import { useState } from "react";
 import icon from "./mail-svgrepo-com.svg"
-import NotificationsPopout from "./NotificationsPopout"
+import NotificationsPopout from "./components/NotificationsPopout"
 
 const Notifications = () =>{
   const [showOverlay, setShowOverlay] = useState(false);
@@ -22,7 +22,7 @@ const Notifications = () =>{
     <div className="flex flex-shrink-0">
       <button
         onClick={() => setShowOverlay(true)}
-        className="showOverlay rounded-sm bg-main ptpt-2.5 pl-3.5 pr-3.5"
+        className="showOverlay rounded-sm bg-main pt-2.5 pl-3.5 pr-3.5 hover:border-2 transition-all duration-300"
       >
         <img src={icon} alt="Letter Icon"/>
       </button>
