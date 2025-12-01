@@ -2,7 +2,7 @@
 
 exports.up = (pgm) => {
     pgm.createTable("notifications", {
-        notification_id: { type: "serial", primaryKey: ture },
+        notification_id: { type: "serial", primaryKey: true },
         user_id: {
             type: "int",
             notNull: true,
