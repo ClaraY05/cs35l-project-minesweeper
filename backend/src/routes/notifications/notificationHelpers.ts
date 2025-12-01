@@ -44,4 +44,33 @@ export async function getNotifications(userID: number){
     }
 }
 
-// 
+// Mark a notification as read which is deleting the notification
+export async function readNotification(notificationID: number){
+    try {
+        const result = await pool.query(`
+            DELETE FROM notifications
+            WHERE notification_id = $1
+            RETURNING notification_id
+        `, [notificationID]);
+    }
+    catch (err) {
+        console.error("Error reading notification:", err);
+        throw err;
+    }
+}
+
+// Clear all notifications from a user
+export async function clearAllNotifications(userID: number){
+    try {
+        const result = await pool.query(`
+            DELETE FROM notifications
+            WHERE user_id = $1
+            RETURNING notification_id
+        `, [userID]);
+        return result.rows;
+    }
+    catch (err) {
+        console.error("Error clearing all notifications:", err);
+        throw err;
+    }
+}
