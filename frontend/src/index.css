@@ -167,9 +167,9 @@ input[type="password"]:-moz-autofill {
     border: none;
     background: transparent;
     cursor: pointer;
-}
+  }
   
-.slider::-moz-range-thumb {
+  .slider::-moz-range-thumb {
     width: 0;
     height: 0;
     border: none;
@@ -199,4 +199,4 @@ input[type="password"]:-moz-autofill {
     color: white;
     font-weight: bold;
     line-height: 1.5rem;
-}
+  }
