@@ -1,0 +1,47 @@
+import { pool } from "../../db/db";
+import { addFriend } from "../friends/friendHelpers";
+
+// create a new notification
+export async function createNotification(userID: number, message: string, type: string, comesFromID: number){
+    try {
+        const result = await pool.query(`
+            INSERT INTO notifications (user_id, message, type, comes_from_ID)
+            VALUES ($1, $2, $3, $4)
+            RETURNING notification_id, user_id, message, type, comes_from_ID, is_read, created_at
+        `, [userID, message, type, comesFromID]);
+        return result.rows[0];
+    }
+    catch (err) {
+        console.error("Error creating notification:", err);
+        throw err;
+    }
+}
+
+// get all the notifications for some user
+export async function getNotifications(userID: number){
+    try {
+        const result = await pool.query(`
+            SELECT
+                n.notification_id,
+                n.message,
+                n.type,
+                n.comes_from_ID,
+                n.is_read,
+                n.created_at
+            FROM notifications n
+            LEFT JOIN users u ON n.comes_from_ID = u.user_id 
+            -- get username of person who sent notification
+            -- If the notification is friend, then username is from the user who sent the friend request
+            -- the notification should be null if it is not a friend request
+            WHERE n.user_id = $1
+            ORDER BY n.created_at DESC
+        `, [userID]);
+        return result.rows;
+    }
+    catch (err) {
+        console.error("Error getting notifications:", err);
+        throw err;
+    }
+}
+
+// 
