@@ -2,24 +2,58 @@ import { pool } from "../../db/db";
 
 type GameStatusDB = "waiting" | "play" | "end_win" | "end_lose";
 
+export const updateRevealedCells = async (
+    gameId: number,
+    numRevealed: number
+): Promise<number | null> => {
+    try {
+        // block writes after status has been updated to end_x.
+        const curStatus = await getGameStatus(gameId);
+        if (curStatus !== "play") 
+            return null;
+
+        const res = await pool.query(
+            `
+            UPDATE games
+            SET num_revealed = num_revealed + $1
+            WHERE game_id = $2
+            RETURNING num_revealed
+            `,
+            [numRevealed, gameId]
+        );
+        return res.rows[0].num_revealed;
+    } catch (err) {
+        console.error("Error updating game status:", err);
+        throw err;
+    }
+};
+
 export const updateGameStatus = async (
     gameId: number,
-    status: GameStatusDB
-): Promise<void> => {
+    status: GameTypes.GameState
+): Promise<any> => {
     try {
-        await pool.query(
+        // block writes after status has been updated to end_x.
+        const curStatus = await getGameStatus(gameId);
+        if (curStatus !== "play") 
+            return;
+
+        const dbstatus : GameStatusDB = status === "won" ? "end_win" : "end_lose";
+        let res = await pool.query(
             `
             UPDATE games
             SET status = $1,
-                ended_at = CASE
+            ended_at = CASE
                                 WHEN $1 IN ('end_win', 'end_lose')
                                 THEN (NOW() AT TIME ZONE 'UTC')
                                 ELSE ended_at
                             END
             WHERE game_id = $2
+            RETURNING EXTRACT(EPOCH FROM (ended_at - started_at)) * 1000 AS gametime_ms
             `,
-            [status, gameId]
+            [dbstatus, gameId]
         );
+        return res.rows[0].gametime_ms;
     } catch (err) {
         console.error("Error updating game status:", err);
         throw err;
@@ -35,7 +69,6 @@ export const addNewGame = async (
     difficulty : GameTypes.Difficulty
 ) : Promise<number> => {
     try {
-        // TODO: initiate statuses after first click.
         const result = await pool.query(
         `
         INSERT INTO games (user_id, board_data, rows, cols, mines, diff_level, status, started_at)
@@ -54,7 +87,6 @@ export const addNewGame = async (
 
 export const getGameById = async (gameId: number): Promise<any> => {
     try {
-        // TODO: guards to ensure user matches user created ?
         const result = await pool.query(
             `
             SELECT *
@@ -70,6 +102,30 @@ export const getGameById = async (gameId: number): Promise<any> => {
         }
 
         return result.rows[0];
+    } catch (err) {
+        console.error("Error fetching game:", err);
+        throw err;
+    }
+};
+
+// check what game queried status is, if any.
+const getGameStatus = async (gameId: number): Promise<GameStatusDB | null> => {
+    try {
+        const result = await pool.query(
+            `
+            SELECT *
+            FROM games
+            WHERE game_id = $1
+            `,
+            [gameId]
+        );
+
+        // No game found
+        if (result.rows.length === 0) {
+            return null;
+        }
+
+        return result.rows[0].status as GameStatusDB;
     } catch (err) {
         console.error("Error fetching game:", err);
         throw err;
