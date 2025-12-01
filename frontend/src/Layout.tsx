@@ -19,7 +19,7 @@ const MainLayout = () => {
           <div className="bg-main/70 mt-1 h-[.7rem]"></div>
           <div className="bg-main/70 mt-1.5 h-[.4rem]"></div>
         </div>
-        <h1 className="flex font-pixel logo text-primary-text z-10 pl-5 shrink-0">Sweeper.io</h1>
+        <a href="/home" className="flex font-pixel logo text-primary-text z-10 pl-5 shrink-0">Sweeper.io</a>
         {user && !isLoginPage && (
 
       <div className="flex flex-row-reverse gap-5 z-10 pr-5 pt2 shrink-0">

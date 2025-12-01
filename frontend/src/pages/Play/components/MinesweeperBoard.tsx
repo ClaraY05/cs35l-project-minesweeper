@@ -25,7 +25,7 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
     const [Tiles, setTiles] = useState<Array<PublicCellData | null>>(() => Array(rows * cols).fill(null)); // frontend cell data store. null means "dont know"
 
     // UI status only
-    const [status, setStatus] = useState<"playing" | "won" | "lost">("playing");
+    const [status, setStatus] = useState<GameTypes.GameState>("playing");
 
     // timer
     const [startTime, setStartTime] = useState<number | null>(null);
@@ -52,21 +52,7 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
 
         return () => clearInterval(id);
     }, [status, startTime]);
-
-    const finishGameOnServer = async (gameId: number, status: "won" | "lost"): Promise<void> => {
-        try {
-            const dbStatus = status === "won" ? "end_win" : "end_lose";
-            await authFetch(`http://localhost:8000/api/game/${gameId}/finish`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ status: dbStatus })
-            });
-        } catch (err) {
-            const error = err as Error;
-            console.error("Error finishing game:", error.message);
-        }
-    };
-
+    
     const handleTileRightClick = (i : number) : void => {
         const cell = Tiles[i];
 
@@ -107,10 +93,8 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
             if (gameIdToUse === null) {
                 console.error("Failed to start game on first click.");
                 return;
-            }
+            }    
         }
-
-        // start timer on first revealing click
         if (startTime === null) {
             setStartTime(Date.now());
         }
@@ -141,12 +125,13 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
         let hitMine = false;
 
         for (const revealedCell of revealedCellData) {
-            // if flagged or already revealed, don't reveal (floodfill from backend can still return these)
             const cell = Tiles[revealedCell.Position];
             const isRevealed = cell?.State.Visibility === "revealed";
-            const isFlagged = cell && "Flagged" in cell.State ? cell.State.Flagged : false;
+            let isFlagged = cell && "Flagged" in cell.State ? cell.State.Flagged : false;
             
-            if (isRevealed || isFlagged)
+            if (revealedCell.Content.Type === "mine") isFlagged = false; // if the game ends (hit a mine), reveal the cell even if flagged
+
+            if (isRevealed || isFlagged) // if flagged or already revealed, don't reveal (floodfill from backend can still return these)
                 continue;
 
             // reveal the cell
@@ -157,16 +142,6 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
 
             if (revealedCell.Content.Type === "mine") {
                 hitMine = true;
-                // TODO: reveal all mines on loss
-
-/*                 hiddenBoard.forEach((hc, idx) => {
-                    if (hc.hasMine) {
-                        newTiles[idx] = {
-                            Content: makeContentFromHidden(hc),
-                            State: { Visibility: "revealed"},
-                        };
-                    }
-                }); */
             } else {
                 // only count new safe reveals
                 newRevealedSafeCount += 1;
@@ -178,9 +153,6 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
 
         if (hitMine) {
             setStatus("lost");
-            if (gameIdToUse !== null) {
-                finishGameOnServer(gameIdToUse, "lost");
-            }
             return;
         }
 
@@ -188,9 +160,6 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
         const totalSafeCells = rows * cols - mines;
         if (newRevealedSafeCount === totalSafeCells) {
             setStatus("won");
-            if(gameIdToUse !== null) {
-                finishGameOnServer(gameIdToUse, "won");
-            }
         }
     };
 
