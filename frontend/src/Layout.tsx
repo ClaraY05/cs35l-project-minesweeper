@@ -3,16 +3,19 @@ import { useLocalStorage } from "usehooks-ts";
 import AccountDisplay from "./components/header/AccountDisplay";
 import Friends from "./components/header/Friends/Friends"; 
 import Notifications from "./components/header/Notifications/Notifications";
+import { DEFAULT_VIDEO } from "./pages/Settings/utils/defaultSettings";
 
 const MainLayout = () => {
   const [user] = useLocalStorage<any|null>("user",null);
+  const [video] = useLocalStorage("video", DEFAULT_VIDEO);
+  const bg = video?.customBg? video.customBg : "/bg.png";
 
   // checks if page is login, will not render buttons in header if true
   const location = useLocation();
   const isLoginPage = location.pathname === "/";
 
   return (
-      <div className="relative bg-[url('/bg.png')] bg-cover bg-center h-screen flex flex-col">
+      <div className="relative bg-cover bg-center h-screen flex flex-col" style={{backgroundImage:`url(${bg})`}}>
       <header className="relative flex flex-row justify-between items-center w-full pb-4 z-20">
         <div className = "headerColor absolute inset-0 z-0">
           <div className="bg-main/70 h-[3.5rem]"></div>

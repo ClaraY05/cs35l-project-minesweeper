@@ -4,7 +4,7 @@ import Slider from "./components/CommonSlider";
 import TextInput from "../../components/header/Friends/components/TextInput";
 import { useLocalStorage } from "usehooks-ts";
 import { DEFAULT_VIDEO } from "./utils/defaultSettings";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const VideoInterface = () => {
     let graphics: string[] = ["Low","Medium","Tobias"];
@@ -38,6 +38,7 @@ const VideoInterface = () => {
         }
     };
     const [bgUrl, setBgUrl] = useState(video.customBg ?? "");
+    useEffect(()=>{ setBgUrl(video.customBg ?? ""); },[video.customBg]);
 
     // for conversion from percent to size
     const getTextSizeLabel = (value: number): string => {
@@ -61,7 +62,19 @@ const VideoInterface = () => {
                 displayValue={getTextSizeLabel}
             />
             <Checkbox label="Display Username" nowChecked={video.displayUsername} onChange={(e)=>update({displayUsername:e})}/>
-            <Checkbox label="Use Custom Background" nowChecked={video.changeCustomBg} onChange={(e)=>update({changeCustomBg:e})}/>
+            <Checkbox
+                label="Use Custom Background"
+                nowChecked={video.changeCustomBg}
+                onChange={(e)=>{
+                    if(!e){
+                        // revert to default background when checkbox deselected
+                        setBgUrl(DEFAULT_VIDEO.customBg);
+                        update({changeCustomBg:false, customBg: DEFAULT_VIDEO.customBg});
+                    } else {
+                        update({changeCustomBg:true});
+                    }
+                }}
+            />
             <TextInput 
                 placeholder="Enter background url" 
                 value={bgUrl}
