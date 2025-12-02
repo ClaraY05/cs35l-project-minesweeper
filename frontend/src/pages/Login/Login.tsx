@@ -74,7 +74,7 @@ const Login = () => {
                     </div>
                     <div>
                         <button type="submit" disabled={loading} className="pt-3 hover:font-bold transition-all duration-300"> 
-                            {loading ? mode==="login"? "Logging in..." : "Signing up...": mode==="login"? "Login" : "Register"}</button>
+                            {loading ? mode==="login"? "Logging in..." : "Sending Verification Email...": mode==="login"? "Login" : "Register"}</button>
                     </div>
                 </form>
 

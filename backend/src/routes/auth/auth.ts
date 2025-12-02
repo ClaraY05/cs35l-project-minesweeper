@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { pool } from "../../db/db";
 import { DEFAULT_SETTINGS } from "../settings/defaultSettings";
+import { createVerificationToken, sendVerificationEmail, verifyToken } from "./verification";
 
 // routes for our api.
 const authRoutes = Router();
@@ -50,11 +51,16 @@ authRoutes.post("/register", async(req:Request, res:Response) => {
                 [userID, DEFAULT_SETTINGS.keybinds, DEFAULT_SETTINGS.sound, DEFAULT_SETTINGS.video, DEFAULT_SETTINGS.notif]
             );
 
+            const emailToken = await createVerificationToken(userID);
+            await sendVerificationEmail(email, emailToken);
+
             const token = signJwt({ userID, email, username });
             res.cookie("token",token,{httpOnly:true, secure:false, sameSite:"lax", maxAge:60*60*1000});
 
 
-            return res.status(201).json({user:{user_id:userID, email:email, username:username, profile_picture: result.rows[0].profile_picture}});
+            return res.status(201).json({user:{user_id:userID, email:email, username:username, profile_picture: result.rows[0].profile_picture},
+                                        is_verified:false,
+                                        message: "check email to verify"});
         }
         // Catch if username is in db already
         catch(err: any) {
@@ -75,17 +81,21 @@ authRoutes.post("/login", async(req:Request, res:Response)=>{
     }
 
     try {
-        const result = await pool.query("SELECT user_id, username, email, password_hash, profile_picture FROM users WHERE email = $1", [email]);
+        const result = await pool.query("SELECT user_id, username, email, password_hash, profile_picture, is_verified FROM users WHERE email = $1", [email]);
         
         // if user doesn't exist and login request
         if(result.rows.length===0){
             return res.status(401).json({error:"Invalid email or password"});
         }
 
-        // Compare the passwords with the hash in the database
         const user = result.rows[0];
-        const isValid = await bcrypt.compare(password, user.password_hash);
+
+        if(!user.is_verified){
+            return res.status(403).json({error:"email not verified"});
+        }
         
+        // Compare the passwords with the hash in the database
+        const isValid = await bcrypt.compare(password, user.password_hash);
         if(!isValid){
             return res.status(401).json({error: "Invalid username or password"});
         }
@@ -109,6 +119,17 @@ authRoutes.post("/logout", (req,res)=>{
     res.clearCookie("token", {httpOnly:true, sameSite:"lax", secure:false});
     return res.status(200).json({message: "Logged out"})
 })
+
+authRoutes.post("/verify", async (req,res)=>{
+    try{
+        const {emailToken} = req.body;
+        await verifyToken(emailToken);
+        return res.json({message:"email verified"});
+    }
+    catch(err){
+        return res.status(400).json({error:"email not verified"});
+    }
+});
 
 
 export default authRoutes;
