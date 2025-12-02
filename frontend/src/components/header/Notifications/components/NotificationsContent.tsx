@@ -5,10 +5,9 @@ interface NotificationsContentProps {
   messages: Notification[];
   removeMessage: (index: number) => void;
   removeAll: () => void;
-  onFriendRequestAction: (notification: Notification, action: "accept" | "deny") => void;
 }
 
-const NotificationsContent = ({ messages, removeMessage, removeAll, onFriendRequestAction }: NotificationsContentProps) => {
+const NotificationsContent = ({ messages, removeMessage, removeAll }: NotificationsContentProps) => {
   return (
     <div>
         {messages.length === 0 ? (
@@ -18,7 +17,6 @@ const NotificationsContent = ({ messages, removeMessage, removeAll, onFriendRequ
             <NotificationItem 
               notification={msg} 
               onDelete={() => removeMessage(i)} 
-              onFriendRequestAction={(action) => {onFriendRequestAction(msg, action)}}
             />
           ))
         )}

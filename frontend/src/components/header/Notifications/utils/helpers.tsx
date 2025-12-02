@@ -34,21 +34,5 @@ export const createNotificationHandlers = (
             console.error("Failed to delete all notifications:", err);
         }
     };
-    
-    const handleFriendRequest = async (notification: Notification, action: "accept" | "deny") => {
-        const body = {
-            requesterId: notification.comes_from_ID,
-            notificationId: notification.notification_id,
-        }
-        try {
-            await authFetch(`/api/friends/${action === "accept" ? "accept" : "deny"}`, {
-                method: "POST",
-                body: JSON.stringify(body),
-            });
-        } catch (err) {
-            console.error("Failed to handle friend request:", err);
-        }
-    };
-    
-    return { getNotifications, handleRemoveMessage, handleRemoveAll, handleFriendRequest };
+    return { getNotifications, handleRemoveMessage, handleRemoveAll};
 };
