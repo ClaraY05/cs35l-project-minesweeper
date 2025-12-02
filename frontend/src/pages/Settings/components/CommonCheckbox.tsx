@@ -17,6 +17,7 @@ const Checkbox:React.FC<CheckboxProps> = ({ label, nowChecked, onChange })=>{
         setChecked(next);
         if (onChange) onChange(next); // notify parent if callback provided
     };
+    // sync child with parent if parent's nowChecked change through other reasons i.e. revert to default
     useEffect(()=>{setChecked(nowChecked)},[nowChecked]);
 
     return (
