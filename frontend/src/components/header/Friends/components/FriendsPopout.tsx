@@ -35,6 +35,7 @@ const FriendsPopout = ({
   const [friends, setFriends] = useState<Friend[]>([]);
   const [searchResults, setSearchResults] = useState<Friend[]>([]);
   const [text, setText] = useState("");
+  const [status, setStatus] = useState("");
 
   // friend requests from backend
   const [hasRequests, setHasRequests] = useState(false);
@@ -120,7 +121,8 @@ const FriendsPopout = ({
     setFriends,
     setSearchResults,
     friends,
-    searchResults
+    searchResults,
+    setStatus
   );
 
   useEffect(() => {
@@ -151,6 +153,11 @@ const FriendsPopout = ({
               onChange={setText} 
               onSubmit={handleSearch}
             />
+            {status && (
+              <p className="text-emerald-400 text-sm mt-2">
+                {status}
+              </p>
+            )}
           </div>
   
           {searchResults.length > 0 && (

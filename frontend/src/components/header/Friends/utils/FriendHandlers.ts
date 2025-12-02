@@ -12,7 +12,8 @@ export const createFriendHandlers = (
     setFriends: React.Dispatch<React.SetStateAction<Friend[]>>,
     setSearchResults: React.Dispatch<React.SetStateAction<Friend[]>>,
     friends: Friend[],
-    searchResults: Friend[]
+    searchResults: Friend[],
+    setStatus: React.Dispatch<React.SetStateAction<string>>
   ) => {
     const handleSearch = async (value: string) => {
         try {
@@ -41,7 +42,10 @@ export const createFriendHandlers = (
             method: "POST",
             body: JSON.stringify({ friendId }),
         });
-        
+
+        // simple confirmation line in UI
+        setStatus("Friend request sent!");
+
         // Need to remove that friend if you've just friended them
         const updatedResults = searchResults.filter(user => user.user_id !== friendId);
         setSearchResults(updatedResults);
@@ -51,7 +55,6 @@ export const createFriendHandlers = (
         setFriends(data);
         } catch (err: any) {
         console.error("Failed to add friend:", err);
-        alert(err.message || "Failed to add friend");
         }
     };
 
