@@ -82,9 +82,14 @@ const FriendsPopout = ({
         }),
       });
 
-      // Refresh friends and friend requests
+      // remove this request locally
+      setFriendRequests(prev =>
+        prev.filter(req => req.notification_id !== notificationId)
+      );
+      setHasRequests(prev => prev && friendRequests.length > 1);
+
+      // Refresh friends list
       await loadFriends();
-      await loadFriendRequests();
     } catch (err) {
       console.error("Error accepting friend request:", err);
     }
@@ -100,8 +105,11 @@ const FriendsPopout = ({
         }),
       });
 
-      // Redo the friend requests list
-      await loadFriendRequests();
+      // remove this request locally
+      setFriendRequests(prev =>
+        prev.filter(req => req.notification_id !== notificationId)
+      );
+      setHasRequests(prev => prev && friendRequests.length > 1);
     } catch (err) {
       console.error("Error denying friend request:", err);
     }
