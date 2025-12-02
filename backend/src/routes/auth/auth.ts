@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { pool } from "../../db/db";
 import { DEFAULT_SETTINGS } from "../settings/defaultSettings";
-import { createVerificationToken, sendVerificationEmail, verifyToken } from "./verification";
+import { createVerificationToken, sendVerificationEmail, verifyToken } from "./verificationHelper";
 
 // routes for our api.
 const authRoutes = Router();

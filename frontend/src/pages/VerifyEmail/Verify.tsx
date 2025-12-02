@@ -9,16 +9,16 @@ const Verify = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = params.get("token");
-        if (!token) {
+        const emailToken = params.get("emailToken");
+        if (!emailToken) {
             setStatus("error");
             setMessage("Missing token");
             return;
         }
         try{
-            authFetch("http://localhost:8000/api/auth/verify", { method: "POST" });
+            authFetch("http://localhost:8000/api/auth/verify", { method: "POST", body: JSON.stringify({ emailToken }) });
             setStatus("ok");
-            setMessage("email verified, you can log in now");
+            setMessage("email verified, redirecting...");
             navigate("/", {replace:true});
         } catch (err:any){
             setStatus("error");
