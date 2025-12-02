@@ -4,7 +4,7 @@ type GameStatusDB = "waiting" | "play" | "end_win" | "end_lose";
 
 export const updateRevealedCells = async (
     gameId: number,
-    numRevealed: number
+    revealedCells: GameTypes.CellData[]
 ): Promise<number | null> => {
     try {
         // block writes after status has been updated to end_x.
@@ -12,15 +12,29 @@ export const updateRevealedCells = async (
         if (curStatus !== "play") 
             return null;
 
-        const res = await pool.query(
-            `
-            UPDATE games
-            SET num_revealed = num_revealed + $1
-            WHERE game_id = $2
-            RETURNING num_revealed
-            `,
-            [numRevealed, gameId]
+        for (const cell of revealedCells) {
+            await pool.query(
+                `
+                UPDATE games
+                SET revealed_cells =
+                    CASE
+                        WHEN NOT $1 = ANY (revealed_cells)
+                        THEN array_append(revealed_cells, $1)
+                        ELSE revealed_cells
+                    END
+                WHERE game_id = $2;
+                `,
+                [cell.Position, gameId]
+            );
+        }
+
+        const res = await pool.query (
+            `SELECT cardinality(revealed_cells) AS num_revealed
+            FROM games
+            WHERE game_id = $1;
+            `,[gameId]
         );
+        
         return res.rows[0].num_revealed;
     } catch (err) {
         console.error("Error updating game status:", err);

@@ -48,16 +48,25 @@ gameRoutes.post("/cell/reveal", authenticateToken, async (req: AuthRequest, res)
         if (!game.started_at) {
             await updateStartTime(game_id);
         }
+
         // if player revealed a mine, mark a loss by force
+        const clickedCell = game.board_data[cell_id];
         const revealedCells = revealRegion(game.board_data, cell_id, game.rows, game.cols);
-        if (revealedCells[0]?.Content.Type === "mine") { 
-            let gametime = await updateGameStatus(game_id, "lost")
-            console.log(gametime);
+
+        if (clickedCell.Content.Type === "mine") {
+            const gametime = await updateGameStatus(game_id, "lost");
+            console.log(gametime)
+            return res.json(revealedCells);
         }
-        const numRevealed = await updateRevealedCells(game_id, revealedCells.length);
-        if (revealedCells[0]?.Content.Type !== "mine" && numRevealed === game.rows*game.cols-game.mines) {
-            console.log("player won")
-            await updateGameStatus(game_id, "won");
+
+        const numRevealed = await updateRevealedCells(game_id, revealedCells);
+        const totalSafe = game.rows * game.cols - game.mines;
+
+        if (numRevealed === totalSafe) {
+            const gametime = await updateGameStatus(game_id, "won");
+            console.log("player won");
+            console.log("wintime ", gametime)
+            console.log(clickedCell)
         }
         return res.json(revealedCells);
     } 
