@@ -18,7 +18,7 @@ const NotificationsPopout = ({
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   // Get the notification handlers
-  const { getNotifications, handleRemoveMessage, handleRemoveAll } = createNotificationHandlers(
+  const { getNotifications, handleRemoveMessage, handleRemoveAll, handleFriendRequest } = createNotificationHandlers(
     setNotifications,
     notifications
   );
@@ -48,6 +48,7 @@ const NotificationsPopout = ({
             messages={notifications}
             removeMessage={handleRemoveMessage}
             removeAll={handleRemoveAll}
+            onFriendRequestAction={handleFriendRequest}
           />
         </div>
       </div>
