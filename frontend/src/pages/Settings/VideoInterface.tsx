@@ -11,6 +11,7 @@ const VideoInterface = () => {
     const [video, setVideo] = useLocalStorage("video", DEFAULT_VIDEO);
     const update = (newChange:any) => setVideo((prev:any)=>({ ...prev, ...newChange}))
 
+    // make sure url provided is an image
     const checkImage = async (url:string) => {
         try {
             const res = await fetch(url, {method:"GET"});

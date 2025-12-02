@@ -21,7 +21,6 @@ const Leaderboard = () => {
                 const res = await authFetch(`http://localhost:8000/api/leaderboard?difficulty=${difficulty}`, {
                     method: "GET",
                 });
-                // console.log(res);
                 setEntries(res);
             } catch(err:any){
                 setError(err.message);
