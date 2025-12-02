@@ -167,8 +167,8 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
 
     return (
         <div className="minesweeper-wrapper">
-            <div className="minesweeper-board-container">
-                <div className="game-status-bar">
+            <div className="minesweeper-board-container flex flex-row items-center justify-around">
+                <div className="game-status-bar h-full">
                     <span className="game-status-text"> 
                         Status: {status} &nbsp;&nbsp; Time: {seconds}s
                     </span>
