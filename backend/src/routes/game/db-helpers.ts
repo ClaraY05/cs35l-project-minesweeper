@@ -1,4 +1,4 @@
-import { pool } from "../../db/db";
+import { pool } from "../../db/db.js";
 
 type GameStatusDB = "waiting" | "play" | "end_win" | "end_lose";
 

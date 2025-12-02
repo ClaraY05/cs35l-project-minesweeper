@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { createBoard, revealRegion, validateBoard } from "./helpers";
-import { addNewGame, getGameById, updateGameStatus, updateRevealedCells, updateStartTime } from "./db-helpers";
-import { authenticateToken, AuthRequest } from "../middleware/authMiddleware";
+import { createBoard, revealRegion, validateBoard } from "./helpers.js";
+import { addNewGame, getGameById, updateGameStatus, updateRevealedCells, updateStartTime } from "./db-helpers.js";
+import { authenticateToken, AuthRequest } from "../middleware/authMiddleware.js";
 
 // routes relating to game
 const gameRoutes = Router();
@@ -50,12 +50,12 @@ gameRoutes.post("/cell/reveal", authenticateToken, async (req: AuthRequest, res)
         }
         // if player revealed a mine, mark a loss by force
         const revealedCells = revealRegion(game.board_data, cell_id, game.rows, game.cols);
-        const numRevealed = await updateRevealedCells(game_id, revealedCells.length);
         if (revealedCells[0]?.Content.Type === "mine") { 
             let gametime = await updateGameStatus(game_id, "lost")
             console.log(gametime);
         }
-        else if (numRevealed === game.rows*game.cols-game.mines) {
+        const numRevealed = await updateRevealedCells(game_id, revealedCells.length);
+        if (revealedCells[0]?.Content.Type !== "mine" && numRevealed === game.rows*game.cols-game.mines) {
             console.log("player won")
             await updateGameStatus(game_id, "won");
         }
