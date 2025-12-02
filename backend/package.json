@@ -24,6 +24,7 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
+    "nodemailer": "^7.0.11",
     "pg": "^8.11.3"
   },
   "devDependencies": {
@@ -33,6 +34,7 @@
     "@types/express": "^5.0.5",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.9.2",
+    "@types/nodemailer": "^7.0.4",
     "@types/pg": "^8.10.9",
     "dotenv-cli": "^11.0.0",
     "node-pg-migrate": "^7.6.1",

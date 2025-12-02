@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { useLocalStorage } from "usehooks-ts";
 import { loadAllSettings } from "../../api/loadAllSettings";
 import { Inputs, AuthMode, handleLogin, toggleAuthMode } from "./utils/LoginHandler";
+import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "../Settings/utils/defaultSettings";
 
 const Login = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
@@ -14,8 +15,12 @@ const Login = () => {
 
     const navigate = useNavigate();
 
-    // const [,setToken] = useLocalStorage<string|null>("token",null);
     const [,setUser] = useLocalStorage<any|null>("user",null);
+    const [,setKeybinds] = useLocalStorage("keybinds", DEFAULT_KEYBINDS);
+    const [,setSound] = useLocalStorage("sound", DEFAULT_SOUND);
+    const [,setVideo] = useLocalStorage("video", DEFAULT_VIDEO);
+    const [,setNotif] = useLocalStorage("notif", DEFAULT_NOTIF);
+    
 
     const onSubmit = async (data: Inputs) => {
         setError("");
@@ -24,8 +29,12 @@ const Login = () => {
 
             const payload = await handleLogin(data, mode);
             // setToken(payload.token);
-            await loadAllSettings();
+            const {keybinds, sound, video, notif} = await loadAllSettings();
             setUser(payload.user);
+            setKeybinds(keybinds);
+            setSound(sound);
+            setVideo(video);
+            setNotif(notif);
             navigate("/home", {replace:true});
         } catch (err: any) {
             setError(err.message);
@@ -74,7 +83,7 @@ const Login = () => {
                     </div>
                     <div>
                         <button type="submit" disabled={loading} className="pt-3 hover:font-bold transition-all duration-300"> 
-                            {loading ? mode==="login"? "Logging in..." : "Signing up...": mode==="login"? "Login" : "Register"}</button>
+                            {loading ? mode==="login"? "Logging in..." : "Sending Verification Email...": mode==="login"? "Login" : "Register"}</button>
                     </div>
                 </form>
 
