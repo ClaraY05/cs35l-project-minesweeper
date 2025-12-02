@@ -71,8 +71,8 @@ export const addNewGame = async (
     try {
         const result = await pool.query(
         `
-        INSERT INTO games (user_id, board_data, rows, cols, mines, diff_level, status, started_at)
-        VALUES ($1, $2, $3, $4, $5, $6, 'play', (NOW() AT TIME ZONE 'UTC'))
+        INSERT INTO games (user_id, board_data, rows, cols, mines, diff_level, status)
+        VALUES ($1, $2, $3, $4, $5, $6, 'play')
         RETURNING game_id
         `,
         [userID, JSON.stringify(boardData), rows, cols, mines, String(difficulty)]
@@ -107,6 +107,20 @@ export const getGameById = async (gameId: number): Promise<any> => {
         throw err;
     }
 };
+
+export const updateStartTime = async(gameId: number):Promise<any> =>{
+    try {
+        const result = await pool.query(
+            `UPDATE games
+            SET started_at = (NOW() AT TIME ZONE 'UTC')
+            WHERE game_id = $1
+            `,[gameId]
+        );
+    } catch (err) {
+        console.error("Error updating start time: ", err);
+        throw err;
+    }
+}
 
 // check what game queried status is, if any.
 const getGameStatus = async (gameId: number): Promise<GameStatusDB | null> => {
