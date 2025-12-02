@@ -10,6 +10,7 @@ const VideoInterface = () => {
     let graphics: string[] = ["Low","Medium","Tobias"];
     const [video, setVideo] = useLocalStorage("video", DEFAULT_VIDEO);
     const update = (newChange:any) => setVideo((prev:any)=>({ ...prev, ...newChange}))
+    const [error, setError] = useState("");
 
     // make sure url provided is an image
     const checkImage = async (url:string) => {
@@ -29,17 +30,18 @@ const VideoInterface = () => {
         try{
             const res = await checkImage(text);
             if(!res){
-                console.error("image doesn't exist");
+                setError("Image URL is not valid or reachable");
                 return;
             }
+            setError("");
             update({customBg:text});
             setBgUrl(text);
         } catch(err){
-            console.error(err);
+            setError("Image check failed");
         }
     };
-    const [bgUrl, setBgUrl] = useState(video.customBg ?? "");
-    useEffect(()=>{ setBgUrl(video.customBg ?? ""); },[video.customBg]);
+    const [bgUrl, setBgUrl] = useState(video.customBg);
+    useEffect(()=>{ setBgUrl(video.customBg); },[video.customBg]);
 
     // for conversion from percent to size
     const getTextSizeLabel = (value: number): string => {
@@ -91,6 +93,7 @@ const VideoInterface = () => {
                 }}
                 buttonText="Enter"
                 disabled={!video.changeCustomBg}/>
+            {error && <p style={{color: 'red'}}>{error}</p>}
         </div>
     );
 }
