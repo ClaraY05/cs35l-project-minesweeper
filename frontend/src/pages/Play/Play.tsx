@@ -32,7 +32,7 @@ const Play = () => {
         }
     };
     
-    // Optional: reset game when difficulty changes
+    // reset game when difficulty changes
     const handleDifficultyChange = (value: GameTypes.Difficulty) => {
         setDifficulty(value);
         setActiveGameID(null); // clear current game so a new one is created on first click
