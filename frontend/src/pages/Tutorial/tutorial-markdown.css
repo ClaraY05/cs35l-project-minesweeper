@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+.tutorial-markdown {
+    color: white;
+    line-height: 1.6;
+}
+
+.tutorial-markdown h2 {
+    @apply text-2xl font-bold p-1 uppercase text-lime-500;
+}
+
+.tutorial-markdown h3 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: #a3e635; /* lime-400 */
+}
+
+.tutorial-markdown p {
+    margin-bottom: 1rem;
+}
+
+.tutorial-markdown ul,
+.tutorial-markdown ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+}
+
+.tutorial-markdown li {
+    margin-bottom: 0.5rem;
+}
+
+.tutorial-markdown code {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+    font-size: 0.875em;
+    color: #fbbf24; /* amber-400 */
+}
+
+.tutorial-markdown pre {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+}
+
+.tutorial-markdown pre code {
+    background-color: transparent;
+    padding: 0;
+    color: #fbbf24;
+}
+
+.tutorial-markdown a {
+    color: #60a5fa; /* blue-400 */
+    text-decoration: underline;
+}
+
+.tutorial-markdown a:hover {
+    color: #93c5fd; /* blue-300 */
+}
+
+.tutorial-markdown img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+}
+
+.tutorial-markdown blockquote {
+    border-left: 4px solid #84cc16; /* lime-500 */
+    padding-left: 1rem;
+    margin: 1rem 0;
+    font-style: italic;
+    color: #d1d5db; /* gray-300 */
+}
+
+.tutorial-markdown table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+.tutorial-markdown th,
+.tutorial-markdown td {
+    border: 1px solid #4b5563; /* gray-600 */
+    padding: 0.5rem;
+    text-align: left;
+}
+
+.tutorial-markdown th {
+    background-color: rgba(0, 0, 0, 0.5);
+    font-weight: bold;
+    color: #84cc16; /* lime-500 */
+}
+
+.tutorial-markdown hr {
+    border: none;
+    border-top: 2px solid #4b5563; /* gray-600 */
+    margin: 1.5rem 0;
+}
+

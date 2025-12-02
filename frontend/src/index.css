@@ -204,3 +204,7 @@ input[type="password"]:-moz-autofill {
     font-weight: bold;
     line-height: 1.5rem;
   }
+
+.tutorial-link{
+    @apply hover:text-lime-600 transition-all duration-300;
+}

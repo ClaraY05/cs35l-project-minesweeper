@@ -1,11 +1,13 @@
 import ReactMarkdown from "react-markdown";
 import basics from "./content/basics.md?raw"
+import "./tutorial-markdown.css"
 
 const Basics = () => {
     return (
         <div>
-            <h2>Basics</h2>
-            <ReactMarkdown>{basics}</ReactMarkdown>
+            <div className="tutorial-markdown">
+                <ReactMarkdown>{basics}</ReactMarkdown>
+            </div>
         </div>
     );
 }

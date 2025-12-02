@@ -9,12 +9,12 @@ export async function getNotifications(userID: number){
                 n.notification_id,
                 n.message,
                 n.type,
-                n.comes_from_ID,
+                n."comes_from_ID",
                 n.is_read,
                 n.created_at,
                 u.username as related_username
             FROM notifications n
-            LEFT JOIN users u ON n.comes_from_ID = u.user_id 
+            LEFT JOIN users u ON n."comes_from_ID" = u.user_id 
             -- get username of person who sent notification
             -- If the notification is friend, then username is from the user who sent the friend request
             -- the notification should be null if it is not a friend request
@@ -33,9 +33,9 @@ export async function getNotifications(userID: number){
 export async function createNotification(userID: number, message: string, type: string, comesFromID?: number){
     try {
         const result = await pool.query(`
-            INSERT INTO notifications (user_id, message, type, comes_from_ID)
+            INSERT INTO notifications (user_id, message, type, "comes_from_ID")
             VALUES ($1, $2, $3, $4)
-            RETURNING notification_id, user_id, message, type, comes_from_ID, is_read, created_at
+            RETURNING notification_id, user_id, message, type, "comes_from_ID", is_read, created_at
         `, [userID, message, type, comesFromID || null]);
         return result.rows[0];
     }
