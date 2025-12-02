@@ -3,15 +3,28 @@ interface FriendDisplayProps {
   name: string;
   avatar: string;
   email?: string;
-  buttonType: "add" | "remove";
-  onAction: () => void;
+  // "request" shows both Accept and Deny buttons
+  buttonType: "add" | "remove" | "request";
+  onAction: () => void;          // primary action (add / remove / accept)
+  onSecondaryAction?: () => void; // used for "request" mode as deny
 }
 
-const FriendDisplay = ({ id, name, avatar, email, buttonType, onAction }: FriendDisplayProps) => {
-  const buttonText = buttonType === "add" ? "Add Friend" : "Remove Friend";
-  const buttonClass = buttonType === "add" 
-    ? "uppercase text-xs font-bold hover:text-green-500" 
-    : "uppercase text-xs font-bold hover:text-red-500";
+const FriendDisplay = ({ id, name, avatar, email, buttonType, onAction, onSecondaryAction }: FriendDisplayProps) => {
+  const isRequest = buttonType === "request";
+
+  const buttonText =
+    buttonType === "add"
+      ? "Add Friend"
+      : buttonType === "request"
+        ? "Accept"
+        : "Remove Friend";
+
+  const buttonClass =
+    buttonType === "add"
+      ? "uppercase text-xs font-bold text-white hover:text-green-500"
+      : buttonType === "request"
+        ? "uppercase text-xs font-bold text-white hover:text-emerald-500"
+        : "uppercase text-xs font-bold text-white hover:text-red-500";
 
   return (
     <div className="flex flex-row gap-2 p-3 bg-stone-900 rounded-sm items-center">
@@ -21,9 +34,26 @@ const FriendDisplay = ({ id, name, avatar, email, buttonType, onAction }: Friend
           <strong className="friend-name">@{name}</strong>
           {email && <em className="block text-sm text-gray-400">@{email}</em>}
         </div>
-        <button onClick={onAction} className={buttonClass}>
-          {buttonText}
-        </button>
+        {isRequest ? (
+          <div className="flex flex-row gap-3">
+            <button
+              onClick={onAction}
+              className="uppercase text-xs font-bold text-emerald-400 hover:text-emerald-300"
+            >
+              Accept
+            </button>
+            <button
+              onClick={onSecondaryAction}
+              className="uppercase text-xs font-bold text-red-400 hover:text-red-300"
+            >
+              Deny
+            </button>
+          </div>
+        ) : (
+          <button onClick={onAction} className={buttonClass}>
+            {buttonText}
+          </button>
+        )}
       </div>
     </div>
   );

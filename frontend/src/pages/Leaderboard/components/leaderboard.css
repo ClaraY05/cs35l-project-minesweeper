@@ -1,0 +1,23 @@
+.leaderboard-table-wrapper {
+    max-height: 20rem;
+    overflow-y: auto;
+}
+
+#leaderboard-table {
+    padding: 3px;
+    @apply w-full table-fixed;
+    border-collapse: collapse;
+}
+
+#leaderboard-table thead {
+    position: sticky;
+    top: 0;
+    background-color: rgb(79 70 229);
+    z-index: 1;
+}
+
+#leaderboard-table th,
+#leaderboard-table td {
+    padding: 5px;
+    text-align: center;
+}

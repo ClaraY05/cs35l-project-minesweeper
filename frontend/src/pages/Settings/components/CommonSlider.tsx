@@ -5,10 +5,11 @@ interface SliderProps {
     nowValue: number;  
     min?: number;      
     max?: number;
-    onChange?: (nowValue: number) => void;             
+    onChange?: (nowValue: number) => void;
+    displayValue?: (value: number) => string; // Add this line
   }
   
-const Slider: React.FC<SliderProps> = ({label, nowValue, min = 1, max = 100, onChange}) => {
+const Slider: React.FC<SliderProps> = ({label, nowValue, min = 1, max = 100, onChange, displayValue}) => {
     const [value, setValue] = useState(nowValue);
   
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,7 +35,9 @@ const Slider: React.FC<SliderProps> = ({label, nowValue, min = 1, max = 100, onC
           style={{ '--value': `${percentage}%` } as React.CSSProperties}
           onChange={handleChange}
         />
-        <span className="font-bold uppercase p-1 text-xl absolute left-[80%] ml-2 flex flex-shrink-0">{value}%</span>
+        <span className="font-bold uppercase p-1 text-xl absolute left-[80%] ml-2 flex flex-shrink-0">
+          {displayValue ? displayValue(value) : `${value}%`}
+        </span>
       </div>
     );
   };

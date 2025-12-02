@@ -14,6 +14,7 @@ import Tesselation from "./pages/Tutorial/Tesselation"
 import MainLayout from "./Layout"
 import Login from "./pages/Login/Login"
 import Leaderboard from "./pages/Leaderboard/Leaderboard"
+import Verify from "./pages/VerifyEmail/Verify"
 
 import { Routes, Route, Navigate } from 'react-router-dom';
 import AuthRedirect from "./components/AuthRedirect";
@@ -30,6 +31,7 @@ const App = () => {
                         <Login />
                     </AuthRedirect>
                 }/>
+                <Route path="/verify" element={<Verify/>}/>
                 
                 <Route element={<RequireAuth />}>
                     <Route path="/home" element={<Home/>}/>

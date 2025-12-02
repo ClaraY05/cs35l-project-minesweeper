@@ -1,21 +1,33 @@
 import NotificationsContent from "./NotificationsContent";
+import { Notification } from "../utils/notificationInter";
+import { useEffect, useState } from "react";
+import { createNotificationHandlers } from "../utils/helpers";
 
 interface NotificationsPopoutProps {
   isOpen: boolean;
   onClose: () => void;
-  messages: string[];
-  removeMessage: (index: number) => void;
-  removeAll: () => void;
 }
 
 const NotificationsPopout = ({ 
   isOpen, 
-  onClose, 
-  messages,
-  removeMessage,
-  removeAll
+  onClose
 }: NotificationsPopoutProps) => {
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  // Get the notification handlers
+  const { getNotifications, handleRemoveMessage, handleRemoveAll } = createNotificationHandlers(
+    setNotifications,
+    notifications
+  );
+
+  useEffect(() => {
+    if (isOpen) {
+      getNotifications();
+    }
+  }, [isOpen]);
 
   return (
     <>
@@ -29,13 +41,13 @@ const NotificationsPopout = ({
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex flex-row justify-between items-center">
-            <h1>Notifications</h1>
+            <h1 className="tracking-wide">Notifications</h1>
             <button onClick={onClose} className="closeOverlay uppercase hover:font-bold">Close</button>
           </div>
           <NotificationsContent 
-            messages={messages}
-            removeMessage={removeMessage}
-            removeAll={removeAll}
+            messages={notifications}
+            removeMessage={handleRemoveMessage}
+            removeAll={handleRemoveAll}
           />
         </div>
       </div>
