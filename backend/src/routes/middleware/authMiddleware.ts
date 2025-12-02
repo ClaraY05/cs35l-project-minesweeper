@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import jwt, { VerifyErrors } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { pool } from "../../db/db";
 
 const JWT_SECRET = process.env.JWT_SECRET || "christinawang";
@@ -22,6 +22,7 @@ export async function authenticateToken(req: AuthRequest, res: Response, next: N
         if (result.rows.length===0){
             return res.status(401).json({error:"user not found"});
         }
+        // check user email is verified
         if (!result.rows[0].is_verified){
             return res.status(403).json({error:"email not verified"})
         }

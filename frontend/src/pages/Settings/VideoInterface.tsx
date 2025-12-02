@@ -12,6 +12,7 @@ const VideoInterface = () => {
     const update = (newChange:any) => setVideo((prev:any)=>({ ...prev, ...newChange}))
     const [error, setError] = useState("");
 
+    // make sure url provided is an image
     const checkImage = async (url:string) => {
         try {
             const res = await fetch(url, {method:"GET"});

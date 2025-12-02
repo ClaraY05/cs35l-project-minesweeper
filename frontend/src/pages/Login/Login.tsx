@@ -28,8 +28,9 @@ const Login = () => {
             setLoading(true);
 
             const payload = await handleLogin(data, mode);
-            // setToken(payload.token);
+
             const {keybinds, sound, video, notif} = await loadAllSettings();
+            // make sure rerender so UI is updated with user saved changes
             setUser(payload.user);
             setKeybinds(keybinds);
             setSound(sound);

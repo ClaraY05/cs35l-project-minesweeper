@@ -28,6 +28,7 @@ const AccountDisplay:React.FC<AccountDisplayProps> = ({ userName, imgUrl }:Accou
             console.error(err)
         }
         setUser(null);
+        // revert settings to default after user logs out
         setKeybinds(DEFAULT_KEYBINDS);
         setSound(DEFAULT_SOUND);
         setVideo(DEFAULT_VIDEO);
