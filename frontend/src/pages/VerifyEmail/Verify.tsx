@@ -9,6 +9,7 @@ const Verify = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        // extract token from the link clicked
         const emailToken = params.get("emailToken");
         if (!emailToken) {
             setStatus("error");
@@ -16,6 +17,7 @@ const Verify = () => {
             return;
         }
         try{
+            // need request body to match emailToken name
             authFetch("http://localhost:8000/api/auth/verify", { method: "POST", body: JSON.stringify({ emailToken }) });
             setStatus("ok");
             setMessage("email verified, redirecting...");
