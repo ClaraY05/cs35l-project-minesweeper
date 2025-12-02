@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { createBoard, revealRegion, validateBoard } from "./helpers";
-import { addNewGame, getGameById, updateGameStatus, updateRevealedCells } from "./db-helpers";
+import { addNewGame, getGameById, updateGameStatus, updateRevealedCells, updateStartTime } from "./db-helpers";
 import { authenticateToken, AuthRequest } from "../middleware/authMiddleware";
 
 // routes relating to game
@@ -45,6 +45,9 @@ gameRoutes.post("/cell/reveal", authenticateToken, async (req: AuthRequest, res)
         if (game.user_id !== userID) {
             return res.status(403).json({ error: "Not your game" });
         } 
+        if (!game.started_at) {
+            await updateStartTime(game_id);
+        }
         // if player revealed a mine, mark a loss by force
         const revealedCells = revealRegion(game.board_data, cell_id, game.rows, game.cols);
         const numRevealed = await updateRevealedCells(game_id, revealedCells.length);

@@ -93,7 +93,7 @@ const VideoInterface = () => {
                 }}
                 buttonText="Enter"
                 disabled={!video.changeCustomBg}/>
-            {error && <p style={{color: 'red'}}>{error}</p>}
+                {error && <p style={{color: 'red'}}>{error}</p>}
         </div>
     );
 }
