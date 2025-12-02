@@ -3,7 +3,7 @@ import NotificationItem from "./Notification"
 
 interface NotificationsContentProps {
   messages: Notification[];
-  removeMessage: (index: number) => void;
+  removeMessage: (notificationId: number) => void;
   removeAll: () => void;
 }
 
@@ -13,10 +13,10 @@ const NotificationsContent = ({ messages, removeMessage, removeAll }: Notificati
         {messages.length === 0 ? (
           <p>No notifications</p>
         ) : (
-          messages.map((msg, i) => (
+          messages.map((msg) => (
             <NotificationItem 
               notification={msg} 
-              onDelete={() => removeMessage(i)} 
+              onDelete={() => removeMessage(msg.notification_id)} 
             />
           ))
         )}

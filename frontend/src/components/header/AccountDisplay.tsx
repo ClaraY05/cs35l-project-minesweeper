@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "usehooks-ts";
 import { authFetch } from "../../api/authFetch";
+import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "../../pages/Settings/utils/defaultSettings";
 
 interface AccountDisplayProps {        
     userName: string;
@@ -12,6 +13,10 @@ const AccountDisplay:React.FC<AccountDisplayProps> = ({ userName, imgUrl }:Accou
     const navigate = useNavigate();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [user, setUser] = useLocalStorage<any|null>("user",null);
+    const [,setKeybinds] = useLocalStorage("keybinds", DEFAULT_KEYBINDS);
+    const [,setSound] = useLocalStorage("sound", DEFAULT_SOUND);
+    const [,setVideo] = useLocalStorage("video", DEFAULT_VIDEO);
+    const [,setNotif] = useLocalStorage("notif", DEFAULT_NOTIF);
     const onLogout = async () =>{
         try {
             localStorage.clear();
@@ -23,6 +28,10 @@ const AccountDisplay:React.FC<AccountDisplayProps> = ({ userName, imgUrl }:Accou
             console.error(err)
         }
         setUser(null);
+        setKeybinds(DEFAULT_KEYBINDS);
+        setSound(DEFAULT_SOUND);
+        setVideo(DEFAULT_VIDEO);
+        setNotif(DEFAULT_NOTIF);
         navigate("/", { replace:true })
     }
 
