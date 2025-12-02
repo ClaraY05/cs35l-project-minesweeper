@@ -76,7 +76,6 @@ friendsRouter.post("/", authenticateToken, async (req: AuthRequest, res) => {
     try {
         const userID = req.user?.userID;
         const { friendId } = req.body;
-    
 
         if (!userID) {
             return res.status(400).json({ error: "Missing user ID in token" });
@@ -91,6 +90,31 @@ friendsRouter.post("/", authenticateToken, async (req: AuthRequest, res) => {
           // Prevent adding yourself as a friend
           if (userID === friendID) {
             return res.status(400).json({ error: "Cannot add yourself as a friend" });
+          }
+
+          // Prevent duplicate friendships
+          const existingFriends = await pool.query(
+            `SELECT 1 FROM friends 
+             WHERE (user_id = $1 AND friend_id = $2)
+                OR (user_id = $2 AND friend_id = $1)
+             LIMIT 1`,
+            [userID, friendID]
+          );
+          if (existingFriends.rows.length > 0) {
+            return res.status(400).json({ error: "You are already friends with this user" });
+          }
+
+          // Prevent duplicate pending friend requests
+          const existingRequest = await pool.query(
+            `SELECT 1 FROM notifications
+             WHERE user_id = $1
+               AND "comes_from_ID" = $2
+               AND type = 'friend_request'
+             LIMIT 1`,
+            [friendID, userID]
+          );
+          if (existingRequest.rows.length > 0) {
+            return res.status(400).json({ error: "Friend request already sent" });
           }
       
           // Get the sender's username for the notification message
@@ -136,6 +160,17 @@ friendsRouter.post("/accept", authenticateToken, async (req: AuthRequest, res) =
         await addFriend(userID, requesterID);
         await addFriend(requesterID, userID);
 
+        // clear the original friend request notification, if provided
+        if (notificationId && !isNaN(Number(notificationId))) {
+            await readNotification(Number(notificationId), userID);
+        } else {
+            await pool.query(
+                `DELETE FROM notifications 
+                 WHERE user_id = $1 AND "comes_from_ID" = $2 AND type = $3`,
+                [userID, requesterID, "friend_request"]
+            );
+        }
+
         // get the person who accepted the request
         const accepterResult = await pool.query(
             "SELECT username FROM users WHERE user_id = $1",
@@ -152,7 +187,6 @@ friendsRouter.post("/accept", authenticateToken, async (req: AuthRequest, res) =
             "friend_accept",
             userID
         );
-        await getFriends(userID);
 
         return res.json({ message: "Friend request accepted" });
     } catch (err) {
@@ -187,6 +221,17 @@ friendsRouter.post("/deny", authenticateToken, async (req: AuthRequest, res) => 
             "friend_deny",
             userID
         );
+
+        // clear the original friend request notification, if provided
+        if (notificationId && !isNaN(Number(notificationId))) {
+            await readNotification(Number(notificationId), userID);
+        } else {
+            await pool.query(
+                `DELETE FROM notifications 
+                 WHERE user_id = $1 AND "comes_from_ID" = $2 AND type = $3`,
+                [userID, requesterID, "friend_request"]
+            );
+        }
 
         return res.json({ message: "Friend request denied" });
     } catch (err) {
