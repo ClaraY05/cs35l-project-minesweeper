@@ -55,18 +55,17 @@ gameRoutes.post("/cell/reveal", authenticateToken, async (req: AuthRequest, res)
 
         if (clickedCell.Content.Type === "mine") {
             const gametime = await updateGameStatus(game_id, "lost");
-            console.log(gametime)
+            console.log("losstime", gametime)
             return res.json(revealedCells);
         }
 
+        // check win condition: # revealed cells is equal to all safe cells
         const numRevealed = await updateRevealedCells(game_id, revealedCells);
         const totalSafe = game.rows * game.cols - game.mines;
 
         if (numRevealed === totalSafe) {
             const gametime = await updateGameStatus(game_id, "won");
-            console.log("player won");
-            console.log("wintime ", gametime)
-            console.log(clickedCell)
+            console.log("wintime ", gametime);
         }
         return res.json(revealedCells);
     } 
