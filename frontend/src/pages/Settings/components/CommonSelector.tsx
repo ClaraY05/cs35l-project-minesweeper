@@ -3,12 +3,10 @@ import { useState, useEffect } from "react";
 interface SelectorProps {
     label: string;            
     options: string[];       
-    // defaultValue?: string;
     value: string;  
     onChange?: (value: string) => void;
   }
 
-  // const Selector: React.FC<SelectorProps> = ({ label, options, defaultValue, onChange }) => {
   const Selector: React.FC<SelectorProps> = ({ label, options, value, onChange }) => {
     const [selected, setSelected] = useState(value);
   
