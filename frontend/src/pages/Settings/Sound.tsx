@@ -5,6 +5,7 @@ import { DEFAULT_SOUND } from "./utils/defaultSettings";
 
 const Sound = () => {
     const [sound,setSound] = useLocalStorage("sound", DEFAULT_SOUND);
+    // update local storage when a change is made
     const update = (newChange:any) => setSound((prev:any)=>({ ...prev,...newChange}));
     return (
         <div className="w-full flex flex-col gap-2 px-20"> 

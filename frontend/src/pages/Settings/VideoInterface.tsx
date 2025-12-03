@@ -25,7 +25,7 @@ const VideoInterface = () => {
             return false;
         }
     }
-
+    // updates local storage only when user hit enter and is valid image
     const handleSubmit = async (text: string) => {
         try{
             const res = await checkImage(text);

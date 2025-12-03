@@ -13,6 +13,7 @@ const Leaderboard = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [difficulty, setDifficulty] = useState<"easy"|"medium"|"hard">("easy");
+    // update table based on what option user selects
     useEffect(()=>{
         const loadLeaderboard = async () => {
             setLoading(true);

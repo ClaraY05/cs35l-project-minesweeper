@@ -99,8 +99,8 @@ authRoutes.post("/login", async(req:Request, res:Response)=>{
 
         const userID = user.user_id;
         const username = user.username;
+        // issue and store token in cookie
         const token = signJwt({ userID, email, username });
-
         res.cookie("token",token,{httpOnly:true, secure:false, sameSite:"lax", maxAge:60*60*1000});
 
         return res.status(200).json({user:{user_id: userID, email:email, username:user.username, profile_picture: user.profile_picture}});
