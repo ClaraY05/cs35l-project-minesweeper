@@ -1,7 +1,7 @@
 import Slider from "./components/CommonSlider";
 import Checkbox from "./components/CommonCheckbox";
 import { useLocalStorage } from "usehooks-ts";
-import { DEFAULT_SOUND } from "./utils/defaultSettings";
+import { DEFAULT_SOUND } from "../../../../utils/defaultSettings";
 
 const Sound = () => {
     const [sound,setSound] = useLocalStorage("sound", DEFAULT_SOUND);

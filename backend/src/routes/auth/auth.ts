@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { pool } from "../../db/db.js";
-import { DEFAULT_SETTINGS } from "../settings/defaultSettings.js";
+import { DEFAULT_SETTINGS } from "../../../../utils/defaultSettings.js";
 import { createVerificationToken, sendVerificationEmail, verifyEmailToken } from "./verificationHelper.js";
 
 // routes for our api.

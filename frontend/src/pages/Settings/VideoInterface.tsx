@@ -3,7 +3,7 @@ import Selector from "./components/CommonSelector";
 import Slider from "./components/CommonSlider";
 import TextInput from "../../components/header/Friends/components/TextInput";
 import { useLocalStorage } from "usehooks-ts";
-import { DEFAULT_VIDEO } from "./utils/defaultSettings";
+import { DEFAULT_VIDEO } from "../../../../utils/defaultSettings";
 import { useEffect, useState } from "react";
 
 const VideoInterface = () => {

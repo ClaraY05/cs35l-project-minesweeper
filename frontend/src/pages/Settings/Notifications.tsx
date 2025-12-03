@@ -1,6 +1,6 @@
 import Selector from "./components/CommonSelector";
 import { useLocalStorage } from "usehooks-ts";
-import { DEFAULT_NOTIF } from "./utils/defaultSettings";
+import { DEFAULT_NOTIF } from "../../../../utils/defaultSettings";
 
 const Notifications = () => {
     let bool: string[] = ["No","Yes"];

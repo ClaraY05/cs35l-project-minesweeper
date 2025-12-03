@@ -1,6 +1,4 @@
-import { KeyAction, SoundAction, VideoAction, NotifAction } from "./settingTypes.js";
-
-export const DEFAULT_KEYBINDS: Record<KeyAction, string> = {
+export const DEFAULT_KEYBINDS = {
     openCell: "MouseLeft",
     flagCell: "MouseRight",
     chord: "MouseLeft+MouseRight",
@@ -10,7 +8,7 @@ export const DEFAULT_KEYBINDS: Record<KeyAction, string> = {
     powerup2: "Key2",
 };
 
-export const DEFAULT_SOUND: Record<SoundAction, number | boolean> = {
+export const DEFAULT_SOUND = {
     music:50,
     sfx:50,
     stereo:50,
@@ -20,20 +18,18 @@ export const DEFAULT_SOUND: Record<SoundAction, number | boolean> = {
     sound4:true
 };
 
-export const DEFAULT_VIDEO: Record<VideoAction, string | number | boolean> = {
+export const DEFAULT_VIDEO = {
     graphics:"Low",
     displayUsername:true,
     changeCustomBg:false,
     customBg:"/bg.png",
     textSize:16
-
 };
 
-export const DEFAULT_NOTIF: Record<NotifAction, string | boolean> = {
+export const DEFAULT_NOTIF = {
     notifGameUpdates:"Yes",
     notifFriendReq:"Yes"
 };
-
 
 export const DEFAULT_SETTINGS = {
    keybinds: DEFAULT_KEYBINDS,
