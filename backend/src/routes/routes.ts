@@ -1,11 +1,11 @@
 import { Router } from "express";
-import gameRoutes from "./game/game";
-import authRoutes from "./auth/auth";
-import friendsRoutes from "./friends/friends";
-import leaderboardRoutes from "./leaderboard/leaderboard";
-import settingsRoutes from "./settings/settings";
-import profilePictureRoutes from "./pfp/pfp";
-import notificationRoutes from "./notifications/notification";
+import gameRoutes from "./game/game.js";
+import authRoutes from "./auth/auth.js";
+import friendsRoutes from "./friends/friends.js";
+import leaderboardRoutes from "./leaderboard/leaderboard.js";
+import settingsRoutes from "./settings/settings.js";
+import profilePictureRoutes from "./pfp/pfp.js";
+import notificationRoutes from "./notifications/notification.js";
 
 // routes for our api.
 const router = Router();

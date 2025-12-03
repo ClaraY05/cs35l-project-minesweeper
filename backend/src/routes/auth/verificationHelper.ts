@@ -1,4 +1,4 @@
-import { pool } from "../../db/db";
+import { pool } from "../../db/db.js";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 

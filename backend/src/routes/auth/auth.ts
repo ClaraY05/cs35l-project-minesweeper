@@ -1,9 +1,9 @@
 import { Router, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { pool } from "../../db/db";
-import { DEFAULT_SETTINGS } from "../settings/defaultSettings";
-import { createVerificationToken, sendVerificationEmail, verifyToken } from "./verificationHelper";
+import { pool } from "../../db/db.js";
+import { DEFAULT_SETTINGS } from "../settings/defaultSettings.js";
+import { createVerificationToken, sendVerificationEmail, verifyToken } from "./verificationHelper.js";
 
 // routes for our api.
 const authRoutes = Router();

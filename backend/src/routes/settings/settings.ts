@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authenticateToken, AuthRequest } from "../middleware/authMiddleware";
+import { authenticateToken, AuthRequest } from "../middleware/authMiddleware.js";
 import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "./defaultSettings";
 import type { KeybindMap } from "./settingsHelper";
 import { getUserKeybinds, getUserSound, getUserVideo, getUserNotif, saveUserKeybinds, saveUserSound, saveUserVideo, saveUserNotif } from "./settingsHelper";

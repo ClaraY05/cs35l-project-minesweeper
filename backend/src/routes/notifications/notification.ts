@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { authenticateToken, AuthRequest } from "../middleware/authMiddleware";
-import { getNotifications, createNotification, readNotification, clearAllNotifications } from "./notificationHelpers";
+import { authenticateToken, AuthRequest } from "../middleware/authMiddleware.js";
+import { getNotifications, createNotification, readNotification, clearAllNotifications } from "./notificationHelpers.js";
 
 const notificationRoutes = Router();
 
