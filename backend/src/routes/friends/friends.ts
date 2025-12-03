@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authenticateToken, AuthRequest } from "../middleware/authMiddleware";
+import { authenticateToken, AuthRequest } from "../middleware/authMiddleware.js";
 import { getFriends, deleteFriend, addFriend, searchUsers } from "./friendHelpers";
 import { createNotification, readNotification } from "../notifications/notificationHelpers";
 import { pool } from "../../db/db";

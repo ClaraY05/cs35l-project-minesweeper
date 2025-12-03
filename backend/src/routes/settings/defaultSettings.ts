@@ -1,4 +1,4 @@
-import { KeyAction, SoundAction, VideoAction, NotifAction } from "./settingTypes";
+import { KeyAction, SoundAction, VideoAction, NotifAction } from "./settingTypes.js";
 
 export const DEFAULT_KEYBINDS: Record<KeyAction, string> = {
     openCell: "MouseLeft",

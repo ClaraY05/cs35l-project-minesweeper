@@ -1,6 +1,6 @@
-import { pool } from "../../db/db";
-import { KeyAction, SoundAction, VideoAction, NotifAction } from "./settingTypes";
-import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "./defaultSettings";
+import { pool } from "../../db/db.js";
+import { KeyAction, SoundAction, VideoAction, NotifAction } from "./settingTypes.js";
+import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "./defaultSettings.js";
 
 export type KeybindMap = Record<KeyAction, string>;
 type SoundMap = Record<SoundAction, number | boolean>;

@@ -30,18 +30,19 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
     // timer
     const [startTime, setStartTime] = useState<number | null>(null);
     const [elapsedMs, setElapsedMs] = useState<number>(0);
+    const seconds = (elapsedMs / 1000).toFixed(1);
 
     // count of non-mine cells that have been revealed
     const [revealedSafeCount, setRevealedSafeCount] = useState<number>(0);
 
-    // whenever game ID or board size changes, reset board state
+    // whenever game ID changes, reset board state
     useEffect(() => {
         setTiles(Array(rows * cols).fill(null));
         setStatus("playing");
         setStartTime(null);
         setElapsedMs(0);
         setRevealedSafeCount(0);
-    }, [rows, cols]);
+    }, [GameID]);
 
     useEffect(() => {
         if (status !== "playing" || startTime === null) return;
@@ -80,6 +81,12 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
     const handleTileLeftClick = async (i : number) : Promise<void> => {
         // ignore clicks once game is over
         if (status === "won" || status === "lost")
+            return;        
+        
+        // save api calls
+        const cell = Tiles[i];
+        const isFlagged = cell && "Flagged" in cell.State ? cell.State.Flagged : false;
+        if (cell?.State.Visibility === 'revealed' || isFlagged)
             return;
 
         // start game on first click
@@ -90,28 +97,23 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
                 return;
             }
             gameIdToUse = await onFirstClick(i);
-            if (gameIdToUse === null) {
-                console.error("Failed to start game on first click.");
-                return;
-            }    
-        }
-        if (startTime === null) {
+            await cellRevealHelper(i, gameIdToUse); // reveal first cell
             setStartTime(Date.now());
+            return; // force re-render with new GameID
         }
+        
+        // not first click? then just reveal cells normally
+        await cellRevealHelper(i);
+    };
 
-        // save api calls
-        const cell = Tiles[i];
-        const isFlagged = cell && "Flagged" in cell.State ? cell.State.Flagged : false;
-        if (cell?.State.Visibility === 'revealed' || isFlagged)
-            return;
-
+    const cellRevealHelper = async (i : number, GameIDToUse : number|null = GameID) => {
         // get board data from server for revealed cell
         let res;
         try {
             res = await authFetch(`http://localhost:8000/api/game/cell/reveal`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ gameid: gameIdToUse, cellid: i })
+                body: JSON.stringify({ gameid: GameIDToUse, cellid: i })
             });
         } catch (err) {
             const error = err as Error;
@@ -161,9 +163,7 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
         if (newRevealedSafeCount === totalSafeCells) {
             setStatus("won");
         }
-    };
-
-    const seconds = (elapsedMs / 1000).toFixed(1);
+    }
 
     return (
         <div className="minesweeper-wrapper">

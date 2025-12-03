@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { pool } from "../../db/db";
-import { authenticateToken } from "../middleware/authMiddleware";
+import { pool } from "../../db/db.js";
+import { authenticateToken } from "../middleware/authMiddleware.js";
 
 const leaderboardRoutes = Router();
 
