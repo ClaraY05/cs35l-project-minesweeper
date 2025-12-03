@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet, NavLink, Link } from "react-router-dom";
 import { authFetch } from "../../api/authFetch";
-import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "./utils/defaultSettings";
+import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "../../../../utils/defaultSettings";
 import { useLocalStorage } from "usehooks-ts";
 
 const Settings = () => {
@@ -11,6 +11,7 @@ const Settings = () => {
     const [notif, setNotif]    = useLocalStorage("notif", DEFAULT_NOTIF);
     const handleSave = async () =>{
         try{
+            // save settings to db
             await Promise.all([
                 authFetch("http://localhost:8000/api/settings/keybinds", {method:"PUT", body: JSON.stringify({bindings:keybinds})}),
                 authFetch("http://localhost:8000/api/settings/sound", {method:"PUT", body: JSON.stringify({sound:sound})}),
@@ -24,11 +25,13 @@ const Settings = () => {
         }
     }
     const handleDefault = async () =>{
+        // update local storage first
         setKeybinds(DEFAULT_KEYBINDS);
         setSound(DEFAULT_SOUND);
         setVideo(DEFAULT_VIDEO);
         setNotif(DEFAULT_NOTIF);
         try {
+            // save default settings to db
             await Promise.all([
                 authFetch("http://localhost:8000/api/settings/keybinds", {method:"PUT", body: JSON.stringify(DEFAULT_KEYBINDS)}),
                 authFetch("http://localhost:8000/api/settings/sound", {method:"PUT", body: JSON.stringify(DEFAULT_SOUND)}),

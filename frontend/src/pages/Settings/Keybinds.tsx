@@ -1,9 +1,10 @@
 import KeybindSetter from "./components/AddKey";
 import { useLocalStorage } from "usehooks-ts";
-import { DEFAULT_KEYBINDS } from "./utils/defaultSettings"
+import { DEFAULT_KEYBINDS } from "../../../../utils/defaultSettings"
 
 const Keybinds = () => {
     const [keybinds,setKeybinds] = useLocalStorage("keybinds", DEFAULT_KEYBINDS);
+    // update local storage when a change occurs
     const update = (newChange:any) => setKeybinds((prev:any)=>({ ...prev, ...newChange}));
     return (
         <div className="w-full">

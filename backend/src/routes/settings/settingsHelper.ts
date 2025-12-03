@@ -1,6 +1,6 @@
 import { pool } from "../../db/db.js";
 import { KeyAction, SoundAction, VideoAction, NotifAction } from "./settingTypes.js";
-import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "./defaultSettings.js";
+import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "../../../../utils/defaultSettings.js";
 
 export type KeybindMap = Record<KeyAction, string>;
 type SoundMap = Record<SoundAction, number | boolean>;
@@ -45,7 +45,7 @@ export async function getUserSound(userID:number){
     const dbValue = result.rows[0].sound as any;
     const sound: Partial<SoundMap> = typeof dbValue ==="string" ? JSON.parse(dbValue) : dbValue;
 
-    return { ...sound };
+    return { ...DEFAULT_SOUND,...sound };
 };
 
 export async function saveUserSound(userID:number, sound:any){

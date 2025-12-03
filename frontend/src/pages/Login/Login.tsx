@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { useLocalStorage } from "usehooks-ts";
 import { loadAllSettings } from "../Settings/utils/loadAllSettings";
 import { Inputs, AuthMode, handleLogin, toggleAuthMode } from "./utils/LoginHandler";
-import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "../Settings/utils/defaultSettings";
+import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "../../../../utils/defaultSettings";
 
 const Login = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();

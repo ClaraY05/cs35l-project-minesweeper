@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { authenticateToken, AuthRequest } from "../middleware/authMiddleware.js";
-import { getFriends, deleteFriend, addFriend, searchUsers } from "./friendHelpers";
-import { createNotification, readNotification } from "../notifications/notificationHelpers";
-import { pool } from "../../db/db";
+import { getFriends, deleteFriend, addFriend, searchUsers } from "./friendHelpers.js";
+import { createNotification, readNotification } from "../notifications/notificationHelpers.js";
+import { pool } from "../../db/db.js";
 
 
 // Add routes for friends

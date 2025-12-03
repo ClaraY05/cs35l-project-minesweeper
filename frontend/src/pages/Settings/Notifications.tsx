@@ -1,10 +1,11 @@
 import Selector from "./components/CommonSelector";
 import { useLocalStorage } from "usehooks-ts";
-import { DEFAULT_NOTIF } from "./utils/defaultSettings";
+import { DEFAULT_NOTIF } from "../../../../utils/defaultSettings";
 
 const Notifications = () => {
     let bool: string[] = ["No","Yes"];
     const [notif, setNotif] = useLocalStorage("notif",DEFAULT_NOTIF);
+    // update local storage when a change is made
     const update = (newChange:any) => setNotif((prev:any)=>({ ...prev, ...newChange}));
     return (
         <div className="w-full flex flex-col gap-3 px-20">

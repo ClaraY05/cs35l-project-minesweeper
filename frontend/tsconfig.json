@@ -6,7 +6,9 @@
     "types": ["vite/client"],
     "checkJs": false
   },
-  "include": ["src",
-    "../utils/types"],
+  "include": [
+    "src",
+    "../utils/**/*.ts"
+  ],
   "exclude": ["node_modules", "dist","build"]
 }
