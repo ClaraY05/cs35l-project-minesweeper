@@ -2,12 +2,10 @@ import { useState, useEffect } from "react";
 
 interface CheckboxProps {
     label: string;           
-    // defaultChecked?: boolean;
     nowChecked: boolean;
     onChange?: (nowChecked: boolean) => void;
   }
 
-// const Checkbox:React.FC<CheckboxProps> = ({ label, defaultChecked = false })=>{
 const Checkbox:React.FC<CheckboxProps> = ({ label, nowChecked, onChange })=>{
 
     // set state vars

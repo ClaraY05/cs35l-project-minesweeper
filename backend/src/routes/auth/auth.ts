@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { pool } from "../../db/db.js";
 import { DEFAULT_SETTINGS } from "../settings/defaultSettings.js";
-import { createVerificationToken, sendVerificationEmail, verifyToken } from "./verificationHelper.js";
+import { createVerificationToken, sendVerificationEmail, verifyEmailToken } from "./verificationHelper.js";
 
 // routes for our api.
 const authRoutes = Router();
@@ -63,7 +63,6 @@ authRoutes.post("/register", async(req:Request, res:Response) => {
                 message: "check email to verify"
             });
         }
-        // Catch if username is in db already
         catch(err: any) {
             console.error(err);
             return res.status(500).json({error: "Internal server error"});
@@ -123,7 +122,7 @@ authRoutes.post("/logout", (req,res)=>{
 authRoutes.post("/verify", async (req,res)=>{
     try{
         const {emailToken} = req.body;
-        await verifyToken(emailToken);
+        await verifyEmailToken(emailToken);
         return res.json({message:"email verified"});
     }
     catch(err){

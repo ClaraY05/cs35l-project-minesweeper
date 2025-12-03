@@ -14,15 +14,15 @@ export const DEFAULT_SOUND: Record<SoundAction, number | boolean> = {
     music:50,
     sfx:50,
     stereo:50,
-    sound1:false,
-    sound2:false,
-    sound3:false,
-    sound4:false
+    sound1:true,
+    sound2:true,
+    sound3:true,
+    sound4:true
 };
 
 export const DEFAULT_VIDEO: Record<VideoAction, string | number | boolean> = {
     graphics:"Low",
-    displayUsername:false,
+    displayUsername:true,
     changeCustomBg:false,
     customBg:"/bg.png",
     textSize:16

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { pool } from "../../db/db";
+import { pool } from "../../db/db.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "christinawang";
 

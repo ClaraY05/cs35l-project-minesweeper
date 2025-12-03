@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom"
 import { useLocalStorage } from "usehooks-ts";
-import { loadAllSettings } from "../../api/loadAllSettings";
+import { loadAllSettings } from "../Settings/utils/loadAllSettings";
 import { Inputs, AuthMode, handleLogin, toggleAuthMode } from "./utils/LoginHandler";
 import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "../Settings/utils/defaultSettings";
 
