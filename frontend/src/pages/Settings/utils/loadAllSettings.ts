@@ -1,4 +1,4 @@
-import { authFetch } from "./authFetch";
+import { authFetch } from "../../../api/authFetch";
 
 export async function loadAllSettings(){
     const [kb, sd, vd, ntf] = await Promise.all([
