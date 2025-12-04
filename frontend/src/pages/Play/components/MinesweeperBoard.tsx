@@ -198,7 +198,7 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
 
                             return (
                                 <Tile key={i} 
-                                className={`minesweeper-tile ${isRevealed ? "revealed" : ""}`} 
+                                className={`minesweeper-tile ${isRevealed ? "revealed" : ""} ${focusedIndex === i ? "focused-tile" : ""}`} 
                                 content={content}
                                 onLeftClick={() => handleTileLeftClick(i)}
                                 onRightClick={() => handleTileRightClick(i)}

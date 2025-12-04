@@ -30,6 +30,11 @@
     cursor: default;
 }
 
+.minesweeper-tile.focused-tile {
+  outline: 2px solid #fff;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.7);
+}
+
 .minesweeper-wrapper {
   display: flex;
   flex-direction: column;
