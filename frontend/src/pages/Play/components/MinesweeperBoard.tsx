@@ -41,11 +41,6 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart }
 
     // keybinds
     const [keybinds] = useLocalStorage("keybinds", DEFAULT_KEYBINDS);
-    // console.log(keybinds.openCell);
-    // console.log(keybinds.flagCell);
-    // console.log(keybinds.chord);
-    // console.log(keybinds.restartGame);
-    // console.log(keybinds.escapeGame);
 
     // track tile that mouse hovers over on key press
     const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
@@ -200,47 +195,6 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart }
 
         const revealedCellData = res as GameTypes.CellData[];
         applyRevealedCells(revealedCellData, GameIDToUse);
-        // const newTiles = [...Tiles];
-        // let newRevealedSafeCount = revealedSafeCount;
-        // let hitMine = false;
-
-        // for (const revealedCell of revealedCellData) {
-        //     const cell = Tiles[revealedCell.Position];
-        //     const isRevealed = cell?.State.Visibility === "revealed";
-        //     let isFlagged = cell && "Flagged" in cell.State ? cell.State.Flagged : false;
-            
-        //     if (revealedCell.Content.Type === "mine") isFlagged = false; // if the game ends (hit a mine), reveal the cell even if flagged
-
-        //     if (isRevealed || isFlagged) // if flagged or already revealed, don't reveal (floodfill from backend can still return these)
-        //         continue;
-
-        //     // reveal the cell
-        //     newTiles[revealedCell.Position] = {
-        //         Content: revealedCell.Content,
-        //         State: { Visibility: "revealed"},
-        //     };
-
-        //     if (revealedCell.Content.Type === "mine") {
-        //         hitMine = true;
-        //     } else {
-        //         // only count new safe reveals
-        //         newRevealedSafeCount += 1;
-        //     }
-        // }
-
-        // setTiles(newTiles);
-        // setRevealedSafeCount(newRevealedSafeCount);
-
-        // if (hitMine) {
-        //     setStatus("lost");
-        //     return;
-        // }
-
-        // // check win condition: all safe cells are revealed
-        // const totalSafeCells = rows * cols - mines;
-        // if (newRevealedSafeCount === totalSafeCells) {
-        //     setStatus("won");
-        // }
     }
 
     const applyRevealedCells = (
@@ -306,7 +260,6 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart }
         // collect all flagged cells on the boardl backend will filter neighbors
         const flaggedIndices: number[] = [];
         Tiles.forEach((t, idx) => {
-            //if (t?.State.Flagged) flaggedIndices.push(idx);
             if (t && t.State.Visibility === "hidden" && "Flagged" in t.State && t.State.Flagged)
                 flaggedIndices.push(idx);
         });
@@ -344,7 +297,6 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart }
                         Status: {status} &nbsp;&nbsp; Time: {seconds}s
                     </span>
                 </div>
-                {/* <div>Focused index: {focusedIndex === null ? "none" : focusedIndex}</div> */}
                 <div className="minesweeper-board" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
                     {
                         Tiles.map((cell, i) => {
