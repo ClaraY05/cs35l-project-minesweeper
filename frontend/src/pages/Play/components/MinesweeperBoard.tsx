@@ -24,7 +24,7 @@ const Tile = ({ className, content, onLeftClick, onRightClick, onMouseEnter } : 
     )
 };
 
-const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID : number | null, rows : number, cols : number, mines: number, onFirstClick : (arg0 : number) => Promise<any> }) => {
+const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart } : { GameID : number | null, rows : number, cols : number, mines: number, onFirstClick : (arg0 : number) => Promise<any>, onRestart?: () => Promise<void> | void }) => {
     const [Tiles, setTiles] = useState<Array<PublicCellData | null>>(() => Array(rows * cols).fill(null)); // frontend cell data store. null means "dont know"
 
     // UI status only
@@ -50,13 +50,25 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
     const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
 
     // whenever game ID changes, reset board state
-    useEffect(() => {
+    const resetLocalState = () => {
         setTiles(Array(rows * cols).fill(null));
         setStatus("playing");
         setStartTime(null);
         setElapsedMs(0);
         setRevealedSafeCount(0);
-    }, [GameID, rows, cols]);
+    };
+
+    useEffect(() => {
+        resetLocalState();
+    }, [rows, cols]);
+
+    // useEffect(() => {
+    //     setTiles(Array(rows * cols).fill(null));
+    //     setStatus("playing");
+    //     setStartTime(null);
+    //     setElapsedMs(0);
+    //     setRevealedSafeCount(0);
+    // }, [GameID, rows, cols]);
 
     useEffect(() => {
         if (status !== "playing" || startTime === null) return;
@@ -106,7 +118,9 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
 
             if (code === keybinds.restartGame) {
                 event.preventDefault();
-                // TODO: onRestart()
+                resetLocalState(); // local board + timer reset
+                if (onRestart)
+                    onRestart(); // tell parent to clearn Game ID
                 return;
             }
             
