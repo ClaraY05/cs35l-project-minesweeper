@@ -26,7 +26,9 @@
     "lint": "eslint ."
   },
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "@types/cookie-parser": "^1.4.10",
+    "@types/node": "^24.10.1",
     "concurrently": "^9.0.0",
     "typescript": "^5.9.3"
   },
