@@ -97,7 +97,27 @@ gameRoutes.post("/cell/chord", authenticateToken, async (req, res) => {
         const rows = game.rows;
         const cols = game.cols;
 
-        const revealed = chordReveal(boardData, cellid, flaggedNeighbors, rows, cols);
+        const alreadyRevealedIndices: number[] = (game.revealedCells || []).map((cell: { Position: number }) => cell.Position);
+
+        const revealed = chordReveal(boardData, cellid, flaggedNeighbors, rows, cols, alreadyRevealedIndices);
+
+        // Check for a loss first, if a mine was revealed
+        const hitMine = revealed.some(cell => cell.Content.Type === "mine");
+        if (hitMine) {
+            const gametime = await updateGameStatus(gameid, "lost");
+            console.log("losstime", gametime);
+            return res.json(revealed);
+        }
+
+        // Update revealed cells in the database
+        const numRevealed = await updateRevealedCells(gameid, revealed);
+        const totalSafe = game.rows * game.cols - game.mines;
+
+        // Check for a win condition
+        if (numRevealed === totalSafe) {
+            const gametime = await updateGameStatus(gameid, "won");
+            console.log("wintime", gametime);
+        }
 
         return res.json(revealed);
     } catch (err) {
