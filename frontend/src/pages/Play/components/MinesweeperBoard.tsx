@@ -136,6 +136,10 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart }
     }, [keybinds, status, focusedIndex]);
     
     const handleTileRightClick = (i : number) : void => {
+        if (status === "won" || status === "lost") {
+            return;
+        }
+        
         const cell = Tiles[i];
 
         // if already revealed, don't flag
