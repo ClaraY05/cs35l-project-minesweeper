@@ -43,10 +43,11 @@ const App = () => {
                     <Route path="/tutorial" element={<Tutorial/>}>
                         <Route index element={<Navigate to="basics" replace />} /> 
                         <Route path="basics" element={< Basics/>} />
+                        {/* NOT IMPLEMENTED
                         <Route path="multiplayer" element={<Multiplayer />} />
                         <Route path="powerups" element={<Powerups />} />
                         <Route path="debuffs" element={<Debuffs />} />
-                        <Route path="tesselation" element={<Tesselation />} />
+                        <Route path="tesselation" element={<Tesselation />} />*/}
                     </Route>
                     <Route path="/settings" element={<Settings/>}>
                         <Route index element={<Navigate to="keybinds" replace />} /> 
