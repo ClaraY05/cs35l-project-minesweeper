@@ -65,14 +65,6 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart }
         resetLocalState();
     }, [rows, cols]);
 
-    // useEffect(() => {
-    //     setTiles(Array(rows * cols).fill(null));
-    //     setStatus("playing");
-    //     setStartTime(null);
-    //     setElapsedMs(0);
-    //     setRevealedSafeCount(0);
-    // }, [GameID, rows, cols]);
-
     useEffect(() => {
         if (status !== "playing" || startTime === null) return;
 
@@ -139,7 +131,7 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart }
         if (status === "won" || status === "lost") {
             return;
         }
-        
+
         const cell = Tiles[i];
 
         // if already revealed, don't flag
@@ -207,6 +199,54 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart }
         }
 
         const revealedCellData = res as GameTypes.CellData[];
+        applyRevealedCells(revealedCellData, GameIDToUse);
+        // const newTiles = [...Tiles];
+        // let newRevealedSafeCount = revealedSafeCount;
+        // let hitMine = false;
+
+        // for (const revealedCell of revealedCellData) {
+        //     const cell = Tiles[revealedCell.Position];
+        //     const isRevealed = cell?.State.Visibility === "revealed";
+        //     let isFlagged = cell && "Flagged" in cell.State ? cell.State.Flagged : false;
+            
+        //     if (revealedCell.Content.Type === "mine") isFlagged = false; // if the game ends (hit a mine), reveal the cell even if flagged
+
+        //     if (isRevealed || isFlagged) // if flagged or already revealed, don't reveal (floodfill from backend can still return these)
+        //         continue;
+
+        //     // reveal the cell
+        //     newTiles[revealedCell.Position] = {
+        //         Content: revealedCell.Content,
+        //         State: { Visibility: "revealed"},
+        //     };
+
+        //     if (revealedCell.Content.Type === "mine") {
+        //         hitMine = true;
+        //     } else {
+        //         // only count new safe reveals
+        //         newRevealedSafeCount += 1;
+        //     }
+        // }
+
+        // setTiles(newTiles);
+        // setRevealedSafeCount(newRevealedSafeCount);
+
+        // if (hitMine) {
+        //     setStatus("lost");
+        //     return;
+        // }
+
+        // // check win condition: all safe cells are revealed
+        // const totalSafeCells = rows * cols - mines;
+        // if (newRevealedSafeCount === totalSafeCells) {
+        //     setStatus("won");
+        // }
+    }
+
+    const applyRevealedCells = (
+        revealedCellData: GameTypes.CellData[],
+        gameIdToUse: number | null
+    ) => {
         const newTiles = [...Tiles];
         let newRevealedSafeCount = revealedSafeCount;
         let hitMine = false;
@@ -248,7 +288,7 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart }
         if (newRevealedSafeCount === totalSafeCells) {
             setStatus("won");
         }
-    }
+    };
 
     return (
         <div className="minesweeper-wrapper">
