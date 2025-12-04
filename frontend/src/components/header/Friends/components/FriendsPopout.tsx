@@ -16,6 +16,14 @@ interface Friend {
   profile_picture: string | null;
 }
 
+interface FriendRequest {
+  notification_id: number;
+  user_id: number;
+  username: string;
+  email: string;
+  profile_picture: string | null;
+}
+
 const defaultPfp = "https://i.redd.it/help-me-find-the-cat-or-og-picture-from-the-cat-owl-meowl-v0-dghbx7likhgf1.jpg?width=1200&format=pjpg&auto=webp&s=45a83cd201b14934ad2000bf7834a4b92296f4a0";
 
 const FriendsPopout = ({ 
@@ -27,36 +35,99 @@ const FriendsPopout = ({
   const [friends, setFriends] = useState<Friend[]>([]);
   const [searchResults, setSearchResults] = useState<Friend[]>([]);
   const [text, setText] = useState("");
+  const [status, setStatus] = useState("");
 
-  // change to work w/ backend
-  const [hasRequests, setHasRequests] = useState(true);
-  const handleAcceptFriend = (userId: number) => {
-    console.log("Accepting friend request for user:", userId);
+  // friend requests from backend
+  const [hasRequests, setHasRequests] = useState(false);
+  const [friendRequests, setFriendRequests] = useState<FriendRequest[]>([]);
+
+  const loadFriends = async () => {
+    try {
+      const data = await authFetch("/api/friends", { method: "GET" });
+      setFriends(data);
+    } catch (err) {
+      console.error("Failed to load friends:", err);
+    }
   };
-  const handleDenyFriend = (userId: number) => {
-    console.log("Denying friend request for user:", userId);
+
+  const loadFriendRequests = async () => {
+    try {
+      const notifications = await authFetch("/api/notifications", { method: "GET" });
+
+      const requests: FriendRequest[] = notifications
+        .filter((n: any) => n.type === "friend_request" && n.comes_from_ID)
+        .map((n: any) => ({
+          notification_id: n.notification_id,
+          user_id: n.comes_from_ID as number,
+          username: (n.related_username as string) || "Unknown",
+          email: undefined,
+          profile_picture: null,
+        }));
+
+      setFriendRequests(requests);
+      setHasRequests(requests.length > 0);
+    } catch (err) {
+      console.error("Failed to load friend requests:", err);
+      setFriendRequests([]);
+      setHasRequests(false);
+    }
   };
-  const friendRequests = [{user_id: 1, username: "Desperate", email: "pls.pls@example.com", profile_picture: defaultPfp}, {user_id: 2, username: "Tobias Duerschmid", email: "tobias.duerschmid@example.com", profile_picture: defaultPfp}];
+
+  const handleAcceptFriend = async (userId: number, notificationId: number) => {
+    try {
+      await authFetch("/api/friends/accept", {
+        method: "POST",
+        body: JSON.stringify({
+          requesterId: userId,
+          notificationId,
+        }),
+      });
+
+      // remove this request locally
+      setFriendRequests(prev =>
+        prev.filter(req => req.notification_id !== notificationId)
+      );
+      setHasRequests(prev => prev && friendRequests.length > 1);
+
+      // Refresh friends list
+      await loadFriends();
+    } catch (err) {
+      console.error("Error accepting friend request:", err);
+    }
+  };
+
+  const handleDenyFriend = async (userId: number, notificationId: number) => {
+    try {
+      await authFetch("/api/friends/deny", {
+        method: "POST",
+        body: JSON.stringify({
+          requesterId: userId,
+          notificationId,
+        }),
+      });
+
+      // remove this request locally
+      setFriendRequests(prev =>
+        prev.filter(req => req.notification_id !== notificationId)
+      );
+      setHasRequests(prev => prev && friendRequests.length > 1);
+    } catch (err) {
+      console.error("Error denying friend request:", err);
+    }
+  };
   
   // Get the friend handlers
   const { handleSearch, handleRemoveFriend, handleAddFriend } = createFriendHandlers(
     setFriends,
     setSearchResults,
     friends,
-    searchResults
+    searchResults,
+    setStatus
   );
 
   useEffect(() => {
-    async function loadFriends() {
-      try {
-        const data = await authFetch("/api/friends", { method: "GET" });
-        setFriends(data);
-      } catch (err) {
-        console.error("Failed to load friends:", err);
-      }
-    }
-
     loadFriends();
+    loadFriendRequests();
   }, []);
 
   return (
@@ -82,6 +153,11 @@ const FriendsPopout = ({
               onChange={setText} 
               onSubmit={handleSearch}
             />
+            {status && (
+              <p className="text-emerald-400 text-sm mt-2">
+                {status}
+              </p>
+            )}
           </div>
   
           {searchResults.length > 0 && (
@@ -115,8 +191,8 @@ const FriendsPopout = ({
                     avatar={friend.profile_picture || defaultPfp}
                     email={friend.email}
                     buttonType="request"
-                    onAction={() => handleAcceptFriend(friend.user_id)}
-                    onSecondaryAction={() => handleAcceptFriend(friend.user_id)}
+                    onAction={() => handleAcceptFriend(friend.user_id, friend.notification_id)}
+                    onSecondaryAction={() => handleDenyFriend(friend.user_id, friend.notification_id)}
                   />
                 ))}
               </div>

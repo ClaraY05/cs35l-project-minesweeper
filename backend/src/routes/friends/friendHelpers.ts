@@ -1,4 +1,4 @@
-import { pool } from "../../db/db";
+import { pool } from "../../db/db.js";
 
 // Add friends to the current user
 export async function addFriend(userID: number, friendID: number){

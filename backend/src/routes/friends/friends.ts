@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { authenticateToken, AuthRequest } from "../middleware/authMiddleware";
-import { getFriends, deleteFriend, addFriend, searchUsers } from "./friendHelpers";
-import { createNotification } from "../notifications/notificationHelpers";
-import { pool } from "../../db/db";
+import { authenticateToken, AuthRequest } from "../middleware/authMiddleware.js";
+import { getFriends, deleteFriend, addFriend, searchUsers } from "./friendHelpers.js";
+import { createNotification, readNotification } from "../notifications/notificationHelpers.js";
+import { pool } from "../../db/db.js";
 
 
 // Add routes for friends
@@ -76,7 +76,6 @@ friendsRouter.post("/", authenticateToken, async (req: AuthRequest, res) => {
     try {
         const userID = req.user?.userID;
         const { friendId } = req.body;
-    
 
         if (!userID) {
             return res.status(400).json({ error: "Missing user ID in token" });
@@ -92,6 +91,31 @@ friendsRouter.post("/", authenticateToken, async (req: AuthRequest, res) => {
           if (userID === friendID) {
             return res.status(400).json({ error: "Cannot add yourself as a friend" });
           }
+
+          // Prevent duplicate friendships
+          const existingFriends = await pool.query(
+            `SELECT 1 FROM friends 
+             WHERE (user_id = $1 AND friend_id = $2)
+                OR (user_id = $2 AND friend_id = $1)
+             LIMIT 1`,
+            [userID, friendID]
+          );
+          if (existingFriends.rows.length > 0) {
+            return res.status(400).json({ error: "You are already friends with this user" });
+          }
+
+          // Prevent duplicate pending friend requests
+          const existingRequest = await pool.query(
+            `SELECT 1 FROM notifications
+             WHERE user_id = $1
+               AND "comes_from_ID" = $2
+               AND type = 'friend_request'
+             LIMIT 1`,
+            [friendID, userID]
+          );
+          if (existingRequest.rows.length > 0) {
+            return res.status(400).json({ error: "Friend request already sent" });
+          }
       
           // Get the sender's username for the notification message
           const senderResult = await pool.query(
@@ -105,21 +129,114 @@ friendsRouter.post("/", authenticateToken, async (req: AuthRequest, res) => {
           
           const senderUsername = senderResult.rows[0].username;
           
-          // Create a notification for the friend
+          // Create a notification representing a friend request
           await createNotification(
             friendID, 
             `${senderUsername} sent you a friend request`,
             "friend_request",
             userID
           );
-          
-          // Also auto-add the friend immediately
-          await addFriend(userID, friendID);
-          
-          return res.json({ message: "Friend added successfully" });
+
+          return res.json({ message: "Friend request sent" });
     } catch (err) {
         console.error("Error in POST /friends:", err);
         return res.status(500).json({ error: "Internal server error"});
+    }
+});
+
+// Accept a friend request
+friendsRouter.post("/accept", authenticateToken, async (req: AuthRequest, res) => {
+    try {
+        const userID = req.user?.userID;
+        const { requesterId, notificationId } = req.body;
+
+        if (!userID) {
+            return res.status(400).json({ error: "Missing user ID in token" });
+        }
+
+        const requesterID = Number(requesterId);
+
+        // wait to add friends until user has accepted the request
+        await addFriend(userID, requesterID);
+        await addFriend(requesterID, userID);
+
+        // clear the original friend request notification, if provided
+        if (notificationId && !isNaN(Number(notificationId))) {
+            await readNotification(Number(notificationId), userID);
+        } else {
+            await pool.query(
+                `DELETE FROM notifications 
+                 WHERE user_id = $1 AND "comes_from_ID" = $2 AND type = $3`,
+                [userID, requesterID, "friend_request"]
+            );
+        }
+
+        // get the person who accepted the request
+        const accepterResult = await pool.query(
+            "SELECT username FROM users WHERE user_id = $1",
+            [userID]
+        );
+
+        // get the username otherwise "Someone"
+        const accepterUsername = accepterResult.rows[0]?.username || "Someone";
+
+        // Notify the requester that their request was accepted
+        await createNotification(
+            requesterID,
+            `${accepterUsername} accepted your friend request`,
+            "friend_accept",
+            userID
+        );
+
+        return res.json({ message: "Friend request accepted" });
+    } catch (err) {
+        console.error("Cannot accept friend request", err);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+// deny friend request
+friendsRouter.post("/deny", authenticateToken, async (req: AuthRequest, res) => {
+    try {
+        const userID = req.user?.userID;
+        const { requesterId, notificationId } = req.body;
+
+        if (!userID) {
+            return res.status(400).json({ error: "Missing user ID in token" });
+        }
+
+        const requesterID = Number(requesterId);
+
+        // get the username of the user who denied the request
+        const denierResult = await pool.query(
+            "SELECT username FROM users WHERE user_id = $1",
+            [userID]
+        );
+        const denierUsername = denierResult.rows[0]?.username || "Someone";
+
+        // notify the requester that their request was denied
+        await createNotification(
+            requesterID,
+            `${denierUsername} denied your friend request`,
+            "friend_deny",
+            userID
+        );
+
+        // clear the original friend request notification, if provided
+        if (notificationId && !isNaN(Number(notificationId))) {
+            await readNotification(Number(notificationId), userID);
+        } else {
+            await pool.query(
+                `DELETE FROM notifications 
+                 WHERE user_id = $1 AND "comes_from_ID" = $2 AND type = $3`,
+                [userID, requesterID, "friend_request"]
+            );
+        }
+
+        return res.json({ message: "Friend request denied" });
+    } catch (err) {
+        console.error("error in denying request", err);
+        return res.status(500).json({ error: "Internal server error" });
     }
 });
   

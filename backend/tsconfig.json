@@ -6,7 +6,9 @@
     "outDir": "dist",
     "noEmit": false
   },
-  "include": ["src",
-    "../utils/types"],
+  "include": [
+    "src",
+    "../utils/**/*.ts"
+  ],
     "exclude": ["node_modules", "dist"]
 }

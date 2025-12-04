@@ -1,5 +1,5 @@
-import { pool } from "../../db/db";
-import { addFriend } from "../friends/friendHelpers";
+import { pool } from "../../db/db.js";
+import { addFriend } from "../friends/friendHelpers.js";
 
 // get all the notifications for some user
 export async function getNotifications(userID: number){

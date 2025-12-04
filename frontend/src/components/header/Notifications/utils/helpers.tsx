@@ -34,6 +34,5 @@ export const createNotificationHandlers = (
             console.error("Failed to delete all notifications:", err);
         }
     };
-
     return { getNotifications, handleRemoveMessage, handleRemoveAll };
 };

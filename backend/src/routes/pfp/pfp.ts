@@ -1,7 +1,7 @@
 import { Router, Response } from "express";
 import multer from "multer";
 import { pool } from "../../db/db";
-import { authenticateToken, AuthRequest } from "../middleware/authMiddleware";
+import { authenticateToken, AuthRequest } from "../middleware/authMiddleware.js";
 
 const profilePictureRoutes = Router();
 

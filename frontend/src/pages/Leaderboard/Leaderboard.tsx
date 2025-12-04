@@ -13,6 +13,7 @@ const Leaderboard = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [difficulty, setDifficulty] = useState<"easy"|"medium"|"hard">("easy");
+    // update table based on what option user selects
     useEffect(()=>{
         const loadLeaderboard = async () => {
             setLoading(true);
@@ -21,7 +22,6 @@ const Leaderboard = () => {
                 const res = await authFetch(`http://localhost:8000/api/leaderboard?difficulty=${difficulty}`, {
                     method: "GET",
                 });
-                // console.log(res);
                 setEntries(res);
             } catch(err:any){
                 setError(err.message);

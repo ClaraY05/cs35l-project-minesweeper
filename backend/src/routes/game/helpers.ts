@@ -112,15 +112,14 @@ export function revealRegion(boardData : GameTypes.CellData[], cellIndex : numbe
     let revealedCells : GameTypes.CellData[] = []; 
 
     // check first cell first, then do floodfill logic if it applies
-    if (boardData[cellIndex].Content.Type === "mine" || boardData[cellIndex].Content.Number !== 0) {
-        if (boardData[cellIndex].Content.Type === "mine") { // if caught a mine, send back all mines
-            for (const cell of boardData) {
-                if (cell.Content.Type === "mine") {
-                    revealedCells.push(cell);
-                }
+    if (boardData[cellIndex].Content.Type === "mine") { // if caught a mine, send back all mines
+        for (const cell of boardData) {
+            if (cell.Content.Type === "mine") {
+                revealedCells.push(cell);
             }
-            return revealedCells;
         }
+        return revealedCells;
+    } else if (boardData[cellIndex].Content.Number !== 0) {
         return [boardData[cellIndex]];
     } 
 

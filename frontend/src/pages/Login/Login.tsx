@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom"
 import { useLocalStorage } from "usehooks-ts";
-import { loadAllSettings } from "../../api/loadAllSettings";
+import { loadAllSettings } from "../Settings/utils/loadAllSettings";
 import { Inputs, AuthMode, handleLogin, toggleAuthMode } from "./utils/LoginHandler";
-import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "../Settings/utils/defaultSettings";
+import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "../../../../utils/defaultSettings";
 
 const Login = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
@@ -28,8 +28,9 @@ const Login = () => {
             setLoading(true);
 
             const payload = await handleLogin(data, mode);
-            // setToken(payload.token);
+
             const {keybinds, sound, video, notif} = await loadAllSettings();
+            // make sure rerender so UI is updated with user saved changes
             setUser(payload.user);
             setKeybinds(keybinds);
             setSound(sound);

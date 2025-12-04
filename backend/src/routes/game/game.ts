@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { createBoard, revealRegion, validateBoard } from "./helpers";
-import { addNewGame, getGameById, updateGameStatus, updateRevealedCells } from "./db-helpers";
-import { authenticateToken, AuthRequest } from "../middleware/authMiddleware";
+import { createBoard, revealRegion, validateBoard } from "./helpers.js";
+import { addNewGame, getGameById, updateGameStatus, updateRevealedCells, updateStartTime } from "./db-helpers.js";
+import { authenticateToken, AuthRequest } from "../middleware/authMiddleware.js";
 
 // routes relating to game
 const gameRoutes = Router();
@@ -45,16 +45,27 @@ gameRoutes.post("/cell/reveal", authenticateToken, async (req: AuthRequest, res)
         if (game.user_id !== userID) {
             return res.status(403).json({ error: "Not your game" });
         } 
-        // if player revealed a mine, mark a loss by force
-        const revealedCells = revealRegion(game.board_data, cell_id, game.rows, game.cols);
-        const numRevealed = await updateRevealedCells(game_id, revealedCells.length);
-        if (revealedCells[0]?.Content.Type === "mine") { 
-            let gametime = await updateGameStatus(game_id, "lost")
-            console.log(gametime);
+        if (!game.started_at) {
+            await updateStartTime(game_id);
         }
-        else if (numRevealed === game.rows*game.cols-game.mines) {
-            console.log("player won")
-            await updateGameStatus(game_id, "won");
+
+        // if player revealed a mine, mark a loss by force
+        const clickedCell = game.board_data[cell_id];
+        const revealedCells = revealRegion(game.board_data, cell_id, game.rows, game.cols);
+
+        if (clickedCell.Content.Type === "mine") {
+            const gametime = await updateGameStatus(game_id, "lost");
+            console.log("losstime", gametime)
+            return res.json(revealedCells);
+        }
+
+        // check win condition: # revealed cells is equal to all safe cells
+        const numRevealed = await updateRevealedCells(game_id, revealedCells);
+        const totalSafe = game.rows * game.cols - game.mines;
+
+        if (numRevealed === totalSafe) {
+            const gametime = await updateGameStatus(game_id, "won");
+            console.log("wintime ", gametime);
         }
         return res.json(revealedCells);
     } 

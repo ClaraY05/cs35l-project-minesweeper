@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "usehooks-ts";
 import { authFetch } from "../../api/authFetch";
-import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "../../pages/Settings/utils/defaultSettings";
+import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "../../../../utils/defaultSettings";
 
 interface AccountDisplayProps {        
     userName: string;
@@ -28,6 +28,7 @@ const AccountDisplay:React.FC<AccountDisplayProps> = ({ userName, imgUrl }:Accou
             console.error(err)
         }
         setUser(null);
+        // revert settings to default after user logs out
         setKeybinds(DEFAULT_KEYBINDS);
         setSound(DEFAULT_SOUND);
         setVideo(DEFAULT_VIDEO);

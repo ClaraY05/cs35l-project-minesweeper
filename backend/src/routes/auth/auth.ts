@@ -1,9 +1,9 @@
 import { Router, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { pool } from "../../db/db";
-import { DEFAULT_SETTINGS } from "../settings/defaultSettings";
-import { createVerificationToken, sendVerificationEmail, verifyToken } from "./verificationHelper";
+import { pool } from "../../db/db.js";
+import { DEFAULT_SETTINGS } from "../../../../utils/defaultSettings.js";
+import { createVerificationToken, sendVerificationEmail, verifyEmailToken } from "./verificationHelper.js";
 
 // routes for our api.
 const authRoutes = Router();
@@ -39,6 +39,7 @@ authRoutes.post("/register", async(req:Request, res:Response) => {
             
             const hash = await bcrypt.hash(password, 10);
             
+            // create new user in database
             const result = await pool.query(
                 "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING user_id, username, email, profile_picture",
                 [username, email, hash]
@@ -46,28 +47,24 @@ authRoutes.post("/register", async(req:Request, res:Response) => {
 
             const userID = result.rows[0].user_id;
 
+            // save default settings to database
             await pool.query(
                 "INSERT INTO settings (user_id, keybinds, sound, video, notif) VALUES ($1,$2,$3,$4,$5)",
                 [userID, DEFAULT_SETTINGS.keybinds, DEFAULT_SETTINGS.sound, DEFAULT_SETTINGS.video, DEFAULT_SETTINGS.notif]
             );
 
+            // sent verification email
             const emailToken = await createVerificationToken(userID);
             await sendVerificationEmail(email, emailToken);
 
-            // const token = signJwt({ userID, email, username });
-            // res.cookie("token",token,{httpOnly:true, secure:false, sameSite:"lax", maxAge:60*60*1000});
-
-
-            return res.status(201).json({user:{user_id:userID, email:email, username:username, profile_picture: result.rows[0].profile_picture},
-                                        is_verified:false,
-                                        message: "check email to verify"});
+            return res.status(201).json({
+                user:{user_id:userID, email:email, username:username, profile_picture: result.rows[0].profile_picture},
+                is_verified:false,
+                message: "check email to verify"
+            });
         }
-        // Catch if username is in db already
         catch(err: any) {
             console.error(err);
-            // if (err.code === '23505') { // Unique violation
-            //     return res.status(409).json({error: "Username already exists"});
-            // }
             return res.status(500).json({error: "Internal server error"});
         }
     }
@@ -102,8 +99,8 @@ authRoutes.post("/login", async(req:Request, res:Response)=>{
 
         const userID = user.user_id;
         const username = user.username;
+        // issue and store token in cookie
         const token = signJwt({ userID, email, username });
-
         res.cookie("token",token,{httpOnly:true, secure:false, sameSite:"lax", maxAge:60*60*1000});
 
         return res.status(200).json({user:{user_id: userID, email:email, username:user.username, profile_picture: user.profile_picture}});
@@ -115,15 +112,17 @@ authRoutes.post("/login", async(req:Request, res:Response)=>{
     
 })
 
+// clear token in cookie on logout
 authRoutes.post("/logout", (req,res)=>{
     res.clearCookie("token", {httpOnly:true, sameSite:"lax", secure:false});
     return res.status(200).json({message: "Logged out"})
 })
 
+// called when user clicks link in email
 authRoutes.post("/verify", async (req,res)=>{
     try{
         const {emailToken} = req.body;
-        await verifyToken(emailToken);
+        await verifyEmailToken(emailToken);
         return res.json({message:"email verified"});
     }
     catch(err){

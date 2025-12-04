@@ -15,8 +15,9 @@ const Slider: React.FC<SliderProps> = ({label, nowValue, min = 1, max = 100, onC
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const next = Number(e.target.value);
       setValue(next);
-      if (onChange) onChange(next)
+      if (onChange) onChange(next) // notify parent if callback provided
     };
+    // sync child with parent if parent's value changed through revert to default
     useEffect(()=>{setValue(nowValue)},[nowValue])
   
     const percentage = ((value - min) / (max - min)) * 100;

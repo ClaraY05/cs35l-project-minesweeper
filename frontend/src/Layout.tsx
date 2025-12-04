@@ -3,7 +3,7 @@ import { useLocalStorage } from "usehooks-ts";
 import AccountDisplay from "./components/header/AccountDisplay";
 import Friends from "./components/header/Friends/Friends"; 
 import Notifications from "./components/header/Notifications/Notifications";
-import { DEFAULT_VIDEO } from "./pages/Settings/utils/defaultSettings";
+import { DEFAULT_VIDEO } from "../../utils/defaultSettings";
 
 const MainLayout = () => {
   const [user] = useLocalStorage<any|null>("user",null);
