@@ -1,19 +1,19 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PublicCellData } from '../../../types/frontend-gametypes';
 import './minesweeper-board.css'
 import { authFetch } from '../../../api/authFetch';
+import { useLocalStorage } from "usehooks-ts";
+import { DEFAULT_KEYBINDS } from "../../../../../utils/defaultSettings"
+import { useNavigate } from "react-router-dom";
 
-const Tile = ({ className, content, onLeftClick, onRightClick } : any) => {
+const Tile = ({ className, content, onMouseDown, onMouseUp, onContextMenu, onMouseEnter } : any) => {
     return (
         <div
             className={className}
-            // Left click => reveal cell or flood-fill
-            onClick={onLeftClick}
-            // Right click => flag
-            onContextMenu={(e) => {
-                e.preventDefault();
-                onRightClick();
-            }}
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
+            onContextMenu={onContextMenu}
+            onMouseEnter={onMouseEnter}
         >
             {/* content is what the player sees: null, number, "M" , or "F" */}
             {content}
@@ -21,7 +21,7 @@ const Tile = ({ className, content, onLeftClick, onRightClick } : any) => {
     )
 };
 
-const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID : number | null, rows : number, cols : number, mines: number, onFirstClick : (arg0 : number) => Promise<any> }) => {
+const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart } : { GameID : number | null, rows : number, cols : number, mines: number, onFirstClick : (arg0 : number) => Promise<any>, onRestart?: () => Promise<void> | void }) => {
     const [Tiles, setTiles] = useState<Array<PublicCellData | null>>(() => Array(rows * cols).fill(null)); // frontend cell data store. null means "dont know"
 
     // UI status only
@@ -35,14 +35,30 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
     // count of non-mine cells that have been revealed
     const [revealedSafeCount, setRevealedSafeCount] = useState<number>(0);
 
+    // keybinds
+    const [keybinds] = useLocalStorage("keybinds", DEFAULT_KEYBINDS);
+
+    // track tile that mouse hovers over on key press
+    const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+
+    // Mouse button state for simultaneous click detection
+    const [isLeftHeld, setIsLeftHeld] = useState(false);
+    const [isRightHeld, setIsRightHeld] = useState(false);
+
+    const navigate = useNavigate();
+
     // whenever game ID changes, reset board state
-    useEffect(() => {
+    const resetLocalState = () => {
         setTiles(Array(rows * cols).fill(null));
         setStatus("playing");
         setStartTime(null);
         setElapsedMs(0);
         setRevealedSafeCount(0);
-    }, [GameID, rows, cols]);
+    };
+
+    useEffect(() => {
+        resetLocalState();
+    }, [rows, cols]);
 
     useEffect(() => {
         if (status !== "playing" || startTime === null) return;
@@ -53,8 +69,99 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
 
         return () => clearInterval(id);
     }, [status, startTime]);
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            const code = event.key; // not event.code because we store "F" rather than "KEY F"
+
+            console.log(event.key);
+
+            if (code === keybinds.restartGame) {
+                event.preventDefault();
+                resetLocalState(); // local board + timer reset
+                if (onRestart)
+                    onRestart(); // tell parent to clearn Game ID
+                return;
+            }
+
+            if (code === keybinds.escapeGame) {
+                event.preventDefault();
+                navigate("/home");
+                return;
+            }
+            
+            // only react while game is in progress
+            if (status !== "playing")
+                return;
+
+            if (focusedIndex === null)
+                return;
+
+            if (code === keybinds.openCell) {
+                event.preventDefault();
+                handleTileLeftClick(focusedIndex);
+                return;
+            }
+
+            if (code === keybinds.flagCell) {
+                event.preventDefault();
+                handleTileRightClick(focusedIndex);
+                return;
+            }
+
+            if (code === keybinds.chord) {
+                event.preventDefault();
+                chordAtIndex(focusedIndex);
+                return;
+            }
+            
+            //  powerup1 and powerup 2 can be wired here one the feature exists
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [keybinds, status, focusedIndex]);
+
+    const handleTileMouseDown = (i: number, button: number): void => {
+        if (status === "won" || status === "lost")
+            return;
+
+        if (button === 0)
+            setIsLeftHeld(true);
+        if (button === 2)
+            setIsRightHeld(true);
+    }
+
+    const handleTileMouseUp = (i: number, button: number): void => {
+        if (status === "won" || status === "lost")
+            return;
+
+        if (button === 0) {
+            setIsLeftHeld(false);
+
+            if (isRightHeld) {
+                chordAtIndex(i);
+                return;
+            } else {
+                handleTileLeftClick(i);
+            }
+        } else if (button === 2) {
+            setIsRightHeld(false);
+
+            if (isLeftHeld) {
+                chordAtIndex(i);
+                return;
+            } else {
+                handleTileRightClick(i);
+            }
+        }
+    }
     
     const handleTileRightClick = (i : number) : void => {
+        if (status === "won" || status === "lost") {
+            return;
+        }
+
         const cell = Tiles[i];
 
         // if already revealed, don't flag
@@ -122,6 +229,13 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
         }
 
         const revealedCellData = res as GameTypes.CellData[];
+        applyRevealedCells(revealedCellData, GameIDToUse);
+    }
+
+    const applyRevealedCells = (
+        revealedCellData: GameTypes.CellData[],
+        gameIdToUse: number | null
+    ) => {
         const newTiles = [...Tiles];
         let newRevealedSafeCount = revealedSafeCount;
         let hitMine = false;
@@ -163,6 +277,51 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
         if (newRevealedSafeCount === totalSafeCells) {
             setStatus("won");
         }
+    };
+
+    const chordAtIndex = async (i: number): Promise<void> => {
+        if (status === "won" || status === "lost")
+            return;
+        if (GameID === null) // can't chord before the game exists
+            return;
+        
+        const cell = Tiles[i];
+
+        if (!cell || cell.State.Visibility !== "revealed")
+            return;
+        if (!cell.Content || cell.Content.Type !== "number")
+            return;
+
+        // collect all flagged cells on the boardl backend will filter neighbors
+        const flaggedIndices: number[] = [];
+        Tiles.forEach((t, idx) => {
+            if (t && t.State.Visibility === "hidden" && "Flagged" in t.State && t.State.Flagged)
+                flaggedIndices.push(idx);
+        });
+
+        try {
+            const revealedCells: GameTypes.CellData[] = await authFetch(
+                "http://localhost:8000/api/game/cell/chord",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        gameid: GameID,
+                        cellid: i,
+                        flaggedNeighbors: flaggedIndices,
+                    }),
+                }
+            );
+
+            if (!revealedCells || revealedCells.length === 0) {
+                // nothing to reveal (either flags didn't match number or no new info)
+                return;
+            }
+
+            applyRevealedCells(revealedCells, GameID);
+        } catch (err) {
+            console.error("Chord request failed: ", err);
+        }
     }
 
     return (
@@ -188,10 +347,12 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
 
                             return (
                                 <Tile key={i} 
-                                className={`minesweeper-tile ${isRevealed ? "revealed" : ""}`} 
+                                className={`minesweeper-tile ${isRevealed ? "revealed" : ""} ${focusedIndex === i ? "focused-tile" : ""}`} 
                                 content={content}
-                                onLeftClick={() => handleTileLeftClick(i)}
-                                onRightClick={() => handleTileRightClick(i)}
+                                onMouseDown={(e: React.MouseEvent) => handleTileMouseDown(i, e.button)}
+                                onMouseUp={(e: React.MouseEvent) => handleTileMouseUp(i, e.button)}
+                                onContextMenu={(e: React.MouseEvent) => e.preventDefault()}
+                                onMouseEnter={() => setFocusedIndex(i)}
                                 />
                             );
                         })

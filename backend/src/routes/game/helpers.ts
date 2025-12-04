@@ -180,3 +180,53 @@ export function validateBoard(boardData: GameTypes.CellData[], ROWS : number, CO
     console.log("Board validation:", errors.length === 0 ? "OK" : errors);
     errors.forEach(e => console.error(e));
 }
+
+export function chordReveal(
+    boardData: GameTypes.CellData[],
+    cellIndex: number,
+    flaggedNeighbors: number[],
+    ROWS: number,
+    COLS: number,
+    alreadyRevealedIndices: number[]
+): GameTypes.CellData[] {
+    const base = boardData[cellIndex];
+
+    // must be a number cell to chord
+    if (base.Content.Type !== "number") {
+        return [];
+    }
+
+    const neighbors = getNeighborIndices(cellIndex, ROWS, COLS);
+
+    // count how many of those neighbors are flagged
+    const flaggedCount = neighbors.filter((idx) =>
+        flaggedNeighbors.includes(idx)
+    ).length;
+
+    // only chord when flags match the number
+    if (flaggedCount !== base.Content.Number) {
+        return [];
+    }
+
+    // reveal all neighbors that are not flagged, using the existing flood-fill logic
+    const revealedMap = new Map<number, GameTypes.CellData>();
+
+    // Convert the array to a Set for O(1) lookup
+    const revealedSet = new Set(alreadyRevealedIndices);
+
+    for (const nIdx of neighbors) {
+        // flagged cells are not revealed
+        if (flaggedNeighbors.includes(nIdx))
+            continue;
+        
+        const region = revealRegion(boardData, nIdx, ROWS, COLS);
+        for (const cell of region) {
+            // only add cells that are not already revealed
+            if (!revealedSet.has(cell.Position)){
+                revealedMap.set(cell.Position, cell);
+            }
+        }
+    }
+
+    return Array.from(revealedMap.values());
+}

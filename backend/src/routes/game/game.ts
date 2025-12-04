@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createBoard, revealRegion, validateBoard } from "./helpers.js";
+import { createBoard, revealRegion, validateBoard, chordReveal } from "./helpers.js";
 import { addNewGame, getGameById, updateGameStatus, updateRevealedCells, updateStartTime } from "./db-helpers.js";
 import { authenticateToken, AuthRequest } from "../middleware/authMiddleware.js";
 
@@ -69,6 +69,61 @@ gameRoutes.post("/cell/reveal", authenticateToken, async (req: AuthRequest, res)
         }
         return res.json(revealedCells);
     } 
+});
+
+gameRoutes.post("/cell/chord", authenticateToken, async (req, res) => {
+    try {
+        const { gameid, cellid, flaggedNeighbors } = req.body as {
+            gameid: number;
+            cellid: number;
+            flaggedNeighbors:number[];
+        };
+
+        if (!Number.isInteger(gameid) || !Number.isInteger(cellid) || !Array.isArray(flaggedNeighbors)) {
+            return res.status(400).json({ error: "Invalid payload" });
+        }
+
+        const game = await getGameById(gameid);
+
+        if(!game) {
+            return res.status(404).json({ error: "Game not found" });
+        }
+
+        if (game.status === "end_win" || game.status === "end_lose") {
+            return res.status(409).json({ error: "Game already finished "});
+        }
+
+        const boardData = game.board_data as GameTypes.CellData[];
+        const rows = game.rows;
+        const cols = game.cols;
+
+        const alreadyRevealedIndices: number[] = (game.revealedCells || []).map((cell: { Position: number }) => cell.Position);
+
+        const revealed = chordReveal(boardData, cellid, flaggedNeighbors, rows, cols, alreadyRevealedIndices);
+
+        // Check for a loss first, if a mine was revealed
+        const hitMine = revealed.some(cell => cell.Content.Type === "mine");
+        if (hitMine) {
+            const gametime = await updateGameStatus(gameid, "lost");
+            console.log("losstime", gametime);
+            return res.json(revealed);
+        }
+
+        // Update revealed cells in the database
+        const numRevealed = await updateRevealedCells(gameid, revealed);
+        const totalSafe = game.rows * game.cols - game.mines;
+
+        // Check for a win condition
+        if (numRevealed === totalSafe) {
+            const gametime = await updateGameStatus(gameid, "won");
+            console.log("wintime", gametime);
+        }
+
+        return res.json(revealed);
+    } catch (err) {
+        console.error("Error in POST /api/game/cell/chord:", err);
+        return res.status(500).json({ error: "Internal server error "});
+    }
 });
 
 export default gameRoutes;

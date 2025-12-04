@@ -49,6 +49,10 @@ const Play = () => {
             return null;
         }
     };
+
+    const restartGame = async () => {
+        setActiveGameID(null);
+    }
     
     // reset game when difficulty changes
     const handleDifficultyChange = (value: GameTypes.Difficulty) => {
@@ -72,7 +76,7 @@ const Play = () => {
                         </Link>
                     </button>
                 </div>
-                <MinesweeperBoard GameID={activeGameID} rows={rows} mines={mines} cols={cols} onFirstClick={startGame} />
+                <MinesweeperBoard GameID={activeGameID} rows={rows} mines={mines} cols={cols} onFirstClick={startGame} onRestart={restartGame}/>
             </div>
         </div>
     )
