@@ -15,10 +15,11 @@ const Sound = () => {
                 <Slider label="stereo" nowValue={sound.stereo} onChange={(e)=>update({stereo:e})}/>
             </div>
                 <div className="flex flex-col gap-1">
-                    <Checkbox label="Sound 1" nowChecked={sound.sound1} onChange={(e)=>update({sound1:e})}/>
-                    <Checkbox label="Sound 2" nowChecked={sound.sound2} onChange={(e)=>update({sound2:e})}/>
-                    <Checkbox label="Sound 3" nowChecked={sound.sound3} onChange={(e)=>update({sound3:e})}/>
-                    <Checkbox label="Sound 4" nowChecked={sound.sound4} onChange={(e)=>update({sound4:e})}/>
+                    <h2 className="uppercase font-bold">SFX Controls</h2>
+                    <Checkbox label="Click" nowChecked={sound.sound1} onChange={(e)=>update({sound1:e})}/>
+                    <Checkbox label="Place Flag" nowChecked={sound.sound2} onChange={(e)=>update({sound2:e})}/>
+                    <Checkbox label="Select" nowChecked={sound.sound3} onChange={(e)=>update({sound3:e})}/>
+                    <Checkbox label="Change Difficulty" nowChecked={sound.sound4} onChange={(e)=>update({sound4:e})}/>
                 </div>
         </div>
     );
