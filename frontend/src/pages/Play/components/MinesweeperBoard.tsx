@@ -116,7 +116,7 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart }
 
             if (code === keybinds.chord) {
                 event.preventDefault();
-                // TODO: implement chording logic later
+                chordAtIndex(focusedIndex);
                 return;
             }
             
@@ -289,6 +289,52 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart }
             setStatus("won");
         }
     };
+
+    const chordAtIndex = async (i: number): Promise<void> => {
+        if (status === "won" || status === "lost")
+            return;
+        if (GameID === null) // can't chord before the game exists
+            return;
+        
+        const cell = Tiles[i];
+
+        if (!cell || cell.State.Visibility !== "revealed")
+            return;
+        if (!cell.Content || cell.Content.Type !== "number")
+            return;
+
+        // collect all flagged cells on the boardl backend will filter neighbors
+        const flaggedIndices: number[] = [];
+        Tiles.forEach((t, idx) => {
+            //if (t?.State.Flagged) flaggedIndices.push(idx);
+            if (t && t.State.Visibility === "hidden" && "Flagged" in t.State && t.State.Flagged)
+                flaggedIndices.push(idx);
+        });
+
+        try {
+            const revealedCells: GameTypes.CellData[] = await authFetch(
+                "http://localhost:8000/api/game/cell/chord",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        gameid: GameID,
+                        cellid: i,
+                        flaggedNeighbors: flaggedIndices,
+                    }),
+                }
+            );
+
+            if (!revealedCells || revealedCells.length === 0) {
+                // nothing to reveal (either flags didn't match number or no new info)
+                return;
+            }
+
+            applyRevealedCells(revealedCells, GameID);
+        } catch (err) {
+            console.error("Chord request failed: ", err);
+        }
+    }
 
     return (
         <div className="minesweeper-wrapper">
