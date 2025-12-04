@@ -40,6 +40,11 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
 
     // keybinds
     const [keybinds] = useLocalStorage("keybinds", DEFAULT_KEYBINDS);
+    // console.log(keybinds.openCell);
+    // console.log(keybinds.flagCell);
+    // console.log(keybinds.chord);
+    // console.log(keybinds.restartGame);
+    // console.log(keybinds.escapeGame);
 
     // track tile that mouse hovers over on key press
     const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
@@ -62,6 +67,55 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
 
         return () => clearInterval(id);
     }, [status, startTime]);
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            // only react while game is in progress
+            if (status !== "playing")
+                return;
+
+            if (focusedIndex === null)
+                return;
+
+            const code = event.key; // not event.code because we store "F", "ESC", rather than "KEY F", or "ESCAPE"
+            console.log(event.key);
+
+            if (code === keybinds.openCell) {
+                event.preventDefault();
+                handleTileLeftClick(focusedIndex);
+                return;
+            }
+
+            if (code === keybinds.flagCell) {
+                event.preventDefault();
+                handleTileRightClick(focusedIndex);
+                return;
+            }
+
+            if (code === keybinds.chord) {
+                event.preventDefault();
+                // TODO: implement chording logic later
+                return;
+            }
+
+            if (code === keybinds.escapeGame) {
+                event.preventDefault();
+                // TODO: onEscape()
+                return;
+            }
+
+            if (code === keybinds.restartGame) {
+                event.preventDefault();
+                // TODO: onRestart()
+                return;
+            }
+            
+            //  powerup1 and powerup 2 can be wired here one the feature exists
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [keybinds, status, focusedIndex]);
     
     const handleTileRightClick = (i : number) : void => {
         const cell = Tiles[i];
