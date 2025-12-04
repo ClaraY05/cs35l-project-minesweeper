@@ -4,6 +4,7 @@ import './minesweeper-board.css'
 import { authFetch } from '../../../api/authFetch';
 import { useLocalStorage } from "usehooks-ts";
 import { DEFAULT_KEYBINDS } from "../../../../../utils/defaultSettings"
+import { useNavigate } from "react-router-dom";
 
 const Tile = ({ className, content, onLeftClick, onRightClick, onMouseEnter } : any) => {
     return (
@@ -49,6 +50,8 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart }
     // track tile that mouse hovers over on key press
     const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
 
+    const navigate = useNavigate();
+
     // whenever game ID changes, reset board state
     const resetLocalState = () => {
         setTiles(Array(rows * cols).fill(null));
@@ -82,15 +85,30 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart }
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
+            const code = event.key; // not event.code because we store "F" rather than "KEY F"
+
+            console.log(event.key);
+
+            if (code === keybinds.restartGame) {
+                event.preventDefault();
+                resetLocalState(); // local board + timer reset
+                if (onRestart)
+                    onRestart(); // tell parent to clearn Game ID
+                return;
+            }
+
+            if (code === keybinds.escapeGame) {
+                event.preventDefault();
+                navigate("/home");
+                return;
+            }
+            
             // only react while game is in progress
             if (status !== "playing")
                 return;
 
             if (focusedIndex === null)
                 return;
-
-            const code = event.key; // not event.code because we store "F", "ESC", rather than "KEY F", or "ESCAPE"
-            console.log(event.key);
 
             if (code === keybinds.openCell) {
                 event.preventDefault();
@@ -107,20 +125,6 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart }
             if (code === keybinds.chord) {
                 event.preventDefault();
                 // TODO: implement chording logic later
-                return;
-            }
-
-            if (code === keybinds.escapeGame) {
-                event.preventDefault();
-                // TODO: onEscape()
-                return;
-            }
-
-            if (code === keybinds.restartGame) {
-                event.preventDefault();
-                resetLocalState(); // local board + timer reset
-                if (onRestart)
-                    onRestart(); // tell parent to clearn Game ID
                 return;
             }
             
