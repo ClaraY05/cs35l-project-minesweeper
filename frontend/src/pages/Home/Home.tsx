@@ -46,13 +46,13 @@ const Home = () => {
     };
 
     return (
-      <div className="w-full h-full relative flex flex-col items-end gap-2 p-4">
+      <div className="w-full h-full relative flex flex-col items-end gap-2 p-4 overflow-y-auto min-h-0">
         <a
           href="/play"
           ref={(el) => { barRefs.current[0] = el; }}
           onClick={(e) => handleClick(e, 0, "/play")}
           onMouseEnter={(e)=> handleHover(e)}
-          className="option-bar bg-amber-500"
+          className="option-bar bg-amber-500 flex-1"
         >
           <div className="option-text">&gt; Single Player_</div>
         </a>
@@ -62,7 +62,7 @@ const Home = () => {
           ref={(el) => { barRefs.current[1] = el; }}
           onClick={(e) => handleClick(e, 1, "/play")}
           onMouseEnter={(e)=> handleHover(e)}
-          className="option-bar bg-sky-500"
+          className="option-bar bg-sky-500 flex-1"
         >
           <div className="option-text">&gt; Multiplayer_</div>
         </a>
@@ -73,7 +73,7 @@ const Home = () => {
           ref={(el) => { barRefs.current[2] = el; }}
           onClick={(e) => handleClick(e, 2, "/tutorial")}
           onMouseEnter={(e)=> handleHover(e)}
-          className="option-bar bg-lime-500"
+          className="option-bar bg-lime-500 flex-1"
         >
           <div className="option-text">&gt; Tutorial_</div>
         </a>
@@ -83,7 +83,7 @@ const Home = () => {
           ref={(el) => { barRefs.current[3] = el; }}
           onClick={(e) => handleClick(e, 3, "/settings")}
           onMouseEnter={(e)=> handleHover(e)}
-          className="option-bar bg-fuchsia-500"
+          className="option-bar bg-fuchsia-500 flex-1"
         >
           <div className="option-text">&gt; Settings_</div>
         </a>
@@ -93,7 +93,7 @@ const Home = () => {
           ref={(el) => { barRefs.current[4] = el; }}
           onClick={(e) => handleClick(e, 4, "/leaderboard")}
           onMouseEnter={(e)=> handleHover(e)}
-          className="option-bar bg-indigo-600"
+          className="option-bar bg-indigo-600 flex-1"
         >
           <div className="option-text">&gt; Leaderboard_</div>
         </a>
