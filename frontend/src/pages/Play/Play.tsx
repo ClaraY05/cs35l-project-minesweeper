@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import {Link} from "react-router-dom";
 import MinesweeperBoard from "./components/MinesweeperBoard"
 import DifficultySelect from "./components/DifficultySelect";
 import './play.css';
@@ -43,9 +44,14 @@ const Play = () => {
     };
   
     return (
-        <div className="play-container">
-            <DifficultySelect value={difficulty} onChange={handleDifficultyChange} />
-            <MinesweeperBoard GameID={activeGameID} rows={rows} mines={mines} cols={cols} onFirstClick={startGame} onRestart={restartGame}/>
+        <div className="contentDiv play-page h-full p-5">
+            <div className="play-container flex flex-row items-center gap-4">
+                <div className="flex flex-col items-start gap-4 p-4 text-xl font-bold bg-stone-900 rounded-xl">
+                    <DifficultySelect value={difficulty} onChange={handleDifficultyChange} />
+                    <button><Link to="/home" className="hover:text-amber-500 transition-all duration-300">Home</Link></button>
+                </div>
+                <MinesweeperBoard GameID={activeGameID} rows={rows} mines={mines} cols={cols} onFirstClick={startGame} onRestart={restartGame}/>
+            </div>
         </div>
     )
 }

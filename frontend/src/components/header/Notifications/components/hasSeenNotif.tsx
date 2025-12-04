@@ -5,8 +5,8 @@ interface HasSeenNotifProps {
 const HasSeenNotif = ({ onDelete }: HasSeenNotifProps) => {
     return (
         // need to style, add dot 
-        <div className="blob">
-            <button onClick={onDelete} className="uppercase text-xs font-bold hover:text-red-500">Temp</button>
+        <div className="absolute top-4 right-2">
+        <span className="inline-block w-4 h-4 bg-rose-500 rounded-full border-2 border-black"></span>
         </div>
     )
 

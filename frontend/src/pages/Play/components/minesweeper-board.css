@@ -1,3 +1,4 @@
+@import tailwindcss;
 .minesweeper-board-container {
     display: flex;
     align-items: center;
