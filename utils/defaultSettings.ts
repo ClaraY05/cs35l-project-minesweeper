@@ -1,9 +1,9 @@
 export const DEFAULT_KEYBINDS = {
-    openCell: "MouseLeft",
-    flagCell: "MouseRight",
-    chord: "MouseLeft+MouseRight",
-    restartGame: "R",
-    escapeGame: "ESC",
+    openCell: "q",
+    flagCell: "e",
+    chord: "w",
+    restartGame: "r",
+    escapeGame: "Escape",
     powerup1: "1",
     powerup2: "2",
 };
