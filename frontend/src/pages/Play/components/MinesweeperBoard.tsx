@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { PublicCellData } from '../../../types/frontend-gametypes';
 import './minesweeper-board.css'
 import { authFetch } from '../../../api/authFetch';
+import { useLocalStorage } from "usehooks-ts";
+import { DEFAULT_KEYBINDS } from "../../../../../utils/defaultSettings"
 
-const Tile = ({ className, content, onLeftClick, onRightClick } : any) => {
+const Tile = ({ className, content, onLeftClick, onRightClick, onMouseEnter } : any) => {
     return (
         <div
             className={className}
@@ -14,6 +16,7 @@ const Tile = ({ className, content, onLeftClick, onRightClick } : any) => {
                 e.preventDefault();
                 onRightClick();
             }}
+            onMouseEnter={onMouseEnter}
         >
             {/* content is what the player sees: null, number, "M" , or "F" */}
             {content}
@@ -34,6 +37,12 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
 
     // count of non-mine cells that have been revealed
     const [revealedSafeCount, setRevealedSafeCount] = useState<number>(0);
+
+    // keybinds
+    const [keybinds] = useLocalStorage("keybinds", DEFAULT_KEYBINDS);
+
+    // track tile that mouse hovers over on key press
+    const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
 
     // whenever game ID changes, reset board state
     useEffect(() => {
@@ -173,6 +182,7 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
                         Status: {status} &nbsp;&nbsp; Time: {seconds}s
                     </span>
                 </div>
+                {/* <div>Focused index: {focusedIndex === null ? "none" : focusedIndex}</div> */}
                 <div className="minesweeper-board" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
                     {
                         Tiles.map((cell, i) => {
@@ -192,6 +202,7 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
                                 content={content}
                                 onLeftClick={() => handleTileLeftClick(i)}
                                 onRightClick={() => handleTileRightClick(i)}
+                                onMouseEnter={() => setFocusedIndex(i)}
                                 />
                             );
                         })
