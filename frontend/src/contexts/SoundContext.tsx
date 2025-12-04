@@ -21,7 +21,7 @@ export const useSound = (): SoundManagerReturn => {
   const context = useContext(SoundContext);
   
   if (context === undefined) {
-    throw new Error("useSound must be used within a SoundProvider");
+    throw new Error("must use within context of provider!");
   }
   
   return context;

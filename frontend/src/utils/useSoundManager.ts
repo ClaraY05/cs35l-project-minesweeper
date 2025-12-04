@@ -45,9 +45,9 @@ export const useSoundManager = () => {
 
     const soundFlagMap = {
         click: "sound1",
-        jump: "sound2",
-        coin: "sound3",
-        explosion: "sound4",
+        flag: "sound2",
+        select: "sound3",
+        difficulty: "sound4",
     } as const;
 
     type SoundName = keyof typeof soundFlagMap;
