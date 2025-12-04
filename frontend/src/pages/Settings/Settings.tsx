@@ -3,12 +3,15 @@ import { Outlet, NavLink, Link } from "react-router-dom";
 import { authFetch } from "../../api/authFetch";
 import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "../../../../utils/defaultSettings";
 import { useLocalStorage } from "usehooks-ts";
+import { useSound } from "../../contexts/SoundContext";
 
 const Settings = () => {
     const [keybinds, setKeybinds] = useLocalStorage("keybinds", DEFAULT_KEYBINDS);
     const [sound, setSound]    = useLocalStorage("sound", DEFAULT_SOUND);
     const [video, setVideo]    = useLocalStorage("video", DEFAULT_VIDEO);
     const [notif, setNotif]    = useLocalStorage("notif", DEFAULT_NOTIF);
+    const { playBackgroundMusic, stopBackgroundMusic, playSoundEffect } = useSound();
+
     const handleSave = async () =>{
         try{
             // save settings to db
@@ -43,6 +46,19 @@ const Settings = () => {
             console.error(err);
         }
     }
+    React.useEffect(()=>{
+        playBackgroundMusic("/audio/menu.wav");
+        return () => {
+            stopBackgroundMusic();
+        };
+    }, [playBackgroundMusic, stopBackgroundMusic]);
+
+    const handleClick = (e:React.MouseEvent) => {
+        playSoundEffect("/audio/SFX/click.wav", "click");
+    };
+    const handleHover = (e:React.MouseEvent) => {
+        playSoundEffect("/audio/SFX/select.wav", "select");
+    };
     return (
         <div className="contentDiv">
             <h1 className="text-fuchsia-500 mt-0 pt-0">&gt; Settings</h1>
@@ -95,9 +111,36 @@ const Settings = () => {
                 <Outlet />
             </main>
             <nav className="flex flex-row gap-x-2 flex-wrap justify-center">
-                <button><Link to="/home" className="hover:font-bold transition-all duration-300">Home</Link></button>|
-                <button onClick={handleSave} className="hover:font-bold transition-all duration-300">Save</button>|
-                <button onClick={handleDefault} className="hover:font-bold transition-all duration-300">Default</button>
+                <button>
+                    <Link 
+                        to="/home"
+                        className="hover:font-bold transition-all duration-300"
+                        onMouseEnter={(e)=>{handleHover(e)}}
+                        onClick={(e)=>{handleClick(e)}}
+                    >
+                        Home
+                    </Link>
+                </button>|
+                <button 
+                    onClick={(e)=>{
+                        handleSave
+                        handleClick(e)
+                    }}
+                    onMouseEnter={(e)=>{handleHover(e)}}
+                    className="hover:font-bold transition-all duration-300"
+                >
+                    Save
+                </button>|
+                <button 
+                    onClick={(e)=>{
+                        handleDefault
+                        handleClick(e)
+                    }}
+                    onMouseEnter={(e)=>{handleHover(e)}}
+                    className="hover:font-bold transition-all duration-300"
+                >
+                    Default
+                </button>
             </nav>
         </div>
     )
