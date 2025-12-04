@@ -23,11 +23,12 @@ const NotificationsPopout = ({
     notifications
   );
 
+  // get notifications when opened
   useEffect(() => {
     if (isOpen) {
       getNotifications();
     }
-  }, [isOpen]);
+  }, [isOpen, getNotifications]);
 
   return (
     <>
