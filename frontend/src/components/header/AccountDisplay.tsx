@@ -16,7 +16,7 @@ const AccountDisplay:React.FC<AccountDisplayProps> = ({ userName, imgUrl }:Accou
     const [user, setUser] = useLocalStorage<any|null>("user",null);
     const [,setKeybinds] = useLocalStorage("keybinds", DEFAULT_KEYBINDS);
     const [,setSound] = useLocalStorage("sound", DEFAULT_SOUND);
-    const [,setVideo] = useLocalStorage("video", DEFAULT_VIDEO);
+    const [video, setVideo] = useLocalStorage("video", DEFAULT_VIDEO);
     const [,setNotif] = useLocalStorage("notif", DEFAULT_NOTIF);
     const {playSoundEffect } = useSound();
 
@@ -76,7 +76,7 @@ const AccountDisplay:React.FC<AccountDisplayProps> = ({ userName, imgUrl }:Accou
     return (
         <div className="flex flex-row bg-main p-2 rounded-sm">
             <div className="flex flex-col p-2">
-                <strong className="text-primary-text account">{userName}</strong>
+                {video.displayUsername && (<strong className="text-primary-text account">{userName}</strong>)}
                 <button 
                     onClick={(e)=>{onLogout(e)}} 
                     onMouseEnter={(e)=>{handleHover(e)}}
