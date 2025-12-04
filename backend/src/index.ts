@@ -11,7 +11,7 @@ app.use(cookieParser());
 
 // enable CORS before routes
 app.use(cors({
-  origin: "http://localhost:5173", // React dev server URL
+  origin: ["http://localhost:5173", "http://localhost:5174"], // React dev server URL
   credentials: true                // if you use cookies/sessions
 }));
 
