@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "usehooks-ts";
 import { authFetch } from "../../api/authFetch";
 import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "../../../../utils/defaultSettings";
+import { useSound } from "../../contexts/SoundContext";
 
 interface AccountDisplayProps {        
     userName: string;
@@ -17,7 +18,16 @@ const AccountDisplay:React.FC<AccountDisplayProps> = ({ userName, imgUrl }:Accou
     const [,setSound] = useLocalStorage("sound", DEFAULT_SOUND);
     const [,setVideo] = useLocalStorage("video", DEFAULT_VIDEO);
     const [,setNotif] = useLocalStorage("notif", DEFAULT_NOTIF);
-    const onLogout = async () =>{
+    const {playSoundEffect } = useSound();
+
+    const handleClick = (e: React.MouseEvent) =>{
+        playSoundEffect("/audio/SFX/click.wav", "click");
+    };
+    const handleHover = (e: React.MouseEvent) =>{
+        playSoundEffect("/audio/SFX/select.wav", "select");
+    };
+
+    const onLogout = async (e:React.MouseEvent) =>{
         try {
             localStorage.clear();
             await fetch("http://localhost:8000/api/auth/logout", {
@@ -27,6 +37,7 @@ const AccountDisplay:React.FC<AccountDisplayProps> = ({ userName, imgUrl }:Accou
         } catch (err) {
             console.error(err)
         }
+        handleClick(e);
         setUser(null);
         // revert settings to default after user logs out
         setKeybinds(DEFAULT_KEYBINDS);
@@ -66,7 +77,12 @@ const AccountDisplay:React.FC<AccountDisplayProps> = ({ userName, imgUrl }:Accou
         <div className="flex flex-row bg-main p-2 rounded-sm">
             <div className="flex flex-col p-2">
                 <strong className="text-primary-text account">{userName}</strong>
-                <button onClick={onLogout} className="uppercase text-xs font-bold hover:text-red-500">Logout</button>
+                <button 
+                    onClick={(e)=>{onLogout(e)}} 
+                    onMouseEnter={(e)=>{handleHover(e)}}
+                    className="uppercase text-xs font-bold hover:text-red-500">
+                    Logout
+                </button>
             </div>
             <div className="flex flex-shrink-0">
                 <input
@@ -80,6 +96,7 @@ const AccountDisplay:React.FC<AccountDisplayProps> = ({ userName, imgUrl }:Accou
                     src={imgUrl} 
                     alt="User Profile" 
                     className="hover:border-2 transition-all duration-300"
+                    onMouseEnter={(e)=>{handleHover(e)}}
                     style={{ width: "75px", height: "75px", cursor: "pointer" }} // Be able to click on the image to change it
                     onClick={handleImageClick}
                 />

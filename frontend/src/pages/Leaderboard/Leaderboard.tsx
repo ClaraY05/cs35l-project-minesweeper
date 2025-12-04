@@ -2,6 +2,7 @@ import { useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 import { authFetch } from "../../api/authFetch";
 import './components/leaderboard.css';
+import { useSound } from "../../contexts/SoundContext";
 
 type Entry = {
     username:string;
@@ -13,6 +14,8 @@ const Leaderboard = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [difficulty, setDifficulty] = useState<"easy"|"medium"|"hard">("easy");
+    const { playBackgroundMusic, stopBackgroundMusic, playSoundEffect } = useSound();
+
     // update table based on what option user selects
     useEffect(()=>{
         const loadLeaderboard = async () => {
@@ -30,7 +33,19 @@ const Leaderboard = () => {
             }
         };
         loadLeaderboard();
-    }, [difficulty]);
+        playBackgroundMusic("/audio/menu.wav");
+        return () => {
+            stopBackgroundMusic();
+        };
+    }, [difficulty, playBackgroundMusic, stopBackgroundMusic]);
+
+    const handleClick = (e:React.MouseEvent) => {
+        playSoundEffect("/audio/SFX/click.wav", "click");
+    };
+
+    const handleHover = (e:React.MouseEvent) => {
+        playSoundEffect("/audio/SFX/select.wav", "select");
+    };
 
     return (
        <div className="contentDiv flex flex-col justify-between py-2 px-10">
@@ -72,7 +87,14 @@ const Leaderboard = () => {
                     )}
                 </div>
             </div>
-            <button><Link to="/home" className="hover:font-bold transition-all duration-300">Home</Link></button>
+            <button>
+                <Link to="/home" 
+                    className="hover:font-bold transition-all duration-300"
+                    onMouseEnter={(e)=> handleHover(e)}
+                    onClick={(e)=>handleClick(e)}
+                >
+                    Home
+                </Link></button>
        </div> 
     );
 };
