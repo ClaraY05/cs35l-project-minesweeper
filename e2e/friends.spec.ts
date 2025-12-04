@@ -48,5 +48,9 @@ test('Sending friend request and confirming a notification is sent', async ({ pa
     // verify the friend request notification is visible
     await expect(page.locator('text=Friend request')).toBeVisible();
     await expect(page.locator(`text=${firstTester.username}`)).toBeVisible(); // should show first users username
+    await page.locator('button').filter({ hasText: /Close/i }).click(); // close popout
+
+    await page.locator('button').filter({ has: page.locator('img[alt*="People"]') }).click();
+    await expect(page.locator(`text=${firstTester.username}`)).toBeVisible(); // should show first users username
 
 });
