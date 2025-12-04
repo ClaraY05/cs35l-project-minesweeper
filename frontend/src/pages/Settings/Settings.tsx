@@ -13,8 +13,12 @@ const Settings = () => {
     const [resetSignal, setResetSignal] = useState(false);
     
     const { playBackgroundMusic, stopBackgroundMusic, playSoundEffect } = useSound();
+    const handleClick = (e:React.MouseEvent) => {
+        playSoundEffect("/audio/SFX/click.wav", "click");
+    };
 
-    const handleSave = async () =>{
+    const handleSave = async (e:React.MouseEvent) =>{
+        handleClick(e);
         try{
             // save settings to db
             await Promise.all([
@@ -29,13 +33,14 @@ const Settings = () => {
             console.error(err);
         }
     }
-    const handleDefault = async () =>{
+    const handleDefault = async (e:React.MouseEvent) =>{
         // update local storage first
         setKeybinds(DEFAULT_KEYBINDS);
         setSound(DEFAULT_SOUND);
         setVideo(DEFAULT_VIDEO);
         setNotif(DEFAULT_NOTIF);
         setResetSignal(prev => !prev);
+        handleClick(e);
         try {
             // save default settings to db
             await Promise.all([
@@ -56,9 +61,6 @@ const Settings = () => {
         };
     }, [playBackgroundMusic, stopBackgroundMusic]);
 
-    const handleClick = (e:React.MouseEvent) => {
-        playSoundEffect("/audio/SFX/click.wav", "click");
-    };
     const handleHover = (e:React.MouseEvent) => {
         playSoundEffect("/audio/SFX/select.wav", "select");
     };
@@ -126,8 +128,7 @@ const Settings = () => {
                 </button>|
                 <button 
                     onClick={(e)=>{
-                        handleSave
-                        handleClick(e)
+                        handleSave(e)
                     }}
                     onMouseEnter={(e)=>{handleHover(e)}}
                     className="hover:font-bold transition-all duration-300"
@@ -136,8 +137,7 @@ const Settings = () => {
                 </button>|
                 <button 
                     onClick={(e)=>{
-                        handleDefault
-                        handleClick(e)
+                        handleDefault(e)
                     }}
                     onMouseEnter={(e)=>{handleHover(e)}}
                     className="hover:font-bold transition-all duration-300"
