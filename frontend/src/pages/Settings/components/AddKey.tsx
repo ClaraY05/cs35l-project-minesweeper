@@ -9,17 +9,17 @@ interface KeybindSetterProp {
     defaultAction: string;
     nowKey: string;
     thisClassName?: string;
+    resetSignal:boolean;
     onChange?: (nowKey:string)=> void;
 }
 
-const KeybindSetter: React.FC<KeybindSetterProp> = ({ defaultAction, nowKey, thisClassName, onChange}) => {
+const KeybindSetter: React.FC<KeybindSetterProp> = ({ defaultAction, nowKey, thisClassName, resetSignal, onChange}) => {
     // set state vars
     const [keybind, setKeybind] = useState<Keybind>({
         action: defaultAction,
         key: nowKey,
     });
     const [listening, setListening] = useState(false);
-    const [hover, setHover] = useState(false);
 
     const normalizeKey = (key: string) => {
         if (key === " ") return "Space";
@@ -35,13 +35,17 @@ const KeybindSetter: React.FC<KeybindSetterProp> = ({ defaultAction, nowKey, thi
         if (onChange) onChange(normalizeKey(pressedKey.key));
         setListening(false);
     };
-    useEffect(()=>{setKeybind({action: defaultAction, key: nowKey})},[nowKey]);
+    
+    useEffect(()=>{
+        setKeybind({action: defaultAction, key: nowKey})
+        setListening(false);
+    },[defaultAction, nowKey, resetSignal]);
 
     return (
         <div
         tabIndex={0} // needed to focus the div
         onKeyDown={handleKeyDown}
-        className={`{thisClassName} w-full flex flex-row p-1 px-20 justify-between items-center`}
+        className={`${thisClassName ?? ""} w-full flex flex-row p-1 px-20 justify-between items-center`}
         >
             <strong className="uppercase font-semibold text-neutral-300 flex">{keybind.action} </strong>
             <span 

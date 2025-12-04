@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { Outlet, NavLink, Link } from "react-router-dom";
 import { authFetch } from "../../api/authFetch";
 import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "../../../../utils/defaultSettings";
@@ -9,6 +9,8 @@ const Settings = () => {
     const [sound, setSound]    = useLocalStorage("sound", DEFAULT_SOUND);
     const [video, setVideo]    = useLocalStorage("video", DEFAULT_VIDEO);
     const [notif, setNotif]    = useLocalStorage("notif", DEFAULT_NOTIF);
+    const [resetSignal, setResetSignal] = useState(false);
+    
     const handleSave = async () =>{
         try{
             // save settings to db
@@ -30,6 +32,7 @@ const Settings = () => {
         setSound(DEFAULT_SOUND);
         setVideo(DEFAULT_VIDEO);
         setNotif(DEFAULT_NOTIF);
+        setResetSignal(prev => !prev);
         try {
             // save default settings to db
             await Promise.all([
@@ -92,7 +95,7 @@ const Settings = () => {
             </nav>
             <hr className="border-t-3 border-dashed h-2"></hr>
             <main className="flex flex-grow"> 
-                <Outlet />
+                <Outlet context={{ resetSignal }}/>
             </main>
             <nav className="flex flex-row gap-x-2 flex-wrap justify-center">
                 <button><Link to="/home" className="hover:font-bold transition-all duration-300">Home</Link></button>|
