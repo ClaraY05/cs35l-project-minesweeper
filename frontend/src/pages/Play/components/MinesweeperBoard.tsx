@@ -42,7 +42,7 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick } : { GameID
         setStartTime(null);
         setElapsedMs(0);
         setRevealedSafeCount(0);
-    }, [GameID]);
+    }, [GameID, rows, cols]);
 
     useEffect(() => {
         if (status !== "playing" || startTime === null) return;
