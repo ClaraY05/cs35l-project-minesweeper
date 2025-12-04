@@ -56,7 +56,7 @@ const Home = () => {
         >
           <div className="option-text">&gt; Single Player_</div>
         </a>
-  
+        {/* DID NOT IMPLEMENT MULTIPLAYER
         <a
           href="/play"
           ref={(el) => { barRefs.current[1] = el; }}
@@ -66,6 +66,7 @@ const Home = () => {
         >
           <div className="option-text">&gt; Multiplayer_</div>
         </a>
+        */}
   
         <a
           href="/tutorial"

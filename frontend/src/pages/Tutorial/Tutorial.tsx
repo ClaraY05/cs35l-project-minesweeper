@@ -22,13 +22,15 @@ const Tutorial = () => {
 
     return (
         <div className="flex flex-row items-start gap-0 w-full justify-center">
-            <nav className="flex bg-lime-500 text-white uppercase rounded-lg p-3 font-bold text-lg flex-shrink-0 min-h-[40vh] max-h-[40vh] overflow-y-auto pb-3 z-10" style={{ marginRight: 0 }}>
+            <nav className="min-w-[10%] flex bg-lime-500 text-white uppercase rounded-lg p-3 font-bold text-lg flex-shrink-0 min-h-[40vh] max-h-[40vh] overflow-y-auto pb-3 z-10" style={{ marginRight: 0 }}>
                 <ul>
                     <li><Link to="basics" className="tutorial-link">Basics</Link></li>
+                    {/* DID NOT IMPLEMENT THESE FEATURES
                     <li><Link to="multiplayer" className="tutorial-link">Multiplayer</Link></li>
                     <li><Link to="powerups" className="tutorial-link">Powerups</Link></li>
                     <li><Link to="debuffs" className="tutorial-link">Debuffs</Link></li>
-                    <li><Link to="tesselation" className="tutorial-link">Tesselation</Link></li>
+                    <li><Link to="tesselation" className="tutorial-link">Tesselation</Link></li
+                    */}
                     <li>
                         <Link 
                             to="/home"
