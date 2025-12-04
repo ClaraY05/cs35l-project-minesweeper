@@ -1,30 +1,50 @@
 import { test, expect } from '@playwright/test';
 
-
+// precondition is that these users already exist in the database and their email has been verified already
 const firstTester = {
-    email: 'firstTester@example.com',
+    email: 'testuser1@example.com',
     password: 'Testing123!',
-    username: 'firstTester'
+    username: 'testuser1'
 }
 
 const secondTester = {
-    email: 'secondTester@example.com',
+    email: 'testuser2@example.com',
     password: 'Testing123!',
-    username: 'secondTester'
+    username: 'testuser2'
 }
 
 test('Sending friend request and confirming a notification is sent', async ({ page, request }) => {
     
-    // register the first tester
+    // login as the first tester
     await page.goto('http://localhost:5173/register');
-    await page.fill('input[name="email"]', firstTester.email);
-    await page.fill('input[name="password"]', firstTester.password);
-    await page.fill('input[name="username"]', firstTester.username);
+    await page.fill('input[type="email"]', firstTester.email);
+    await page.fill('input[type="password"]', firstTester.password);
     await page.click('button[type="submit"]');
+    await page.waitForURL('**/home', { timeout: 10000 });
+    
+    // open friends popout
+    await page.locator('button').filter({ has: page.locator('img[alt*="People"]') }).click();
+    await page.waitForSelector('text=Friend List', { timeout: 5000 });
+    await page.locator('input[type="text"]').first().fill(secondTester.username);
+    await page.waitForTimeout(1000); // Wait for search results to load
+    await page.locator('button').filter({ hasText: 'Add Friend' }).click();
 
-    // login the first tester
-    await page.goto('http://localhost:5173/login');
-    await page.fill('input[name="email"]', firstTester.email);
-    await page.fill('input[name="password"]', firstTester.password);
+    // login as second tester 
+    await page.locator('button').filter( { hasText: 'logout'}).click();
+    await page.waitForURL('**/login', { timeout: 5000 }); // waits for the login page now
+    await page.fill('input[type="email"]', secondTester.email);
+    await page.fill('input[type="password"]', secondTester.password);
     await page.click('button[type="submit"]');
-}
+    await page.waitForURL('**/home', { timeout: 10000 });
+
+
+    // open notifications popout to check for friend request
+    // click the notifications icon button
+    await page.locator('button').filter({ has: page.locator('img[alt*="mail"], img[alt*="notification"]') }).click();
+    await page.waitForSelector('text=Friend request', { timeout: 5000 });
+
+    // verify the friend request notification is visible
+    await expect(page.locator('text=Friend request')).toBeVisible();
+    await expect(page.locator(`text=${secondTester.username}`)).toBeVisible(); // should show first users username
+
+});
