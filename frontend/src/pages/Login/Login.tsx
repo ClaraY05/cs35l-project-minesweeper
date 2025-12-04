@@ -28,14 +28,15 @@ const Login = () => {
             setLoading(true);
 
             const payload = await handleLogin(data, mode);
-
-            const {keybinds, sound, video, notif} = await loadAllSettings();
-            // make sure rerender so UI is updated with user saved changes
-            setUser(payload.user);
-            setKeybinds(keybinds);
-            setSound(sound);
-            setVideo(video);
-            setNotif(notif);
+            if(mode==="login"){
+                const {keybinds, sound, video, notif} = await loadAllSettings();
+                setUser(payload.user);
+                // make sure rerender so UI is updated with user saved changes
+                setKeybinds(keybinds);
+                setSound(sound);
+                setVideo(video);
+                setNotif(notif);
+            }
             navigate("/home", {replace:true});
         } catch (err: any) {
             setError(err.message);
