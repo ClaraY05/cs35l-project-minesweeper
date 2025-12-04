@@ -45,6 +45,12 @@ h1{
     max-height: 90vh;
 }
 
+.contentDiv.play-page{
+    height: calc(100vh); 
+    @apply h-full;
+    width: 90%;
+}
+
 .option-bar{
     @apply rounded-sm uppercase flex pt-1 pb-1 pl-6 w-[55%] transition-all duration-500 ease-in-out hover:w-screen;
 }
