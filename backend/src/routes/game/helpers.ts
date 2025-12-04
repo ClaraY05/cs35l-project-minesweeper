@@ -186,7 +186,8 @@ export function chordReveal(
     cellIndex: number,
     flaggedNeighbors: number[],
     ROWS: number,
-    COLS: number
+    COLS: number,
+    alreadyRevealedIndices: number[]
 ): GameTypes.CellData[] {
     const base = boardData[cellIndex];
 
@@ -210,6 +211,9 @@ export function chordReveal(
     // reveal all neighbors that are not flagged, using the existing flood-fill logic
     const revealedMap = new Map<number, GameTypes.CellData>();
 
+    // Convert the array to a Set for O(1) lookup
+    const revealedSet = new Set(alreadyRevealedIndices);
+
     for (const nIdx of neighbors) {
         // flagged cells are not revealed
         if (flaggedNeighbors.includes(nIdx))
@@ -217,7 +221,10 @@ export function chordReveal(
         
         const region = revealRegion(boardData, nIdx, ROWS, COLS);
         for (const cell of region) {
-            revealedMap.set(cell.Position, cell);
+            // only add cells that are not already revealed
+            if (!revealedSet.has(cell.Position)){
+                revealedMap.set(cell.Position, cell);
+            }
         }
     }
 
