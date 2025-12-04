@@ -52,13 +52,18 @@ h1{
 }
 
 .option-bar{
-    @apply rounded-sm uppercase flex pt-1 pb-1 pl-6 w-[55%] transition-all duration-500 ease-in-out hover:w-screen;
+    @apply rounded-sm uppercase flex pt-1 pb-1 pl-6 w-[55%] transition-all duration-500 ease-in-out hover:w-screen items-center;
+    min-height: fit-content;
+    flex-shrink: 1;
 }
 
 .option-text{
     font-family:"Pixelify Sans", sans-serif;
     font-size: 300%;
     @apply truncate;
+    align-self: center;
+    white-space: nowrap;
+    min-height: fit-content;
 }
 
 .friend-name{

@@ -54,7 +54,8 @@ const VideoInterface = () => {
     };
 
     return (
-        <div className="w-full flex flex-col gap-3 px-20">
+        <div className="w-full flex flex-col gap-3 px-20 pt-5">
+            {/* DID NOT IMPLEMENT
             <Selector label="Graphics" options={graphics} value={video.graphics} onChange={(e)=>update({graphics:e})}/>
             <Slider 
                 label="Text" 
@@ -63,7 +64,7 @@ const VideoInterface = () => {
                 max={13} 
                 onChange={(e)=>update({textSize:e})}
                 displayValue={getTextSizeLabel}
-            />
+            />*/}
             <Checkbox label="Display Username" nowChecked={video.displayUsername} onChange={(e)=>update({displayUsername:e})}/>
             <Checkbox
                 label="Use Custom Background"
@@ -93,6 +94,7 @@ const VideoInterface = () => {
                 }}
                 buttonText="Enter"
                 disabled={!video.changeCustomBg}/>
+                <p className="text-sm uppercase">Must input image URL with access control allow</p>
                 {error && <p style={{color: 'red'}}>{error}</p>}
         </div>
     );

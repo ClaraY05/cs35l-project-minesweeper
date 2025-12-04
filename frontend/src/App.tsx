@@ -19,11 +19,14 @@ import Verify from "./pages/VerifyEmail/Verify"
 import { Routes, Route, Navigate } from 'react-router-dom';
 import AuthRedirect from "./components/AuthRedirect";
 import RequireAuth from "./components/RequireAuth";
+import { SoundProvider } from "./contexts/SoundContext"; // Add this import
+
 
 // because of react-router conventions, App now contains all available routes rather than the homepage.
 // you can add more routes as you see fit.
 const App = () => {
     return (
+        <SoundProvider>
         <Routes>
             <Route element={<MainLayout />}>
                 <Route path="/" element={
@@ -40,10 +43,11 @@ const App = () => {
                     <Route path="/tutorial" element={<Tutorial/>}>
                         <Route index element={<Navigate to="basics" replace />} /> 
                         <Route path="basics" element={< Basics/>} />
+                        {/* NOT IMPLEMENTED
                         <Route path="multiplayer" element={<Multiplayer />} />
                         <Route path="powerups" element={<Powerups />} />
                         <Route path="debuffs" element={<Debuffs />} />
-                        <Route path="tesselation" element={<Tesselation />} />
+                        <Route path="tesselation" element={<Tesselation />} />*/}
                     </Route>
                     <Route path="/settings" element={<Settings/>}>
                         <Route index element={<Navigate to="keybinds" replace />} /> 
@@ -55,6 +59,7 @@ const App = () => {
                 </Route>
             </Route>
         </Routes>
+        </SoundProvider>
     );
 }
 

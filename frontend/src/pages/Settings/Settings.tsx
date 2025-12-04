@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import { Outlet, NavLink, Link } from "react-router-dom";
 import { authFetch } from "../../api/authFetch";
 import { DEFAULT_KEYBINDS, DEFAULT_SOUND, DEFAULT_VIDEO, DEFAULT_NOTIF } from "../../../../utils/defaultSettings";
 import { useLocalStorage } from "usehooks-ts";
+import { useSound } from "../../contexts/SoundContext";
 
 const Settings = () => {
     const [keybinds, setKeybinds] = useLocalStorage("keybinds", DEFAULT_KEYBINDS);
@@ -11,7 +12,13 @@ const Settings = () => {
     const [notif, setNotif]    = useLocalStorage("notif", DEFAULT_NOTIF);
     const [resetSignal, setResetSignal] = useState(false);
     
-    const handleSave = async () =>{
+    const { playBackgroundMusic, stopBackgroundMusic, playSoundEffect } = useSound();
+    const handleClick = (e:React.MouseEvent) => {
+        playSoundEffect("/audio/SFX/click.wav", "click");
+    };
+
+    const handleSave = async (e:React.MouseEvent) =>{
+        handleClick(e);
         try{
             // save settings to db
             await Promise.all([
@@ -26,13 +33,14 @@ const Settings = () => {
             console.error(err);
         }
     }
-    const handleDefault = async () =>{
+    const handleDefault = async (e:React.MouseEvent) =>{
         // update local storage first
         setKeybinds(DEFAULT_KEYBINDS);
         setSound(DEFAULT_SOUND);
         setVideo(DEFAULT_VIDEO);
         setNotif(DEFAULT_NOTIF);
         setResetSignal(prev => !prev);
+        handleClick(e);
         try {
             // save default settings to db
             await Promise.all([
@@ -46,6 +54,16 @@ const Settings = () => {
             console.error(err);
         }
     }
+    useEffect(()=>{
+        playBackgroundMusic("/audio/menu.wav");
+        return () => {
+            stopBackgroundMusic();
+        };
+    }, [playBackgroundMusic, stopBackgroundMusic]);
+
+    const handleHover = (e:React.MouseEvent) => {
+        playSoundEffect("/audio/SFX/select.wav", "select");
+    };
     return (
         <div className="contentDiv">
             <h1 className="text-fuchsia-500 mt-0 pt-0">&gt; Settings</h1>
@@ -98,9 +116,34 @@ const Settings = () => {
                 <Outlet context={{ resetSignal }}/>
             </main>
             <nav className="flex flex-row gap-x-2 flex-wrap justify-center">
-                <button><Link to="/home" className="hover:font-bold transition-all duration-300">Home</Link></button>|
-                <button onClick={handleSave} className="hover:font-bold transition-all duration-300">Save</button>|
-                <button onClick={handleDefault} className="hover:font-bold transition-all duration-300">Default</button>
+                <button>
+                    <Link 
+                        to="/home"
+                        className="hover:font-bold transition-all duration-300"
+                        onMouseEnter={(e)=>{handleHover(e)}}
+                        onClick={(e)=>{handleClick(e)}}
+                    >
+                        Home
+                    </Link>
+                </button>|
+                <button 
+                    onClick={(e)=>{
+                        handleSave(e)
+                    }}
+                    onMouseEnter={(e)=>{handleHover(e)}}
+                    className="hover:font-bold transition-all duration-300"
+                >
+                    Save
+                </button>|
+                <button 
+                    onClick={(e)=>{
+                        handleDefault(e)
+                    }}
+                    onMouseEnter={(e)=>{handleHover(e)}}
+                    className="hover:font-bold transition-all duration-300"
+                >
+                    Default
+                </button>
             </nav>
         </div>
     )

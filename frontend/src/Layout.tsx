@@ -1,8 +1,8 @@
-import { Outlet, useLocation } from "react-router-dom";
-import { useLocalStorage } from "usehooks-ts";
 import AccountDisplay from "./components/header/AccountDisplay";
 import Friends from "./components/header/Friends/Friends"; 
 import Notifications from "./components/header/Notifications/Notifications";
+import { Outlet, useLocation } from "react-router-dom";
+import { useLocalStorage } from "usehooks-ts";
 import { DEFAULT_VIDEO } from "../../utils/defaultSettings";
 
 const MainLayout = () => {

@@ -3,11 +3,20 @@ import icon from "./mail-svgrepo-com.svg"
 import NotificationsPopout from "./components/NotificationsPopout"
 import HasSeenNotif from "./components/hasSeenNotif"
 import { authFetch } from "../../../api/authFetch";
+import { useSound } from "../../../contexts/SoundContext";
 
 const Notifications = () => {
   const [showOverlay, setShowOverlay] = useState(false);
   const [hasNotifications, setHasNotifications] = useState(false);
   const prevCount = useRef(0);
+  const {playSoundEffect } = useSound();
+
+  const handleClick = (e: React.MouseEvent) =>{
+    playSoundEffect("/audio/SFX/click.wav", "click");
+  };
+  const handleHover = (e: React.MouseEvent) =>{
+    playSoundEffect("/audio/SFX/select.wav", "select");
+  };
 
   const checkNotifications = async () => {
     try {
@@ -33,10 +42,12 @@ const Notifications = () => {
   return (
     <div className="flex flex-shrink-0">
       <button
-        onClick={() => {
+        onClick={(e) => {
+          handleClick(e);
           setShowOverlay(true);
           setHasNotifications(false);
         }}
+        onMouseEnter={(e)=> handleHover(e)}
         className="showOverlay rounded-sm bg-main pt-2.5 pl-3.5 pr-3.5 hover:border-2 transition-all duration-300 cursor-pointer relative"
       >
         <img src={icon} alt="Letter Icon"/>
