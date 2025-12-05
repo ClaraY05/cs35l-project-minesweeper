@@ -1,3 +1,4 @@
+@reference "tailwindcss";
 .minesweeper-board-container {
     display: flex;
     align-items: center;
@@ -18,21 +19,26 @@
     display: grid;
     place-items: center;
     cursor: pointer;
-    background-color: bisque;
     border: 1px solid black;
     overflow: hidden;
     font-size: 75%;
     width: 32px;
+    @apply bg-zinc-700 text-white uppercase;
 }
 
 .minesweeper-tile.revealed {
-    background-color: beige;
+    @apply bg-amber-300 text-black uppercase;
     cursor: default;
 }
 
 .minesweeper-tile.focused-tile {
   outline: 2px solid #fff;
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.7);
+}
+
+.tile-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }
 
 .minesweeper-wrapper {

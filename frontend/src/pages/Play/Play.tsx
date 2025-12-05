@@ -1,5 +1,6 @@
 import MinesweeperBoard from "./components/MinesweeperBoard"
 import DifficultySelect from "./components/DifficultySelect";
+import GameStatus from "./components/GameStatus";
 import './play.css';
 import { useEffect, useState } from "react";
 import {Link} from "react-router-dom";
@@ -17,6 +18,9 @@ const Play = () => {
     const [difficulty, setDifficulty] = useState<GameTypes.Difficulty>("easy");
     const { rows, cols, mines } = difficultyConfigs[difficulty];
     const { playBackgroundMusic, stopBackgroundMusic, playSoundEffect } = useSound();
+    const [gameStatus, setGameStatus] = useState<GameTypes.GameState>("playing");
+    const [gameSeconds, setGameSeconds] = useState<string>("0.0");
+    const [resetTrigger, setResetTrigger] = useState<number>(0);
 
     useEffect(()=>{
         playBackgroundMusic("/audio/play.wav");
@@ -52,6 +56,7 @@ const Play = () => {
 
     const restartGame = async () => {
         setActiveGameID(null);
+        setResetTrigger(prev => prev + 1); // Trigger reset in MinesweeperBoard
     }
     
     // reset game when difficulty changes
@@ -59,24 +64,43 @@ const Play = () => {
         setDifficulty(value);
         setActiveGameID(null); // clear current game so a new one is created on first click
     };
+
+    const handleStatusUpdate = (status: GameTypes.GameState, seconds: string) => {
+        setGameStatus(status);
+        setGameSeconds(seconds);
+    };
   
     return (
         <div className="contentDiv play-page h-full p-5">
-            <div className="play-container flex flex-row items-center gap-4">
-                <div className="flex flex-col items-start gap-4 p-4 text-xl font-bold bg-stone-900 rounded-xl">
-                    <DifficultySelect value={difficulty} onChange={handleDifficultyChange} />
-                    <button>
-                        <Link 
-                            to="/home" 
+            <div className="play-container flex flex-col items-center gap-4">
+                <div className="flex flex-row items-center gap-4">
+                    <div className="flex flex-col items-start gap-4 p-4 text-xl font-bold bg-stone-900 rounded-xl">
+                        <h1 className="text-amber-400">Play</h1>
+                        <DifficultySelect value={difficulty} onChange={handleDifficultyChange} />
+                        <GameStatus status={gameStatus} seconds={gameSeconds} />
+                        <button
+                            onClick={(e) => {
+                                handleClick(e);
+                                restartGame();
+                            }}
+                            onMouseEnter={(e) => handleHover(e)}
                             className="hover:text-amber-500 transition-all duration-300"
-                            onMouseEnter={(e)=>handleHover(e)}
-                            onClick={(e)=>{handleClick(e)}}
                         >
-                            Home
-                        </Link>
-                    </button>
+                            Restart
+                        </button>
+                        <button>
+                            <Link 
+                                to="/home" 
+                                className="hover:text-amber-500 transition-all duration-300"
+                                onMouseEnter={(e)=>handleHover(e)}
+                                onClick={(e)=>{handleClick(e)}}
+                            >
+                                Home
+                            </Link>
+                        </button>
+                    </div>
+                    <MinesweeperBoard GameID={activeGameID} rows={rows} mines={mines} cols={cols} onFirstClick={startGame} onRestart={restartGame} onStatusUpdate={handleStatusUpdate} resetTrigger={resetTrigger}/>
                 </div>
-                <MinesweeperBoard GameID={activeGameID} rows={rows} mines={mines} cols={cols} onFirstClick={startGame} onRestart={restartGame}/>
             </div>
         </div>
     )
