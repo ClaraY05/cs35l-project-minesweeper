@@ -1,4 +1,5 @@
 name: Playwright Tests
+
 on:
   push:
     branches: [ main, master ]
@@ -9,6 +10,31 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: tests
+        options: >-
+          --health-cmd="pg_isready -U ${{ secrets.DB_USER }}"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      # Used by your Node app - must match postgres service port
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DATABASE_URL: postgres://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@postgres:5432/${{ secrets.DB_NAME }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -16,20 +42,33 @@ jobs:
         with:
           node-version: lts/*
 
-      - name: Ensure package-lock exists
+      - name: Ensure package.json exists
+        run: |
+          if [ ! -f package.json ]; then
+            echo "No package.json found — creating a minimal one..."
+            npm init -y
+          else
+            echo "package.json exists — skipping creation."
+          fi
+
+      - name: Ensure package-lock.json exists
         run: |
           if [ ! -f package-lock.json ]; then
-            echo "No package-lock.json found, generating one..."
+            echo "No package-lock.json found — generating one..."
             npm install --package-lock-only
           else
-            echo "package-lock.json exists, skipping generation."
+            echo "package-lock.json exists — skipping generation."
           fi
+      # ------------------------------------
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright Browsers
+      - name: Install Playwright browsers
         run: npx playwright install --with-deps
+
+      - name: Run database migrations
+        run: npm --prefix backend run migrate:up
 
       - name: Run Playwright tests
         run: npx playwright test
