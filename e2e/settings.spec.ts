@@ -42,7 +42,7 @@ test('Changing background value in settings and checking this is true', async ({
     // Check if the background image URL matches the custom URL
     // The background is set via inline style on the main container div in Layout.tsx
     // Find the div with the backgroundImage style attribute
-    const mainContainer = page.locator('div[style*="backgroundImage"]').first();
+    const mainContainer = page.locator('div[style*="background-image"]').first();
     
     // Get the computed background-image style
     const backgroundImage = await mainContainer.evaluate((el) => {
