@@ -67,7 +67,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run database migrations
-        run: npm run migrate:up
+        run: npm --prefix backend run migrate:up
 
       - name: Run Playwright tests
         run: npx playwright test
