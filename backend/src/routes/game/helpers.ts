@@ -199,9 +199,7 @@ export function chordReveal(
     const neighbors = getNeighborIndices(cellIndex, ROWS, COLS);
 
     // count how many of those neighbors are flagged
-    const flaggedCount = neighbors.filter((idx) =>
-        flaggedNeighbors.includes(idx)
-    ).length;
+    const flaggedCount = neighbors.filter((idx) => flaggedNeighbors.includes(idx)).length;
 
     // only chord when flags match the number
     if (flaggedCount !== base.Content.Number) {

@@ -129,8 +129,6 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart, 
                 chordAtIndex(focusedIndex);
                 return;
             }
-            
-            //  powerup1 and powerup 2 can be wired here one the feature exists
         };
 
         window.addEventListener("keydown", handleKeyDown);
@@ -257,10 +255,12 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart, 
             const isRevealed = cell?.State.Visibility === "revealed";
             let isFlagged = cell && "Flagged" in cell.State ? cell.State.Flagged : false;
             
+            // if the game ends (hit a mine), reveal the cell even if flagged
             if (revealedCell.Content.Type === "mine") 
-                isFlagged = false; // if the game ends (hit a mine), reveal the cell even if flagged
+                isFlagged = false;
 
-            if (isRevealed || isFlagged) // if flagged or already revealed, don't reveal (floodfill from backend can still return these)
+            // if flagged or already revealed, don't reveal (floodfill from backend can still return these)
+            if (isRevealed || isFlagged)
                 continue;
 
             // reveal the cell

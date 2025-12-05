@@ -94,9 +94,9 @@ gameRoutes.post("/cell/chord", authenticateToken, async (req, res) => {
         const boardData = game.board_data as GameTypes.CellData[];
         const rows = game.rows;
         const cols = game.cols;
-
-        const alreadyRevealedIndices: number[] = (game.revealedCells || []).map((cell: { Position: number }) => cell.Position);
-
+        const alreadyRevealedIndices: number[] = (game.revealedCells || []).map(
+            (cell: { Position: number }) => cell.Position
+        );
         const revealed = chordReveal(boardData, cellid, flaggedNeighbors, rows, cols, alreadyRevealedIndices);
 
         // Check for a loss first, if a mine was revealed
