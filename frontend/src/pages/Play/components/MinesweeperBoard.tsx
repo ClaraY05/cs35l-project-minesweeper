@@ -244,13 +244,10 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart, 
         }
 
         const revealedCellData = res as GameTypes.CellData[];
-        applyRevealedCells(revealedCellData, GameIDToUse);
+        applyRevealedCells(revealedCellData);
     }
 
-    const applyRevealedCells = (
-        revealedCellData: GameTypes.CellData[],
-        gameIdToUse: number | null
-    ) => {
+    const applyRevealedCells = (revealedCellData: GameTypes.CellData[]) => {
         const newTiles = [...Tiles];
         let newRevealedSafeCount = revealedSafeCount;
         let hitMine = false;
@@ -334,7 +331,7 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart, 
                 return;
             }
 
-            applyRevealedCells(revealedCells, GameID);
+            applyRevealedCells(revealedCells);
         } catch (err) {
             console.error("Chord request failed: ", err);
         }
