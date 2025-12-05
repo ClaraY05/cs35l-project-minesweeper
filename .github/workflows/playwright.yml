@@ -41,6 +41,25 @@ jobs:
         with:
           node-version: lts/*
 
+      - name: Ensure package.json exists
+        run: |
+          if [ ! -f package.json ]; then
+            echo "No package.json found — creating a minimal one..."
+            npm init -y
+          else
+            echo "package.json exists — skipping creation."
+          fi
+
+      - name: Ensure package-lock.json exists
+        run: |
+          if [ ! -f package-lock.json ]; then
+            echo "No package-lock.json found — generating one..."
+            npm install --package-lock-only
+          else
+            echo "package-lock.json exists — skipping generation."
+          fi
+      # ------------------------------------
+
       - name: Install dependencies
         run: npm ci
 
