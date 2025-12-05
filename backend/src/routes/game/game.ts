@@ -54,8 +54,7 @@ gameRoutes.post("/cell/reveal", authenticateToken, async (req: AuthRequest, res)
         const revealedCells = revealRegion(game.board_data, cell_id, game.rows, game.cols);
 
         if (clickedCell.Content.Type === "mine") {
-            const gametime = await updateGameStatus(game_id, "lost");
-            console.log("losstime", gametime)
+            updateGameStatus(game_id, "lost");
             return res.json(revealedCells);
         }
 
@@ -64,8 +63,7 @@ gameRoutes.post("/cell/reveal", authenticateToken, async (req: AuthRequest, res)
         const totalSafe = game.rows * game.cols - game.mines;
 
         if (numRevealed === totalSafe) {
-            const gametime = await updateGameStatus(game_id, "won");
-            console.log("wintime ", gametime);
+            updateGameStatus(game_id, "won");
         }
         return res.json(revealedCells);
     } 
