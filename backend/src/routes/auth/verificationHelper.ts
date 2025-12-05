@@ -25,9 +25,9 @@ export async function sendVerificationEmail(to: string, emailToken: string) {
     const verifyUrl = `${process.env.APP_URL}/verify?emailToken=${emailToken}`;
     try{
         await transporter.sendMail({
-            from: `"Sweeper" <${process.env.SMTP_USER}>`,
+            from: `"Sweepr" <${process.env.SMTP_USER}>`,
             to,
-            subject: "Verify your email Sweeper.io",
+            subject: "Verify your email Sweepr.io",
             text: `Click to verify: ${verifyUrl}`,
             html: `<p>Click to verify:</p><p><a href="${verifyUrl}">${verifyUrl}</a></p>`
         });
