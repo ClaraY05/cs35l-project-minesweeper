@@ -15,11 +15,8 @@ const secondTester = {
 
 test('Sending friend request and confirming a notification is sent', async ({ page, request }) => {
     
-    // login as the first tester
-    await page.goto('http://localhost:5173/');
-    await page.fill('input[type="email"]', firstTester.email);
-    await page.fill('input[type="password"]', firstTester.password);
-    await page.click('button[type="submit"]');
+    // Start already authenticated as first tester (via storageState in config)
+    await page.goto('http://localhost:5173/home');
     await page.waitForURL('**/home', { timeout: 10000 });
     
     // open friends popout
