@@ -10,6 +10,11 @@ import notificationRoutes from "./notifications/notification.js";
 // routes for our api.
 const router = Router();
 
+// Health check endpoint for testing
+router.get("/health", (req, res) => {
+    res.status(200).json({ status: "ok" });
+});
+
 router.use("/game", gameRoutes);
 router.use("/auth", authRoutes);
 router.use("/friends", friendsRoutes);
