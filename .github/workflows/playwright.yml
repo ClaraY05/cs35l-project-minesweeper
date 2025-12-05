@@ -17,9 +17,9 @@ jobs:
         ports:
           - 5432:5432
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: tests
+          POSTGRES_USER: ${{secrets.POSTGRES_USER}}
+          POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
+          POSTGRES_DB: ${{secrets.POSTGRES_DB}}
         options: >-
           --health-cmd="pg_isready -U postgres"
           --health-interval=5s
@@ -29,10 +29,11 @@ jobs:
     env:
       # Used by your Node app
       DB_HOST: localhost
-      DB_PORT: 5432
+      DB_PORT: 5433
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
     steps:
       - uses: actions/checkout@v4
