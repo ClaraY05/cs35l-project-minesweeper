@@ -1,7 +1,7 @@
 import { test as setup, expect } from '@playwright/test';
 import path from 'path';
 import dotenv from 'dotenv';
-import { Pool } from 'pg';
+import pg from 'pg';
 import bcrypt from 'bcrypt';
 import { DEFAULT_SETTINGS } from '../utils/defaultSettings.js';
 
@@ -12,13 +12,13 @@ if (!process.env.DB_HOST) {
 }
 
 // Create database connection pool
-const pool = new Pool({
+export const pool = new pg.Pool({
     host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT ?? 5433),
-    database: process.env.DB_NAME,
+    port: Number(process.env.DB_PORT),
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-});
+    database: process.env.DB_NAME,
+  });
 
 const authDir = path.join(__dirname, '../playwright/.auth');
 const firstTesterFile = path.join(authDir, 'user1.json');
