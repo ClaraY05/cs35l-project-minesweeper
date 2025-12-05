@@ -21,7 +21,7 @@ const Tile = ({ className, content, onMouseDown, onMouseUp, onContextMenu, onMou
     )
 };
 
-const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart } : { GameID : number | null, rows : number, cols : number, mines: number, onFirstClick : (arg0 : number) => Promise<any>, onRestart?: () => Promise<void> | void }) => {
+const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart, onStatusUpdate, resetTrigger } : { GameID : number | null, rows : number, cols : number, mines: number, onFirstClick : (arg0 : number) => Promise<any>, onRestart?: () => Promise<void> | void, onStatusUpdate?: (status: GameTypes.GameState, seconds: string) => void, resetTrigger?: number }) => {
     const [Tiles, setTiles] = useState<Array<PublicCellData | null>>(() => Array(rows * cols).fill(null)); // frontend cell data store. null means "dont know"
 
     // UI status only
@@ -60,6 +60,13 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart }
         resetLocalState();
     }, [rows, cols]);
 
+    // Reset when resetTrigger changes (triggered by restart button)
+    useEffect(() => {
+        if (resetTrigger !== undefined && resetTrigger > 0) {
+            resetLocalState();
+        }
+    }, [resetTrigger]);
+
     useEffect(() => {
         if (status !== "playing" || startTime === null) return;
 
@@ -69,6 +76,14 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart }
 
         return () => clearInterval(id);
     }, [status, startTime]);
+
+    // Notify parent component of status and time changes
+    useEffect(() => {
+        if (onStatusUpdate) {
+            const seconds = (elapsedMs / 1000).toFixed(1);
+            onStatusUpdate(status, seconds);
+        }
+    }, [status, elapsedMs, onStatusUpdate]);
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -327,11 +342,6 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart }
     return (
         <div className="minesweeper-wrapper">
             <div className="minesweeper-board-container flex flex-row items-center justify-around">
-                <div className="game-status-bar h-full">
-                    <span className="game-status-text"> 
-                        Status: {status} &nbsp;&nbsp; Time: {seconds}s
-                    </span>
-                </div>
                 <div className="minesweeper-board" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
                     {
                         Tiles.map((cell, i) => {
@@ -340,10 +350,10 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart }
                             const isFlagged = cell && "Flagged" in cell.State ? cell.State.Flagged : false;
 
                             const content = cell === null ? null 
-                            : isHidden && isFlagged ? "F" 
+                            : isHidden && isFlagged ? <div className="w-full h-full bg-amber-500" />
                             : cell.Content === null ? null 
-                            : cell.Content.Type === "mine" ? "M" 
-                            : cell.Content.Number;
+                            : cell.Content.Type === "mine" ? <div className="w-full h-full bg-orange-600" />
+                            : <span className="text-xl" style={{ fontFamily: '"Pixelify Sans", sans-serif' }}>{cell.Content.Number}</span>;
 
                             return (
                                 <Tile key={i} 
