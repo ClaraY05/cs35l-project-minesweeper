@@ -191,14 +191,12 @@ export function chordReveal(
 ): GameTypes.CellData[] {
     const base = boardData[cellIndex];
 
-    // must be a number cell to chord
     if (base.Content.Type !== "number") {
         return [];
     }
 
     const neighbors = getNeighborIndices(cellIndex, ROWS, COLS);
 
-    // count how many of those neighbors are flagged
     const flaggedCount = neighbors.filter((idx) => flaggedNeighbors.includes(idx)).length;
 
     // only chord when flags match the number
@@ -206,14 +204,13 @@ export function chordReveal(
         return [];
     }
 
-    // reveal all neighbors that are not flagged, using the existing flood-fill logic
     const revealedMap = new Map<number, GameTypes.CellData>();
 
     // Convert the array to a Set for O(1) lookup
     const revealedSet = new Set(alreadyRevealedIndices);
 
+    // reveal all neighbors that are not flagged, using the existing flood-fill logic
     for (const nIdx of neighbors) {
-        // flagged cells are not revealed
         if (flaggedNeighbors.includes(nIdx))
             continue;
         

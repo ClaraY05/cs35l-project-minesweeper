@@ -305,7 +305,7 @@ const MinesweeperBoard = ({ GameID, rows, cols, mines, onFirstClick, onRestart, 
         if (!cell.Content || cell.Content.Type !== "number")
             return;
 
-        // collect all flagged cells on the boardl backend will filter neighbors
+        // collect all flagged cells on the board; backend will filter neighbors
         const flaggedIndices: number[] = [];
         Tiles.forEach((t, idx) => {
             if (t && t.State.Visibility === "hidden" && "Flagged" in t.State && t.State.Flagged)
