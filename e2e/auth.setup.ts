@@ -1,43 +1,24 @@
 import { test as setup, expect } from '@playwright/test';
-import pg from 'pg';
 import path from 'path';
+import dotenv from 'dotenv';
+import pg from 'pg';
 import bcrypt from 'bcrypt';
 import { DEFAULT_SETTINGS } from '../utils/defaultSettings.js';
 
-// Validate required environment variables
-const requiredEnvVars = ['DB_HOST', 'DB_PORT', 'DB_USER', 'DB_PASSWORD', 'DB_NAME'];
-const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
-
-if (missingVars.length > 0) {
-    throw new Error(
-        `Missing required environment variables: ${missingVars.join(', ')}\n` +
-        `For local development: Ensure backend/.env exists with these variables.\n` +
-        `For CI/CD: Ensure these are set as GitHub secrets.`
-    );
+// Load backend environment variables for database connection
+// Priority: 1) Environment variables (from CI/CD secrets), 2) .env file (local dev)
+if (!process.env.DB_HOST) {
+    dotenv.config({ path: path.join(__dirname, '../backend/.env') });
 }
 
-// Create database connection pool with defaults
+// Create database connection pool
 export const pool = new pg.Pool({
     host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT) || 5432,
+    port: Number(process.env.DB_PORT),
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-});
-
-// Test database connection before proceeding
-async function testConnection() {
-    try {
-        await pool.query('SELECT 1');
-        console.log('Database connection successful');
-    } catch (error: any) {
-        throw new Error(
-            `Database connection failed: ${error.message}\n` +
-            `Check that DB_HOST=${process.env.DB_HOST}, DB_PORT=${process.env.DB_PORT}, ` +
-            `DB_USER=${process.env.DB_USER}, DB_NAME=${process.env.DB_NAME} are correct and database is running.`
-        );
-    }
-}
+  });
 
 const authDir = path.join(__dirname, '../playwright/.auth');
 const firstTesterFile = path.join(authDir, 'user1.json');
@@ -94,18 +75,11 @@ async function ensureUserVerified(user: typeof firstTester) {
             );
         }
     } catch (error: any) {
-        const errorMessage = error?.message || error?.toString() || 'Unknown error';
-        const errorCode = error?.code || 'NO_CODE';
-        throw new Error(
-            `Failed to ensure user ${user.email} is verified: ${errorMessage} (code: ${errorCode})\n` +
-            `This usually indicates a database connection or query issue.`
-        );
+        throw new Error(`Failed to ensure user ${user.email} is verified: ${error.message}`);
     }
 }
 
 setup('authenticate as first tester', async ({ page }) => {
-    // Test database connection first
-    await testConnection();
     await ensureUserVerified(firstTester);
     
     // login through the UI to get cookies in browser context
@@ -124,8 +98,6 @@ setup('authenticate as first tester', async ({ page }) => {
 });
 
 setup('authenticate as second tester', async ({ page }) => {
-    // Test database connection first
-    await testConnection();
     await ensureUserVerified(secondTester);
     
     await page.goto('http://localhost:5173/');
