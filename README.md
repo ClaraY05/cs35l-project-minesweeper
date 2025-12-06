@@ -4,7 +4,7 @@
 Perform the following actions on your terminal:
 
 Clone the repository
-`git clone https://github.com/sweeprio/cs35l-project.git`
+`[git clone https://github.com/sweeprio/cs35l-project.git](https://github.com/ClaraY05/cs35l-project-minesweeper.git)`
 
 Enter the directory `cd cs35l-project` to enter the root directory. 
 
