@@ -6,7 +6,7 @@ Perform the following actions on your terminal:
 Clone the repository
 `[git clone https://github.com/sweeprio/cs35l-project.git](https://github.com/ClaraY05/cs35l-project-minesweeper.git)`
 
-Enter the directory `cd cs35l-project` to enter the root directory. 
+Enter the directory `cd cs35l-project-minesweeper` to enter the root directory. 
 
 `npm i` within root directory (`/`) to install all packages. The root folder is an npm project with 2 children npm workspaces.
 
