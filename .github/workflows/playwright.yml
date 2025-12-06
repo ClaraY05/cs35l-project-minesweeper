@@ -29,11 +29,10 @@ jobs:
     env:
       # Used by your Node app - must match postgres service port
       DB_HOST: localhost
-      DB_PORT: 5433
+      DB_PORT: 5432
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
-      DATABASE_URL: postgres://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@postgres:5432/${{ secrets.DB_NAME }}
 
     steps:
       - uses: actions/checkout@v4
