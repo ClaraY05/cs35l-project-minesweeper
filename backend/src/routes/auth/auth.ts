@@ -123,7 +123,7 @@ authRoutes.post("/verify", async (req,res)=>{
     try{
         const {emailToken} = req.body;
         await verifyEmailToken(emailToken);
-        return res.json({message:"email verified"});
+        return res.status(200).json({message:"email verified"});
     }
     catch(err){
         return res.status(400).json({error:"email not verified"});
